@@ -10,6 +10,47 @@ from bokeh.models import NumeralTickFormatter, HoverTool, GlyphRenderer, Range1d
 from sklearn.cluster import KMeans
 
 ##-FUNCTIONS-##
+def vcf_heatmap_snps(data_surrounding, data_variance):
+    '''data generation for heatmap plot
+    creates dictionary with key is surrounding sequence
+    and types of variances:
+    {'AAAAA':['G','T']}
+    where G, T is variance for third A
+    
+    Args:
+        data_surrounding = vcf_all_strip[1]
+        data_variance = vcf_all_strip[3]
+    
+    '''
+    sequence =[]
+    mutation = []
+    points = 0
+    for items in data_surrounding:
+        for i in items:
+            sequence_ = ([j.split('\t')[3] for j in i])
+            sequence_2 = [''.join(sequence_)]
+            for s in sequence_2:
+                sequence.append(s)
+
+    for mut in data_variance:
+        mutation_ = ([m.split('\t')[4] for m in mut])
+        if not mutation_:
+            continue
+        else:
+            for m in mutation_:
+                mutation.append(m) 
+
+    dict_variance = {}
+    points = 0
+    for se in sequence:
+        if se in dict_variance:
+            dict_variance[se].append(mutation[points])
+        else:
+            dict_variance[se] = [mutation[points]]
+        points += 1
+        
+    return dict_variance
+
 def vcf_all_strip(path, txt_yes_no, txt_name):
     '''strips vcf files of it's information
     
