@@ -1,0 +1,7 @@
+{
+  "test_.py::TestClass::()::test_two": true,
+  "test_.py::test_answer": true,
+  "test_.py::test_capital_case": true,
+  "test_.py::test_raises_exception_on_non_string_arguments": true,
+  "test_.py::test_two": true
+}

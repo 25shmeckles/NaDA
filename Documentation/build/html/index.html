@@ -1,0 +1,442 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Internship report &#8212; Internship report 3.0a1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0a1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="internship-report">
+<h1>Internship report<a class="headerlink" href="#internship-report" title="Permalink to this headline">¶</a></h1>
+<p><em>Student:                       Douwe Spaanderman</em></p>
+<p><em>Supervisor:                    Alessio Marcozzi</em></p>
+<p><em>Group Kloosterman              Medical Genetics - UMC Utrecht</em></p>
+<div class="section" id="introduction">
+<h2>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h2>
+<p><strong>General workflow</strong>
+<strong>Figure of workflow</strong></p>
+</div>
+<div class="section" id="results-and-discussion">
+<h2>Results and discussion<a class="headerlink" href="#results-and-discussion" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="fastq-files">
+<h3>Fastq files<a class="headerlink" href="#fastq-files" title="Permalink to this headline">¶</a></h3>
+<p><strong>Read lenght distribution</strong>. from txt file strip lenght of sequence and plot it. should this be described, as it is no more than some simple python practise? (day one file)</p>
+<p><strong>Quality score distribution</strong>. Fastq are text-based files derived from sequencers such as illumina and nanopore that contain a biological sequence and for every base a quality score.
+this quality score represents the sequencers ability to call a base as true, in other words, the score says something about how sure the sequencer is that the right base is called.
+if the score for the base is low, it’s most likely the right base while if the score is high the machine is unsure if it’s the real base. Analyzing quality scores on sequences
+is important to be able to understand which regions of bases is difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more
+likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area’s with high quality scores. Clearifying which regions are high score is important
+for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations
+and thus are able to increase tests sensitivity. In order to analyse fastq files the following script was written to strip the files:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_fasta_file_error</span><span class="p">(</span><span class="n">sequence_file</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sequence_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">id_</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">sequence</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]:</span>
+                                <span class="k">continue</span>
+                        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">id_</span><span class="p">:</span> <span class="c1">#if id_ == False</span>
+                                        <span class="n">id_</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: An ID was found</span>
+                                                <span class="n">without</span> <span class="n">corresponding</span>
+                                                <span class="n">sequence</span><span class="o">.</span><span class="s1">&#39;, id_)</span>
+                                        <span class="n">id_</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="n">id_</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sequence</span><span class="p">:</span>
+                                <span class="n">sequence</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="n">id_</span> <span class="ow">and</span> <span class="n">sequence</span><span class="p">:</span>
+                                <span class="n">score</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                                <span class="n">data</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sequence&#39;</span><span class="p">:</span><span class="n">sequence</span><span class="p">,</span>
+                                                <span class="s1">&#39;score&#39;</span><span class="p">:</span><span class="n">score</span><span class="p">}</span>
+                                <span class="n">sequence</span> <span class="o">=</span> <span class="kc">False</span>
+                                <span class="n">id_</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+</div>
+<p>The data returns a dictionary with identification (id), sequence and scores for bases in the sequence. Following this script, plotting was conducted as shown in figure 1.
+Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurence of high and low score regions. In these high score
+regions bases have more chance to be falsly assigned and are thus less reliable if mutations are found in these regions. Likewise, mutations found in low score regions are more
+likely to be rightly assigned and thus true mutations.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="_images/Fastq_files_qualityscore.png"><img alt="_images/Fastq_files_qualityscore.png" src="_images/Fastq_files_qualityscore.png" style="width: 564.9px; height: 389.9px;" /></a>
+<p class="caption"><span class="caption-text">Figure 1: Distribution of error rate (quality score) for every individual base.
+The mean of all the quality scores is 0.21.</span></p>
+</div>
+<p>While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score
+regions, 1139 fastq files from nanopore with data on chromosome 9 were investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2.
+The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low quality score is important.</p>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="_images/Mean_distribution_of_all_quality_score.png"><img alt="_images/Mean_distribution_of_all_quality_score.png" src="_images/Mean_distribution_of_all_quality_score.png" style="width: 266.7px; height: 261.09999999999997px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2: Mean distribution of quality scores from all the fastq files.</span></p>
+</div>
+<p>Next, regions of bases were selected instead of single bases to be able to identify high quality score regions. Size and overlap of the chunks of sequences could be selected by the
+following script:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">split_overlap</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">overlap</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">overlap</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;size&quot; must be an integer with</span>
+                                 <span class="o">&gt;=</span> <span class="mi">1</span> <span class="k">while</span> <span class="s2">&quot;overlap&quot;</span> <span class="n">must</span> <span class="n">be</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="s1">&#39;)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">size</span><span class="p">:</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">result</span>
+                <span class="k">else</span><span class="p">:</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iterable</span><span class="p">[:</span><span class="n">size</span><span class="p">])</span>
+                        <span class="n">iterable</span> <span class="o">=</span> <span class="n">iterable</span><span class="p">[</span><span class="n">size</span><span class="o">-</span><span class="n">overlap</span><span class="p">:]</span>
+</pre></div>
+</div>
+<p>sequences were chunked to pieces of four to six in order to analyze the impact of different sized regions on base calling quality.
+Following, the mean of all the qualityscores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being devided in categories of high,
+medium and low qualityscore (figure 3 D - F). Categorizing was done after calculating mean of sequence, subsequently, categories were counted for each sequence. Categorizing was
+conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of
+the qualityscore get’s more normalized and shift further towards medium, which have been accounted for by lowering high requirements and highering low requirements as following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">high_medium_low_scores</span><span class="p">(</span><span class="n">listed_scores</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">group_score</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">listed_scores</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mf">0.40</span><span class="o">-</span><span class="mf">0.02</span><span class="o">*</span><span class="n">size</span><span class="p">):</span>
+                        <span class="n">group_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;High&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mf">0.15</span><span class="o">+</span><span class="mf">0.01</span><span class="o">*</span><span class="n">size</span><span class="p">):</span>
+                        <span class="n">group_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Low&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                        <span class="n">group_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Medium&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">group_score</span>
+</pre></div>
+</div>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="_images/Fastq_gridplots.png"><img alt="_images/Fastq_gridplots.png" src="_images/Fastq_gridplots.png" style="width: 544.8px; height: 370.8px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3: <strong>Quality score analysis with 6 senario’s.</strong> A - C) Meanscore for all combination in size (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of
+chromosome 9. D - F) Scores for regions have been categorized into high, medium and low for regions of same size as A to C. Next, the amount of times a region was called under a
+certain category was counted and collected for the same data set. In these figures scores are set in percentage of total amount of times a region occurs in the data set.
+(Interactive figure at <a class="reference external" href="C:\Users\Douwe\Documents\Python\Documentation\source\_static\gridplot.html">GridPlot</a>)</span></p>
+</div>
+<p>In table 1, highest and lowest five scoring sequence are highlighted. In conclusion, the highest scoring sequence has the biggest chance to have wrongly assigned bases in it’s sequence.
+In contrast, bases in lower scoring sequences are more likely to been good assigned and are therefor indeed the right base. These findings should be taken into account when investigating
+mutations, as a mutation found in for instance TTCC are more likely to be a real mutations than a mutation found in GCTT.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="7%" />
+<col width="10%" />
+<col width="7%" />
+<col width="10%" />
+<col width="7%" />
+<col width="10%" />
+<col width="7%" />
+<col width="10%" />
+<col width="7%" />
+<col width="10%" />
+<col width="7%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>A</dd>
+</dl>
+</th>
+<th class="head">Score</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>D</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>Score</dt>
+<dd>%</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>B</dd>
+</dl>
+</th>
+<th class="head">Score</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>E</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>Score</dt>
+<dd>%</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>C</dd>
+</dl>
+</th>
+<th class="head">Score</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>F</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>Score</dt>
+<dd>%</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GCTT</td>
+<td>0.364</td>
+<td>GCTT</td>
+<td>59.41</td>
+<td>AGCTT</td>
+<td>0.422</td>
+<td>CCTTG</td>
+<td>66.00</td>
+<td>AGCTTT</td>
+<td>0.501</td>
+<td>TCATAC</td>
+<td>91.52</td>
+</tr>
+<tr class="row-odd"><td>CTTG</td>
+<td>0.353</td>
+<td>CTTG</td>
+<td>58.04</td>
+<td>GCCTT</td>
+<td>0.405</td>
+<td>CTTGC</td>
+<td>65.52</td>
+<td>TTCGCA</td>
+<td>0.499</td>
+<td>AGCCTT</td>
+<td>90.00</td>
+</tr>
+<tr class="row-even"><td>TAAT</td>
+<td>0.313</td>
+<td>TAAT</td>
+<td>46.72</td>
+<td>GCTTG</td>
+<td>0.393</td>
+<td>CTTTA</td>
+<td>65.00</td>
+<td>GGGACG</td>
+<td>0.489</td>
+<td>CTTTAC</td>
+<td>88.88</td>
+</tr>
+<tr class="row-odd"><td>GTAG</td>
+<td>0.298</td>
+<td>GTAG</td>
+<td>43.12</td>
+<td>GCTTA</td>
+<td>0.372</td>
+<td>GTAGC</td>
+<td>64.38</td>
+<td>CCATGT</td>
+<td>0.482</td>
+<td>TAGCCA</td>
+<td>87.50</td>
+</tr>
+<tr class="row-even"><td>TAGC</td>
+<td>0.293</td>
+<td>TAGC</td>
+<td>42.61</td>
+<td>ATTGA</td>
+<td>0.367</td>
+<td>CGGAG</td>
+<td>63.16</td>
+<td>GAATCT</td>
+<td>0.466</td>
+<td>TGCTAC</td>
+<td>83.33</td>
+</tr>
+<tr class="row-odd"><td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>GGAT</td>
+<td>0.136</td>
+<td>GGTT</td>
+<td>3.82</td>
+<td>TTAAA</td>
+<td>0.112</td>
+<td>CGGGA</td>
+<td>3.92</td>
+<td>CCTAAT</td>
+<td>0.058</td>
+<td>TCCACT</td>
+<td>1.33</td>
+</tr>
+<tr class="row-odd"><td>CCCT</td>
+<td>0.135</td>
+<td>CCTC</td>
+<td>3.64</td>
+<td>GTCTT</td>
+<td>0.104</td>
+<td>CTCCT</td>
+<td>3.88</td>
+<td>TTCACA</td>
+<td>0.054</td>
+<td>TTATCC</td>
+<td>1.23</td>
+</tr>
+<tr class="row-even"><td>GTTC</td>
+<td>0.131</td>
+<td>ATCC</td>
+<td>3.53</td>
+<td>TTGGA</td>
+<td>0.100</td>
+<td>CTCCA</td>
+<td>2.93</td>
+<td>TTTTTC</td>
+<td>0.053</td>
+<td>CCTCCT</td>
+<td>1.18</td>
+</tr>
+<tr class="row-odd"><td>CCTC</td>
+<td>0.129</td>
+<td>GATC</td>
+<td>3.35</td>
+<td>GGACC</td>
+<td>0.098</td>
+<td>CGATC</td>
+<td>2.89</td>
+<td>CCAATC</td>
+<td>0.050</td>
+<td>TCGGAT</td>
+<td>1.05</td>
+</tr>
+<tr class="row-even"><td>TTCC</td>
+<td>0.128</td>
+<td>CTCC</td>
+<td>2.79</td>
+<td>TTTTT</td>
+<td>0.085</td>
+<td>TCGGA</td>
+<td>1.62</td>
+<td>GGACGT</td>
+<td>0.049</td>
+<td>GGGACC</td>
+<td>0.96</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div>Table 1: Highest and lowest five scoring sequences. A - C) score is meanscore for all combinations in same size and data set as figure 3.
+D - F) score is percentage of sequence in category high for all combinations in same size and data set as figure 3.</div></blockquote>
+</div>
+<div class="section" id="variant-call-format-files">
+<h3>Variant Call Format files<a class="headerlink" href="#variant-call-format-files" title="Permalink to this headline">¶</a></h3>
+<p><strong>Mutation distribution of single nucleotide polymorphisms</strong>. Variant Call Format (VCF) files are text files containing data of single positions in the genome. In these files, variants
+are formatted with the reference included. For sequenced sites, amount of reads found with mutation and reference are given. The dataset visualized here is derived from the cyclomics project, sequencing was preformed with nanopore and the data contains a sequence part from chromosome 17 (around 160 nucleotides) and a backbone, which is used for circulair pcr reaction. In total 1187 VCF files were used for variant calling. Here, VCF files are screened for single nucleotide polymorphism (SNP) occurence. Firsly, files were stripped of reported mutated bases, other data was discarded. As described earlier, every variant site has a number of reads that covers this site. These reads can be both coupled to the mutation and the reference. For example, on position 7577503 a SNP was found in 6 reads and 3 reads were coupled to the reference. While the amount of reads coupled to the mutation in contrast to the reads is important, here occurence of certain SNPs have been firsly investigated. In order to investigated the amount of SNPs in the files, VCF files were simallarly stripped as Fastq files and seperated by either sequence or backbone. Next, for the variants a parameter was set at a minimum of 25 percent of the reads that should be coupled to the mutant variant and visualized in figure 4:</p>
+<div class="figure align-center" id="id4">
+<a class="reference internal image-reference" href="_images/Distribution_of_mutations_in_sequence.png"><img alt="_images/Distribution_of_mutations_in_sequence.png" src="_images/Distribution_of_mutations_in_sequence.png" style="width: 333.2px; height: 350.0px;" /></a>
+<p class="caption"><span class="caption-text">Figure 4: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads. Variants are displayed as C -&gt; T, meaning that    T subsitutes C.</span></p>
+</div>
+<p>Conclusion..? C -&gt; A is more common reported as mutated but does that just mean that it biologically occurs more often or that the machine is more sensitive for these mutations and therefore mutations are more specific if it’s found in G -&gt; T than C-&gt;A</p>
+<div class="toctree-wrapper compound">
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="indices-and-tables">
+<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
+<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
+<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
+</ul>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="#">Internship report</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="#">Documentation overview</a><ul>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Douwe Spaanderman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/index.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
