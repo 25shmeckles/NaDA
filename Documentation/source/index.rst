@@ -170,6 +170,14 @@ are formatted with the reference included. For sequenced sites, amount of reads 
 
 Conclusion..? C -> A is more common reported as mutated but does that just mean that it biologically occurs more often or that the machine is more sensitive for these mutations and therefore mutations are more specific if it's found in G -> T than C->A
 
+Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped with to a heatmap with reference sequence.
+
+.. figure:: C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\Variance_occurence_in_sequence_vcf.png
+   :scale:  50%
+   :align:  center
+
+   Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle one is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads. 
+
 .. _GridPlot: C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\gridplot.html
 
 .. toctree::

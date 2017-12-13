@@ -1,15 +1,46 @@
 ##-IMPORT-##
-import matplotlib, numpy as np, matplotlib.mlab as mlab, matplotlib.pyplot as plt, glob, os, statistics, itertools
+import matplotlib, numpy as np, matplotlib.mlab as mlab, matplotlib.pyplot as plt, glob, os, statistics, itertools, pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
 from collections import defaultdict, Counter
 import matplotlib.patches as mpatches
 from bokeh.plotting import figure, output_file, show, ColumnDataSource
 from bokeh.layouts import gridplot
 from math import pi
-from bokeh.models import NumeralTickFormatter, HoverTool, GlyphRenderer, Range1d
+from bokeh.models import NumeralTickFormatter, HoverTool, GlyphRenderer, Range1d, LinearColorMapper, BasicTicker, PrintfTickFormatter, ColorBar, ColumnDataSource
 from sklearn.cluster import KMeans
 
 ##-FUNCTIONS-##
+def pd_df_heatmap(data_dict):
+    '''From dictionary makes panda's dataframe.
+    Firstly makes dictionary with bases to 0
+    values and inputs data_dict into that dictionary
+    while counting it.
+    Next a df is build from this dictionary with index
+    is keys from data_dict
+    
+    Example
+    {'AAAA':[A, G, G]} -> {'A':1,'T':0,'C':0,'G':2} ->
+    Dataframe with sequence followed by 1 0 0 2
+    
+    '''
+    x = list(data_dict.keys())
+    d = defaultdict(list)
+    for k in 'ATCG':
+        d[k]= 0
+    
+    data_dictionary = []
+    points = 0
+    for i in data_dict.values():
+        c = Counter(i)
+        z = {**d, **c}
+        data_dictionary.append(z)
+        
+    df = pd.DataFrame(data=data_dictionary, index=x)
+    df.columns.name = 'Bases'
+    df.index.name = 'Sequences'
+    
+    return df
+
 def vcf_heatmap_snps(data_surrounding, data_variance):
     '''data generation for heatmap plot
     creates dictionary with key is surrounding sequence
@@ -823,6 +854,51 @@ def parse_fasta_file_error(sequence_file):
     return data
 
 ##-FIGURES AND PLOTS-##
+def heatmap_vcf_files_snps(df_):
+    '''Heatmap of single nucleotide polymorphisms 
+    from vcf files
+    
+    '''
+    df = pd.DataFrame(df_.stack(), columns=['scores']).reset_index()
+
+    bases = list(df_.columns)
+    sequences = list(df_.index)
+
+    colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
+    mapper = LinearColorMapper(palette=colors, low=df.scores.min(), high=df.scores.max())
+
+    source = ColumnDataSource(df)
+
+    TOOLS = "hover,reset,xpan"
+
+    p = figure(title='Variant occurence in sequence', x_range=sequences,
+               y_range=list(reversed(bases)), x_axis_location='above', plot_width=900, plot_height=400,
+               tools=TOOLS, toolbar_location='below')
+    p.grid.grid_line_color = None
+    p.axis.axis_line_color = None
+    p.axis.major_tick_line_color = None
+    p.axis.major_label_text_font_size = "5pt"
+    p.axis.major_label_standoff = 0
+    p.xaxis.major_label_orientation = pi / 3
+
+
+    p.rect(y="Bases", x="Sequences", width=1, height=1,
+           source=source,
+           fill_color={'field': 'scores', 'transform': mapper},
+           line_color=None)
+
+    color_bar = ColorBar(color_mapper=mapper, major_label_text_font_size="5pt",
+                         ticker=BasicTicker(desired_num_ticks=len(colors)),
+                         label_standoff=6, border_line_color=None, location=(0, 0))
+    p.add_layout(color_bar, 'right')
+
+    p.select_one(HoverTool).tooltips = [
+         ('mutation', '@Sequences -> @Bases'),
+         ('occurence', '@scores'),
+    ]
+
+    show(p)
+    
 def plot_vcf_snps(data):
     '''plot single nucleotide polymorphisms
     data should be either mutated sequences from

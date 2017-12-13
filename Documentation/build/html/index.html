@@ -361,6 +361,7 @@ mutations, as a mutation found in for instance TTCC are more likely to be a real
 <blockquote>
 <div>Table 1: Highest and lowest five scoring sequences. A - C) score is meanscore for all combinations in same size and data set as figure 3.
 D - F) score is percentage of sequence in category high for all combinations in same size and data set as figure 3.</div></blockquote>
+<p><strong>#Clustering</strong></p>
 </div>
 <div class="section" id="variant-call-format-files">
 <h3>Variant Call Format files<a class="headerlink" href="#variant-call-format-files" title="Permalink to this headline">¶</a></h3>
@@ -371,6 +372,11 @@ are formatted with the reference included. For sequenced sites, amount of reads 
 <p class="caption"><span class="caption-text">Figure 4: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads. Variants are displayed as C -&gt; T, meaning that    T subsitutes C.</span></p>
 </div>
 <p>Conclusion..? C -&gt; A is more common reported as mutated but does that just mean that it biologically occurs more often or that the machine is more sensitive for these mutations and therefore mutations are more specific if it’s found in G -&gt; T than C-&gt;A</p>
+<p>Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped with to a heatmap with reference sequence.</p>
+<div class="figure align-center" id="id5">
+<a class="reference internal image-reference" href="_images/Variance_occurence_in_sequence_vcf.png"><img alt="_images/Variance_occurence_in_sequence_vcf.png" src="_images/Variance_occurence_in_sequence_vcf.png" style="width: 840.0px; height: 338.0px;" /></a>
+<p class="caption"><span class="caption-text">Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle one is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads.</span></p>
+</div>
 <div class="toctree-wrapper compound">
 </div>
 </div>

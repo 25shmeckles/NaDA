@@ -155,6 +155,7 @@ mutations, as a mutation found in for instance TTCC are more likely to be a real
    Table 1: Highest and lowest five scoring sequences. A - C) score is meanscore for all combinations in same size and data set as figure 3. 
    D - F) score is percentage of sequence in category high for all combinations in same size and data set as figure 3. 
 
+**#Clustering**
 
 Variant Call Format files
 +++++++++++++++++++++++++
@@ -168,6 +169,14 @@ are formatted with the reference included. For sequenced sites, amount of reads 
    Figure 4: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads. Variants are displayed as C -> T, meaning that    T subsitutes C. 
 
 Conclusion..? C -> A is more common reported as mutated but does that just mean that it biologically occurs more often or that the machine is more sensitive for these mutations and therefore mutations are more specific if it's found in G -> T than C->A
+
+Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped with to a heatmap with reference sequence.
+
+.. figure:: C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\Variance_occurence_in_sequence_vcf.png
+   :scale:  50%
+   :align:  center
+
+   Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle one is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads. 
 
 .. _GridPlot: C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\gridplot.html
 
