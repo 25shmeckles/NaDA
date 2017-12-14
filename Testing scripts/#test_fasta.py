@@ -74,6 +74,3 @@ class TestDoneFastqParser:
         for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
             assert letter not in self.score
             
-
-            
-            

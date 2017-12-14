@@ -2,7 +2,7 @@
 import matplotlib, numpy as np, matplotlib.mlab as mlab, matplotlib.pyplot as plt, glob, os, statistics, itertools, pandas as pd
 from matplotlib.backends.backend_pdf import PdfPages
 from collections import defaultdict, Counter
-import matplotlib.patches as mpatches
+import matplotlib.patches as mpatches, bokeh.palettes as bp
 from bokeh.plotting import figure, output_file, show, ColumnDataSource
 from bokeh.layouts import gridplot
 from math import pi
@@ -10,7 +10,25 @@ from bokeh.models import NumeralTickFormatter, HoverTool, GlyphRenderer, Range1d
 from sklearn.cluster import KMeans
 
 ##-FUNCTIONS-##
-def pd_df_heatmap(data_dict):
+def pd_df_heatmap_variance(data):
+    '''From variance data of vcf files makes
+    pandas dataframe. this dataframe has
+    index is always 1. with column has all
+    possible variances with occurence of these
+    types of variances
+      
+    '''
+    x = list(dict(highmutated_back_variance(data)).keys())
+    y = list(dict(highmutated_back_variance(data)).values())
+
+    data_dict = dict(zip(x, y))
+    df = pd.DataFrame(data=data_dict, index = [1])
+    df.columns.name = 'mutations'
+    df.index.name = 'index_'
+    
+    return df
+
+def pd_df_heatmap_sequence(data_dict):
     '''From dictionary makes panda's dataframe.
     Firstly makes dictionary with bases to 0
     values and inputs data_dict into that dictionary
@@ -232,7 +250,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         highmutated.append(removed)
-                        extended.append(data_all[i-3:i+4])
+                        extended.append(data_all[i-2:i+3])
                         continue
             if n3/(n1+n2+n3) > 0.25:
                 for i, items in enumerate(data_all):
@@ -242,7 +260,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         highmutated.append(removed)
-                        extended.append(data_all[i-3:i+4])
+                        extended.append(data_all[i-2:i+3])
         else:
             n1 = int(item[0])
             n2 = int(item[1])
@@ -251,7 +269,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                     mutated = ':'+','.join(item[0:2])+':'+score3[points]
                     if mutated in items:
                         highmutated.append(items)
-                        extended.append(data_all[i-3:i+4])
+                        extended.append(data_all[i-2:i+3])
         points += 1
     points = False
     return extended, highmutated
@@ -885,6 +903,52 @@ def parse_fasta_file_error(sequence_file):
 def heatmap_vcf_files_snps(df_):
     '''Heatmap of single nucleotide polymorphisms 
     from vcf files
+    
+    '''
+    df = pd.DataFrame(df_.stack(), columns=['scores']).reset_index()
+
+    mutations = list(df_.columns)
+    index = list(df_.index)
+
+    #colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
+    colors = bp.all_palettes['Viridis'][11]
+    mapper = LinearColorMapper(palette=colors, low=0, high=df['scores'].sum()/4)
+
+    source = ColumnDataSource(df)
+
+    TOOLS = "hover,reset"
+
+    p = figure(title='Variant occurence in sequence', y_range=list(reversed(mutations)), plot_width=300, 
+               x_axis_location='above', plot_height=600, tools=TOOLS, toolbar_location='below')
+    p.grid.grid_line_color = None
+    p.axis.axis_line_color = None
+    p.axis.major_tick_line_color = None
+    p.axis.major_label_text_font_size = "5pt"
+    p.axis.major_label_standoff = 0
+    p.xaxis.ticker = []
+
+
+    p.rect(y="mutations", x="index_", width=1, height=1,
+           source=source,
+           fill_color={'field': 'scores', 'transform': mapper},
+           line_color=None)
+
+    color_bar = ColorBar(color_mapper=mapper, major_label_text_font_size="5pt",
+                         ticker=BasicTicker(desired_num_ticks=1),
+                         label_standoff=5, border_line_color=None, height=50, location=(10, -250))
+    p.add_layout(color_bar, 'right')
+
+    p.select_one(HoverTool).tooltips = [
+         ('mutation', '@mutations'),
+         ('occurence', '@scores'),
+    ]
+
+    show(p)
+    
+def heatmap_vcf_files_snps_with_sequence(df_):
+    '''Heatmap of single nucleotide polymorphisms 
+    from vcf files with surrounding sequence (4 bases
+    extra)
     
     '''
     df = pd.DataFrame(df_.stack(), columns=['scores']).reset_index()
