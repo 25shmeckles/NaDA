@@ -187,7 +187,11 @@ def append_txt_file(file_name, data, id_):
 def mutated_reads_vcf_only(variance_or_backbone, data_all):
     '''mutations in vcf file with 3 sequences before and
     3 sequences after mutation. Overlap can occur if mutations
-    are found beside each other.
+    are found beside each other. if location in sequence has
+    multiple SNPs like A -> G/T. It will check if score for both
+    these SNPs is high enough and will return as A -> G. So
+    same location sequence can occur twice in return if A -> G
+    and A -> T have both high enough scores
     
     Args:
         either variance or backbone data can be entered and
@@ -216,14 +220,38 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
     highmutated = []
     extended = []
     for item in score2:
-        number1 = int(item[0])
-        number2 = int(item[1])
-        if number2/(number1+number2) > 0.25:
-            for i, items in enumerate(data_all):
-                mutated = ':'+','.join(item[0:2])+':'+score3[points]
-                if mutated in items:
-                    highmutated.append(items)
-                    extended.append(data_all[i-2:i+3])
+        if len(item) > 2:
+            n1 = int(item[0])
+            n2 = int(item[1])
+            n3 = int(item[2])
+            if n2/(n1+n2+n3) > 0.25:
+                for i, items in enumerate(data_all):
+                    mutated = ':'+','.join(item[0:3])+':'+score3[points]
+                    if mutated in items:
+                        r_ = items.split(breakpoint, 5)
+                        r = r_[4][0]
+                        removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
+                        highmutated.append(removed)
+                        extended.append(data_all[i-3:i+4])
+                        continue
+            if n3/(n1+n2+n3) > 0.25:
+                for i, items in enumerate(data_all):
+                    mutated = ':'+','.join(item[0:3])+':'+score3[points]
+                    if mutated in items:
+                        r_ = items.split(breakpoint, 5)
+                        r = r_[4][0]
+                        removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
+                        highmutated.append(removed)
+                        extended.append(data_all[i-3:i+4])
+        else:
+            n1 = int(item[0])
+            n2 = int(item[1])
+            if n2/(n1+n2) > 0.25:
+                for i, items in enumerate(data_all):
+                    mutated = ':'+','.join(item[0:2])+':'+score3[points]
+                    if mutated in items:
+                        highmutated.append(items)
+                        extended.append(data_all[i-3:i+4])
         points += 1
     points = False
     return extended, highmutated
@@ -869,7 +897,7 @@ def heatmap_vcf_files_snps(df_):
 
     source = ColumnDataSource(df)
 
-    TOOLS = "hover,reset,xpan"
+    TOOLS = "hover,reset,xpan,xwheel_zoom"
 
     p = figure(title='Variant occurence in sequence', x_range=sequences,
                y_range=list(reversed(bases)), x_axis_location='above', plot_width=900, plot_height=400,
@@ -909,7 +937,7 @@ def plot_vcf_snps(data):
     y_ = list(dict(highmutated_back_variance(data)).values())
     y = []
     for item in y_:
-        y.append(item/47)
+        y.append(item/sum(y_))
 
     p = figure(x_range=x, plot_width=400, plot_height=400, title='Distribution of mutations in sequence', background_fill_color="#E8DDCB")
     p.vbar(x, width=0.5, bottom=0, top=y, fill_color="#036564", line_color="#033649")
