@@ -11,7 +11,7 @@ from sklearn.cluster import KMeans
 
 ##-FUNCTIONS-##
 def pd_df_heatmap_variance(data):
-    '''From variance data of vcf files makes
+    '''From highmutated data of vcf files makes
     pandas dataframe. this dataframe has
     index is always 1. with column has all
     possible variances with occurence of these
