@@ -469,7 +469,43 @@ def get_list_hml_scores_fastq(path, size, overlap, letters):
     y_nan3 = zero_to_nan(c_all_y_l)
     
     return X, y_nan1, y_nan2, y_nan3, d
+
+def get_dict_mean_of_seq_fastq_additional_directories(path, size, overlap, letters):
+    '''Same as get_dict_mean_of_seq_fastq with other path step.
     
+    Usefull if want to run over multiple directories.
+    
+    '''
+    dict_x = dict.fromkeys(list_with_all_combinations(letters, size))
+    
+    for subdir, dirs, files in os.walk(path):
+        for filename in files:
+            if filename.split('.')[-1] == 'done_fastq':
+                file = os.path.join(path, subdir, filename)
+                data = parse_fasta_file_error(file)
+                id_ = list(data.keys())[0]
+                error_rate = (convert_qualityscore(data[id_]['score']))
+                nucleotide_string = ((data[id_]['sequence']))
+                n_split = split_overlap(nucleotide_string, size, overlap)
+                listed_nucleotides = []
+                for l in n_split:
+                    if len(l) >= size:
+                        listed_nucleotides.append(l)
+                    else:
+                        #print('string without {} bases were skipped'.format(size))
+                        continue
+                error_rate_split = mean_calc_list(list(split_overlap(error_rate, size, overlap)), size)
+                dict_z = dict(zip(listed_nucleotides, error_rate_split))
+                dict_values_to_other_dict(dict_x, dict_z)
+
+    for k, v in dict_x.items():
+        if v == None:
+            continue
+        else:
+            dict_x[k] = statistics.mean(v)
+
+    return dict_x
+
 def get_dict_mean_of_seq_fastq(path, size, overlap, letters):
     '''Dictionary with meanscore of quality score for each sequence
     

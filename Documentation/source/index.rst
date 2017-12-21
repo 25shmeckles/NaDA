@@ -62,7 +62,7 @@ Here the distribution of the error rate is visualized for every individual base 
 regions bases have more chance to be falsly assigned and are thus less reliable if mutations are found in these regions. Likewise, mutations found in low score regions are more
 likely to be rightly assigned and thus true mutations. 
 
-.. figure::  C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\Fastq_files_qualityscore.png
+.. figure::  C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Fastq_files_qualityscore.png
    :scale:   70%
    :align:   center
 
@@ -73,7 +73,7 @@ While figure 1 gives a good overview on the importance of analyzing quality scor
 regions, 1139 fastq files from nanopore with data on chromosome 9 were investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2. 
 The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low quality score is important. 
 
-.. figure:: C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\Mean_distribution_of_all_quality_score.png
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Mean_distribution_of_all_quality_score.png
    :scale:  70%
    :align:  center
 
@@ -112,7 +112,7 @@ the qualityscore get's more normalized and shift further towards medium, which h
             			group_score.append('Medium')
     		return group_score
 
-.. figure:: C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\Fastq_gridplots.png
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\Source\\_static\\Fastq_gridplots.png
    :scale:  30%
    :align:  center
 
@@ -162,7 +162,7 @@ Variant Call Format files
 **Mutation distribution of single nucleotide polymorphisms**. Variant Call Format (VCF) files are text files containing data of single positions in the genome. In these files, variants
 are formatted with the reference included. For sequenced sites, amount of reads found with mutation and reference are given. The dataset visualized here is derived from the cyclomics project, sequencing was preformed with nanopore and the data contains a sequence part from chromosome 17 (around 160 nucleotides) and a backbone, which is used for circulair pcr reaction. In total 1187 VCF files were used for variant calling. Here, VCF files are screened for single nucleotide polymorphism (SNP) occurence. Firsly, files were stripped of reported mutated bases, other data was discarded. As described earlier, every variant site has a number of reads that covers this site. These reads can be both coupled to the mutation and the reference. For example, on position 7577503 a SNP was found in 6 reads and 3 reads were coupled to the reference. While the amount of reads coupled to the mutation in contrast to the reads is important, here occurence of certain SNPs have been firsly investigated. In order to investigated the amount of SNPs in the files, VCF files were simallarly stripped as Fastq files and seperated by either sequence or backbone. Next, for the variants a parameter was set at a minimum of 25 percent of the reads that should be coupled to the mutant variant and visualized in figure 4:
 
-.. figure:: C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\Distribution_of_mutations_in_sequence.png
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Distribution_of_mutations_in_sequence.png
    :scale:  70%
    :align:  center
 
@@ -176,14 +176,16 @@ Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pan
    :scale:  30%
    :align:  center
 
-   Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle one is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads. 
+   Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle base is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads atleast mutated. 
 
-.. _GridPlot: C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\gridplot.html
+.. _GridPlot: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\gridplot.html
 
 .. toctree::
    :maxdepth: 2
    :caption: Contents:
 
+Script Tests
+++++++++++++
 
 
 Indices and tables
