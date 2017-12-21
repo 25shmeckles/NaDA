@@ -52,10 +52,10 @@
 <h2>Results and discussion<a class="headerlink" href="#results-and-discussion" title="Permalink to this headline">¶</a></h2>
 <div class="section" id="fastq-files">
 <h3>Fastq files<a class="headerlink" href="#fastq-files" title="Permalink to this headline">¶</a></h3>
-<p><strong>Read lenght distribution</strong>. from txt file strip lenght of sequence and plot it. should this be described, as it is no more than some simple python practise? (day one file)</p>
-<p><strong>Quality score distribution</strong>. Fastq are text-based files derived from sequencers such as illumina and nanopore that contain a biological sequence and for every base a quality score.
+<p>#Where are both the Fastq and vcf files derived from. Are they from healthy individuals, how many persons, ect.</p>
+<p><strong>Quality score distribution</strong>. Fastq are text-based files derived from sequencers such as Illumina and Nanopore that contain a biological sequence and for every base a quality score.
 this quality score represents the sequencers ability to call a base as true, in other words, the score says something about how sure the sequencer is that the right base is called.
-if the score for the base is low, it’s most likely the right base while if the score is high the machine is unsure if it’s the real base. Analyzing quality scores on sequences
+if the score for the base is low, it’s most likely the right base, while if the score is high the machine is unsure if it’s the real base. Analyzing quality scores on sequences
 is important to be able to understand which regions of bases is difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more
 likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area’s with high quality scores. Clearifying which regions are high score is important
 for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations
@@ -87,18 +87,13 @@ and thus are able to increase tests sensitivity. In order to analyse fastq files
         <span class="k">return</span> <span class="n">data</span>
 </pre></div>
 </div>
-<p>The data returns a dictionary with identification (id), sequence and scores for bases in the sequence. Following this script, plotting was conducted as shown in figure 1.
-Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurence of high and low score regions. In these high score
-regions bases have more chance to be falsly assigned and are thus less reliable if mutations are found in these regions. Likewise, mutations found in low score regions are more
-likely to be rightly assigned and thus true mutations.</p>
+<p>The data returns a dictionary with identification (id), sequence and scores for individual bases in the fastq file . Following this script, plotting was conducted as shown in figure 1. Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurence of high and low score regions. In these high score regions bases have more chance to be falsly assigned and are thus less reliable for mutation identification. Likewise, mutations found in low score regions are more likely to be rightly assigned and thus true mutations.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="_images/Fastq_files_qualityscore.png"><img alt="_images/Fastq_files_qualityscore.png" src="_images/Fastq_files_qualityscore.png" style="width: 564.9px; height: 389.9px;" /></a>
 <p class="caption"><span class="caption-text">Figure 1: Distribution of error rate (quality score) for every individual base.
 The mean of all the quality scores is 0.21.</span></p>
 </div>
-<p>While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score
-regions, 1139 fastq files from nanopore with data on chromosome 9 were investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2.
-The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low quality score is important.</p>
+<p>While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score regions, 1139 fastq files from nanopore with data on chromosome 9 were likewise investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2. The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low quality score is important.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="_images/Mean_distribution_of_all_quality_score.png"><img alt="_images/Mean_distribution_of_all_quality_score.png" src="_images/Mean_distribution_of_all_quality_score.png" style="width: 266.7px; height: 261.09999999999997px;" /></a>
 <p class="caption"><span class="caption-text">Figure 2: Mean distribution of quality scores from all the fastq files.</span></p>
@@ -119,11 +114,7 @@ following script:</p>
                         <span class="n">iterable</span> <span class="o">=</span> <span class="n">iterable</span><span class="p">[</span><span class="n">size</span><span class="o">-</span><span class="n">overlap</span><span class="p">:]</span>
 </pre></div>
 </div>
-<p>sequences were chunked to pieces of four to six in order to analyze the impact of different sized regions on base calling quality.
-Following, the mean of all the qualityscores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being devided in categories of high,
-medium and low qualityscore (figure 3 D - F). Categorizing was done after calculating mean of sequence, subsequently, categories were counted for each sequence. Categorizing was
-conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of
-the qualityscore get’s more normalized and shift further towards medium, which have been accounted for by lowering high requirements and highering low requirements as following:</p>
+<p>Sequences were chunked to pieces of four to six in order to analyze the impact of different sized regions on base calling quality. Following, the mean of all the qualityscores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being devided in categories of high, medium and low qualityscore (figure 3 D - F). Categorizing was done after calculating mean of sequence, subsequently, categories were counted for each sequence. Categorizing was conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of the qualityscore get’s more normalized and shift further towards medium, which have been accounted for by lowering high requirements and highering low requirements as following:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">high_medium_low_scores</span><span class="p">(</span><span class="n">listed_scores</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="n">group_score</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">listed_scores</span><span class="p">:</span>
@@ -141,7 +132,7 @@ the qualityscore get’s more normalized and shift further towards medium, which
 <p class="caption"><span class="caption-text">Figure 3: <strong>Quality score analysis with 6 senario’s.</strong> A - C) Meanscore for all combination in size (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of
 chromosome 9. D - F) Scores for regions have been categorized into high, medium and low for regions of same size as A to C. Next, the amount of times a region was called under a
 certain category was counted and collected for the same data set. In these figures scores are set in percentage of total amount of times a region occurs in the data set.
-(Interactive figure at <a class="reference external" href="C:\Users\Douwe\Documents\Python\Documentation\source\_static\gridplot.html">GridPlot</a>)</span></p>
+(Interactive figure at <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\gridplot.html">GridPlot</a>)</span></p>
 </div>
 <p>In table 1, highest and lowest five scoring sequence are highlighted. In conclusion, the highest scoring sequence has the biggest chance to have wrongly assigned bases in it’s sequence.
 In contrast, bases in lower scoring sequences are more likely to been good assigned and are therefor indeed the right base. These findings should be taken into account when investigating
@@ -149,17 +140,17 @@ mutations, as a mutation found in for instance TTCC are more likely to be a real
 <table border="1" class="docutils">
 <colgroup>
 <col width="10%" />
-<col width="7%" />
+<col width="6%" />
 <col width="10%" />
-<col width="7%" />
+<col width="6%" />
 <col width="10%" />
-<col width="7%" />
+<col width="6%" />
 <col width="10%" />
-<col width="7%" />
+<col width="6%" />
 <col width="10%" />
-<col width="7%" />
+<col width="6%" />
 <col width="10%" />
-<col width="7%" />
+<col width="6%" />
 </colgroup>
 <thead valign="bottom">
 <tr class="row-odd"><th class="head"><dl class="first last docutils">
@@ -368,27 +359,53 @@ D - F) score is percentage of sequence in category high for all combinations in 
 <p><strong>Mutation distribution of single nucleotide polymorphisms</strong>. Variant Call Format (VCF) files are text files containing data of single positions in the genome. In these files, variants
 are formatted with the reference included. For sequenced sites, amount of reads found with mutation and reference are given. The dataset visualized here is derived from the cyclomics project, sequencing was preformed with nanopore and the data contains a sequence part from chromosome 17 (around 160 nucleotides) and a backbone, which is used for circulair pcr reaction. In total 1187 VCF files were used for variant calling. Here, VCF files are screened for single nucleotide polymorphism (SNP) occurence. Firsly, files were stripped of reported mutated bases, other data was discarded. As described earlier, every variant site has a number of reads that covers this site. These reads can be both coupled to the mutation and the reference. For example, on position 7577503 a SNP was found in 6 reads and 3 reads were coupled to the reference. While the amount of reads coupled to the mutation in contrast to the reads is important, here occurence of certain SNPs have been firsly investigated. In order to investigated the amount of SNPs in the files, VCF files were simallarly stripped as Fastq files and seperated by either sequence or backbone. Next, for the variants a parameter was set at a minimum of 25 percent of the reads that should be coupled to the mutant variant and visualized in figure 4:</p>
 <div class="figure align-center" id="id4">
-<a class="reference internal image-reference" href="_images/Distribution_of_mutations_in_sequence.png"><img alt="_images/Distribution_of_mutations_in_sequence.png" src="_images/Distribution_of_mutations_in_sequence.png" style="width: 333.2px; height: 350.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 4: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads. Variants are displayed as C -&gt; T, meaning that    T subsitutes C.</span></p>
+<a class="reference internal image-reference" href="_images/Combined_vcf_snp_analysis.png"><img alt="_images/Combined_vcf_snp_analysis.png" src="_images/Combined_vcf_snp_analysis.png" style="width: 736.4px; height: 356.29999999999995px;" /></a>
+<p class="caption"><span class="caption-text">Figure 4: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C -&gt; T, meaning that T subsitutes C. A) Bar plot with single nucleotide polymorphisms occurence as percentage of whole. B) Heatmap from same variances with amount of occurences in the files</span></p>
 </div>
-<p>Conclusion..? C -&gt; A is more common reported as mutated but does that just mean that it biologically occurs more often or that the machine is more sensitive for these mutations and therefore mutations are more specific if it’s found in G -&gt; T than C-&gt;A</p>
-<p>Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped with to a heatmap with reference sequence.</p>
+<p>Both figures illustrate the common occurrence of G -&gt; A mutation and to lesser extend due to C -&gt; A. #what is more prompt to happen in normal biological system. #What could have happend here that made these mutations happen. #is there anyway we can change protocol to minimize these mutation frequenties. #difference between variances occuring in a single run (biased in that run) and variance occuring everytime by the machine (baised towards variance every run).</p>
+<p>Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped with to a heatmap with reference sequence. #just as previous lenght can be changed for surrounding bases</p>
 <div class="figure align-center" id="id5">
-<a class="reference internal image-reference" href="_images/Variance_occurence_in_sequence_vcf.png"><img alt="_images/Variance_occurence_in_sequence_vcf.png" src="_images/Variance_occurence_in_sequence_vcf.png" style="width: 840.0px; height: 338.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle one is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads.</span></p>
+<a class="reference internal image-reference" href="_images/Variance_occurence_in_sequence_vcf.png"><img alt="_images/Variance_occurence_in_sequence_vcf.png" src="_images/Variance_occurence_in_sequence_vcf.png" style="width: 562.5px; height: 228.5px;" /></a>
+<p class="caption"><span class="caption-text">Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle base is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads atleast mutated.</span></p>
 </div>
 <div class="toctree-wrapper compound">
 </div>
 </div>
+<div class="section" id="script-tests">
+<h3>Script Tests<a class="headerlink" href="#script-tests" title="Permalink to this headline">¶</a></h3>
+<p>Before scripts are ran over multiple files and directories, they should be checked for quality. In order to check a script for it’s functionality, test scripts can be written. These testing scripts use the assert function, to identify if the set criteria are met.
+As an example the earlier described parse_fasta_file_error is checked for it’s quality with the following testing script:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TestDoneFastqParser</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">setup_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">sequence_file</span> <span class="o">=</span> <span class="s1">&#39;C:/Users/Douwe/Documents/Python/test_cases/test_fastq2.done_fastq&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">parse_fasta_file_error</span><span class="p">(</span><span class="n">sequence_file</span><span class="p">)</span>
+                <span class="n">id_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">id_</span><span class="p">][</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">check_valid_DNA_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">()):</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span> <span class="ow">in</span> <span class="s1">&#39;ACTGN&#39;</span><span class="p">:</span>
+                                <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">def</span> <span class="nf">test_has_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="s1">&#39;@&#39;</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">test_sequence_correct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_valid_DNA_sequence</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="kc">True</span>
+
+        <span class="k">def</span> <span class="nf">test_score_correct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="s1">&#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="n">letter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span>
+</pre></div>
+</div>
+<p>The class function is used to define which script is going to be checked for quality. Firstly the script is setup with a test file, this file is designed to identify flaws in the script. In other words, it consists off alot of errors which the script should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters.
+While this is an example of a test script, multiple scripts have been investigated for quality as described in the supplementairy.</p>
 </div>
 </div>
-<div class="section" id="indices-and-tables">
-<h1>Indices and tables<a class="headerlink" href="#indices-and-tables" title="Permalink to this headline">¶</a></h1>
-<ul class="simple">
-<li><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></li>
-<li><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></li>
-<li><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></li>
-</ul>
 </div>
 
 

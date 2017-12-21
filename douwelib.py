@@ -100,7 +100,7 @@ def vcf_heatmap_snps(data_surrounding, data_variance):
         
     return dict_variance
 
-def vcf_all_strip(path, txt_yes_no, txt_name):
+def vcf_all_strip(path, txt_yes_no, txt_name, lenght):
     '''strips vcf files of it's information
     
     Args:
@@ -141,10 +141,10 @@ def vcf_all_strip(path, txt_yes_no, txt_name):
             variance = data[id_]['variance']
             backbone = data[id_]['backbone']
 
-            variance_data.append(mutated_reads_vcf_only(variance, data_all)[0])
-            backbone_data.append(mutated_reads_vcf_only(backbone, data_all)[0]) 
-            highmutated_v.append(mutated_reads_vcf_only(variance, data_all)[1])
-            highmutated_b.append(mutated_reads_vcf_only(backbone, data_all)[1])
+            variance_data.append(mutated_reads_vcf_only(variance, data_all, lenght)[0])
+            backbone_data.append(mutated_reads_vcf_only(backbone, data_all, lenght)[0]) 
+            highmutated_v.append(mutated_reads_vcf_only(variance, data_all, lenght)[1])
+            highmutated_b.append(mutated_reads_vcf_only(backbone, data_all, lenght)[1])
 
             if txt_yes_no == 'yes':
                 append_txt_file(txt_name, data, id_)
@@ -202,7 +202,7 @@ def append_txt_file(file_name, data, id_):
         file.write('\n')
         file.close()
     
-def mutated_reads_vcf_only(variance_or_backbone, data_all):
+def mutated_reads_vcf_only(variance_or_backbone, data_all, lenght):
     '''mutations in vcf file with 3 sequences before and
     3 sequences after mutation. Overlap can occur if mutations
     are found beside each other. if location in sequence has
@@ -210,6 +210,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
     these SNPs is high enough and will return as A -> G. So
     same location sequence can occur twice in return if A -> G
     and A -> T have both high enough scores
+    lenght is the amount of bases next to the variance
     
     Args:
         either variance or backbone data can be entered and
@@ -250,7 +251,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         highmutated.append(removed)
-                        extended.append(data_all[i-2:i+3])
+                        extended.append(data_all[i-lenght:i+(lenght+1)])
                         continue
             if n3/(n1+n2+n3) > 0.25:
                 for i, items in enumerate(data_all):
@@ -260,7 +261,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         highmutated.append(removed)
-                        extended.append(data_all[i-2:i+3])
+                        extended.append(data_all[i-lenght:i+(lenght+1)])
         else:
             n1 = int(item[0])
             n2 = int(item[1])
@@ -269,7 +270,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                     mutated = ':'+','.join(item[0:2])+':'+score3[points]
                     if mutated in items:
                         highmutated.append(items)
-                        extended.append(data_all[i-2:i+3])
+                        extended.append(data_all[i-lenght:i+(lenght+1)])
         points += 1
     points = False
     return extended, highmutated

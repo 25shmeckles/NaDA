@@ -14,6 +14,9 @@ Internship report
 
 Introduction
 ------------
+	
+
+
 **General workflow**
 **Figure of workflow**
 
@@ -21,11 +24,12 @@ Results and discussion
 ----------------------
 Fastq files
 +++++++++++
-**Read lenght distribution**. from txt file strip lenght of sequence and plot it. should this be described, as it is no more than some simple python practise? (day one file)
 
-**Quality score distribution**. Fastq are text-based files derived from sequencers such as illumina and nanopore that contain a biological sequence and for every base a quality score.
+#Where are both the Fastq and vcf files derived from. Are they from healthy individuals, how many persons, ect.
+
+**Quality score distribution**. Fastq are text-based files derived from sequencers such as Illumina and Nanopore that contain a biological sequence and for every base a quality score.
 this quality score represents the sequencers ability to call a base as true, in other words, the score says something about how sure the sequencer is that the right base is called. 
-if the score for the base is low, it's most likely the right base while if the score is high the machine is unsure if it's the real base. Analyzing quality scores on sequences
+if the score for the base is low, it's most likely the right base, while if the score is high the machine is unsure if it's the real base. Analyzing quality scores on sequences
 is important to be able to understand which regions of bases is difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more 
 likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area's with high quality scores. Clearifying which regions are high score is important
 for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations 
@@ -57,10 +61,7 @@ and thus are able to increase tests sensitivity. In order to analyse fastq files
                  	   		id_ = False
     		return data
 
-The data returns a dictionary with identification (id), sequence and scores for bases in the sequence. Following this script, plotting was conducted as shown in figure 1. 
-Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurence of high and low score regions. In these high score 
-regions bases have more chance to be falsly assigned and are thus less reliable if mutations are found in these regions. Likewise, mutations found in low score regions are more
-likely to be rightly assigned and thus true mutations. 
+The data returns a dictionary with identification (id), sequence and scores for individual bases in the fastq file . Following this script, plotting was conducted as shown in figure 1. Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurence of high and low score regions. In these high score regions bases have more chance to be falsly assigned and are thus less reliable for mutation identification. Likewise, mutations found in low score regions are more likely to be rightly assigned and thus true mutations. 
 
 .. figure::  C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Fastq_files_qualityscore.png
    :scale:   70%
@@ -69,9 +70,7 @@ likely to be rightly assigned and thus true mutations.
    Figure 1: Distribution of error rate (quality score) for every individual base. 
    The mean of all the quality scores is 0.21.
 
-While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score 
-regions, 1139 fastq files from nanopore with data on chromosome 9 were investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2. 
-The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low quality score is important. 
+While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score regions, 1139 fastq files from nanopore with data on chromosome 9 were likewise investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2. The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low quality score is important. 
 
 .. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Mean_distribution_of_all_quality_score.png
    :scale:  70%
@@ -95,11 +94,7 @@ following script::
             			result.append(iterable[:size])
             			iterable = iterable[size-overlap:] 
 
-sequences were chunked to pieces of four to six in order to analyze the impact of different sized regions on base calling quality.
-Following, the mean of all the qualityscores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being devided in categories of high, 
-medium and low qualityscore (figure 3 D - F). Categorizing was done after calculating mean of sequence, subsequently, categories were counted for each sequence. Categorizing was
-conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of 
-the qualityscore get's more normalized and shift further towards medium, which have been accounted for by lowering high requirements and highering low requirements as following::
+Sequences were chunked to pieces of four to six in order to analyze the impact of different sized regions on base calling quality. Following, the mean of all the qualityscores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being devided in categories of high, medium and low qualityscore (figure 3 D - F). Categorizing was done after calculating mean of sequence, subsequently, categories were counted for each sequence. Categorizing was conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of the qualityscore get's more normalized and shift further towards medium, which have been accounted for by lowering high requirements and highering low requirements as following::
 
 	def high_medium_low_scores(listed_scores, size):
     		group_score = []
@@ -125,32 +120,32 @@ In table 1, highest and lowest five scoring sequence are highlighted. In conclus
 In contrast, bases in lower scoring sequences are more likely to been good assigned and are therefor indeed the right base. These findings should be taken into account when investigating 
 mutations, as a mutation found in for instance TTCC are more likely to be a real mutations than a mutation found in GCTT.
 
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|  sequence  | Score  |  sequence  | Score  |  sequence  | Score  |  sequence  | Score  |  sequence  | Score  |  sequence  | Score  |
-|     A      |        |     D      |   %    |     B      |        |     E      |   %    |     C      |        |     F      |   %    |
-+============+========+============+========+============+========+============+========+============+========+============+========+
-|   GCTT     | 0.364  |    GCTT    | 59.41  |   AGCTT    | 0.422  |   CCTTG    | 66.00  |   AGCTTT   | 0.501  |   TCATAC   | 91.52  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|   CTTG     | 0.353  |    CTTG    | 58.04  |   GCCTT    | 0.405  |   CTTGC    | 65.52  |   TTCGCA   | 0.499  |   AGCCTT   | 90.00  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|   TAAT     | 0.313  |    TAAT    | 46.72  |   GCTTG    | 0.393  |   CTTTA    | 65.00  |   GGGACG   | 0.489  |   CTTTAC   | 88.88  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|   GTAG     | 0.298  |    GTAG    | 43.12  |   GCTTA    | 0.372  |   GTAGC    | 64.38  |   CCATGT   | 0.482  |   TAGCCA   | 87.50  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|   TAGC     | 0.293  |    TAGC    | 42.61  |   ATTGA    | 0.367  |   CGGAG    | 63.16  |   GAATCT   | 0.466  |   TGCTAC   | 83.33  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|    ...     |        |    ...     |        |    ...     |        |    ...     |        |    ...     |        |    ...     |        |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|   GGAT     | 0.136  |    GGTT    |  3.82  |   TTAAA    | 0.112  |   CGGGA    |  3.92  |   CCTAAT   | 0.058  |   TCCACT   |  1.33  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|   CCCT     | 0.135  |    CCTC    |  3.64  |   GTCTT    | 0.104  |   CTCCT    |  3.88  |   TTCACA   | 0.054  |   TTATCC   |  1.23  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|   GTTC     | 0.131  |    ATCC    |  3.53  |   TTGGA    | 0.100  |   CTCCA    |  2.93  |   TTTTTC   | 0.053  |   CCTCCT   |  1.18  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|   CCTC     | 0.129  |    GATC    |  3.35  |   GGACC    | 0.098  |   CGATC    |  2.89  |   CCAATC   | 0.050  |   TCGGAT   |  1.05  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
-|   TTCC     | 0.128  |    CTCC    |  2.79  |   TTTTT    | 0.085  |   TCGGA    |  1.62  |   GGACGT   | 0.049  |   GGGACC   |  0.96  |
-+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+------------+--------+
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|  sequence | Score |  sequence | Score |  sequence | Score |  sequence | Score |  sequence | Score |  sequence | Score |
+|     A     |       |     D     |   %   |     B     |       |     E     |   %   |     C     |       |     F     |   %   |
++===========+=======+===========+=======+===========+=======+===========+=======+===========+=======+===========+=======+
+|   GCTT    | 0.364 |    GCTT   | 59.41 |   AGCTT   | 0.422 |   CCTTG   | 66.00 |   AGCTTT  | 0.501 |   TCATAC  | 91.52 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|   CTTG    | 0.353 |    CTTG   | 58.04 |   GCCTT   | 0.405 |   CTTGC   | 65.52 |   TTCGCA  | 0.499 |   AGCCTT  | 90.00 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|   TAAT    | 0.313 |    TAAT   | 46.72 |   GCTTG   | 0.393 |   CTTTA   | 65.00 |   GGGACG  | 0.489 |   CTTTAC  | 88.88 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|   GTAG    | 0.298 |    GTAG   | 43.12 |   GCTTA   | 0.372 |   GTAGC   | 64.38 |   CCATGT  | 0.482 |   TAGCCA  | 87.50 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|   TAGC    | 0.293 |    TAGC   | 42.61 |   ATTGA   | 0.367 |   CGGAG   | 63.16 |   GAATCT  | 0.466 |   TGCTAC  | 83.33 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|    ...    |       |    ...    |       |    ...    |       |    ...    |       |    ...    |       |    ...    |       |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|   GGAT    | 0.136 |    GGTT   |  3.82 |   TTAAA   | 0.112 |   CGGGA   |  3.92 |   CCTAAT  | 0.058 |   TCCACT  |  1.33 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|   CCCT    | 0.135 |    CCTC   |  3.64 |   GTCTT   | 0.104 |   CTCCT   |  3.88 |   TTCACA  | 0.054 |   TTATCC  |  1.23 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|   GTTC    | 0.131 |    ATCC   |  3.53 |   TTGGA   | 0.100 |   CTCCA   |  2.93 |   TTTTTC  | 0.053 |   CCTCCT  |  1.18 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|   CCTC    | 0.129 |    GATC   |  3.35 |   GGACC   | 0.098 |   CGATC   |  2.89 |   CCAATC  | 0.050 |   TCGGAT  |  1.05 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
+|   TTCC    | 0.128 |    CTCC   |  2.79 |   TTTTT   | 0.085 |   TCGGA   |  1.62 |   GGACGT  | 0.049 |   GGGACC  |  0.96 |
++-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
 
    Table 1: Highest and lowest five scoring sequences. A - C) score is meanscore for all combinations in same size and data set as figure 3. 
    D - F) score is percentage of sequence in category high for all combinations in same size and data set as figure 3. 
@@ -162,18 +157,18 @@ Variant Call Format files
 **Mutation distribution of single nucleotide polymorphisms**. Variant Call Format (VCF) files are text files containing data of single positions in the genome. In these files, variants
 are formatted with the reference included. For sequenced sites, amount of reads found with mutation and reference are given. The dataset visualized here is derived from the cyclomics project, sequencing was preformed with nanopore and the data contains a sequence part from chromosome 17 (around 160 nucleotides) and a backbone, which is used for circulair pcr reaction. In total 1187 VCF files were used for variant calling. Here, VCF files are screened for single nucleotide polymorphism (SNP) occurence. Firsly, files were stripped of reported mutated bases, other data was discarded. As described earlier, every variant site has a number of reads that covers this site. These reads can be both coupled to the mutation and the reference. For example, on position 7577503 a SNP was found in 6 reads and 3 reads were coupled to the reference. While the amount of reads coupled to the mutation in contrast to the reads is important, here occurence of certain SNPs have been firsly investigated. In order to investigated the amount of SNPs in the files, VCF files were simallarly stripped as Fastq files and seperated by either sequence or backbone. Next, for the variants a parameter was set at a minimum of 25 percent of the reads that should be coupled to the mutant variant and visualized in figure 4:
 
-.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Distribution_of_mutations_in_sequence.png
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Combined_vcf_snp_analysis.png
    :scale:  70%
    :align:  center
 
-   Figure 4: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads. Variants are displayed as C -> T, meaning that    T subsitutes C. 
+   Figure 4: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C -> T, meaning that T subsitutes C. A) Bar plot with single nucleotide polymorphisms occurence as percentage of whole. B) Heatmap from same variances with amount of occurences in the files
 
-Conclusion..? C -> A is more common reported as mutated but does that just mean that it biologically occurs more often or that the machine is more sensitive for these mutations and therefore mutations are more specific if it's found in G -> T than C->A
+Both figures illustrate the common occurrence of G -> A mutation and to lesser extend due to C -> A. #what is more prompt to happen in normal biological system. #What could have happend here that made these mutations happen. #is there anyway we can change protocol to minimize these mutation frequenties. #difference between variances occuring in a single run (biased in that run) and variance occuring everytime by the machine (baised towards variance every run).
 
-Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped with to a heatmap with reference sequence.
+Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped with to a heatmap with reference sequence. #just as previous lenght can be changed for surrounding bases
 
-.. figure:: C:\\Users\\Douwe\\Documents\\Python\\Documentation\\source\\_static\\Variance_occurence_in_sequence_vcf.png
-   :scale:  30%
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Variance_occurence_in_sequence_vcf.png
+   :scale:  50%
    :align:  center
 
    Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle base is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads atleast mutated. 
@@ -186,11 +181,34 @@ Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pan
 
 Script Tests
 ++++++++++++
+Before scripts are ran over multiple files and directories, they should be checked for quality. In order to check a script for it's functionality, test scripts can be written. These testing scripts use the assert function, to identify if the set criteria are met.
+As an example the earlier described parse_fasta_file_error is checked for it's quality with the following testing script::
 
+	class TestDoneFastqParser:
+    
+    		def setup_method(self):
+        		sequence_file = 'C:/Users/Douwe/Documents/Python/test_cases/test_fastq2.done_fastq'
+        		self.data = dl.parse_fasta_file_error(sequence_file)
+        		id_ = list(self.data.keys())[0]
+        		self.score = self.data[id_]['score']
 
-Indices and tables
-==================
+    		def check_valid_DNA_sequence(self, s):
+        		for l in set(s.upper()):
+            			if not l in 'ACTGN':
+                			return False
+        		return True
+        
+    		def test_has_id(self):
+        		for id in '@':
+            			assert id in list(self.data.keys())[0]
+           
+    		def test_sequence_correct(self):
+        		for k, v in self.data.items():
+            			assert self.check_valid_DNA_sequence(v['sequence']) == True
+            
+    		def test_score_correct(self):
+        		for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
+            			assert letter not in self.score 
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+The class function is used to define which script is going to be checked for quality. Firstly the script is setup with a test file, this file is designed to identify flaws in the script. In other words, it consists off alot of errors which the script should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters.
+While this is an example of a test script, multiple scripts have been investigated for quality as described in the supplementairy.
