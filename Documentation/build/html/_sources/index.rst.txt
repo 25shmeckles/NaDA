@@ -40,7 +40,7 @@ Fastq files
 **Quality score distribution**. Fastq are text-based files derived from sequencers such as Illumina and Nanopore that contain a biological sequence and for every base a quality score.
 this quality score represents the sequencers ability to call a base as true, in other words, the score says something about how sure the sequencer is that the right base is called. 
 if the score for the base is low, it's most likely the right base, while if the score is high the machine is unsure if it's the real base. Analyzing quality scores on sequences
-is important to be able to understand which regions of bases is difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area's with high quality scores. Clearifying which regions are high score is important for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations and thus are able to increase tests sensitivity. In order to analyse fastq files the following script was written to strip the files:: 
+is important to be able to understand which regions of bases is difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area's with high quality scores. Clearifying which regions are high score is important for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations and thus are able to increase tests sensitivity. In order to analyse fastq files the following function was written to strip the files:: 
 
 	def parse_fasta_file_error(sequence_file):
 		data = {}
@@ -74,19 +74,18 @@ The data returns a dictionary with identification (id), sequence and scores for 
    :scale:   70%
    :align:   center
 
-   Figure 2: Distribution of error rate (quality score) for every individual base. 
-   The mean of all the quality scores is 0.21.
+   Figure 2: Distribution of error rate (quality score) for every individual base. Here every 10th base is visualized on the X-axis to clearify the data. The mean of all the quality scores is 0.21.
 
 While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score regions, 1139 fastq files from nanopore with data on chromosome 9 were likewise investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2. The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low quality score is important. 
 
 .. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Mean_distribution_of_all_quality_score.png
-   :scale:  70%
+   :scale:  100%
    :align:  center
 
    Figure 3: Mean distribution of quality scores from all the fastq files.
 
 Next, regions of bases were selected instead of single bases to be able to identify high quality score regions. Size and overlap of the chunks of sequences could be selected by the
-following script::
+following function::
 
 	def split_overlap(iterable,size,overlap):
     		if size < 1 or overlap < 0:
@@ -138,7 +137,7 @@ mutations, as a mutation found in for instance TTCC are more likely to be a real
 +-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
 |   TAGC    | 0.293 |    TAGC   | 42.61 |   ATTGA   | 0.367 |   CGGAG   | 63.16 |   GAATCT  | 0.466 |   TGCTAC  | 83.33 |
 +-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
-|    ...    |       |    ...    |       |    ...    |       |    ...    |       |    ...    |       |    ...    |       |
+|   ...     |       |    ...    |       |    ...    |       |    ...    |       |    ...    |       |    ...    |       |
 +-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
 |   GGAT    | 0.136 |    GGTT   |  3.82 |   TTAAA   | 0.112 |   CGGGA   |  3.92 |   CCTAAT  | 0.058 |   TCCACT  |  1.33 |
 +-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+-----------+-------+
@@ -181,21 +180,23 @@ are formatted with the reference included. For sequenced sites, amount of reads 
 
 Both figures illustrate the common occurrence of G > A mutation and to lesser extend due to C > A. The prevalance of these SNPs in contrast to other alterations are a strong indication that these alterations are caused by a non-biological mechanism, which can be errors in the rolling circle amplification, library preparation and sequencing of the ctDNA. In literature, cytosine deamination has been described to increase C:G > T:A noise levels (6). Also, less occurring alteration C > A has been reported to be caused by oxidative DNA damage during sample preparation(7). Both these types of alterations can be a result of polymerase-induced errors. Possible suggested methods to suppress these errors are adding DNA repair mechanisms upon polymerase chain reaction (PCR) and lowering heat. However, an in silico approach to polish background noise can also be devised. 
 
-Furthermore, just as with the fastq files, variances can be seperated between alterations specific for a run and alterations specific for the method being used. For instance, CTC -> A could be a alteration that is specifically highly mutated in a particularly run, while CGC > A occurs often in every run with this method of rolling circle amplification and nanopore sequencing. Therefore, filtering should be able to account for both run specific and method specific alterations. In the same manner, high database of healthy cfDNA could accomplish a method specific filter and adding healthy cfDNA into every run a specific alterations filter.
-
-Next, SNPs were selected including 2 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped to a heatmap with reference sequence. Just as in previous figures, lenght of the surrounding bases can be changed to give a wider variatie of information. This gave more information about base combinations with high alteration affinity, such as ACGCA to ACACA. 
+Next, SNPs were selected including 2 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped to a heatmap with reference sequence. Just as in previous figures, lenght of the surrounding bases can be changed to give a wider variety of information. This gave more information about base combinations with high alteration affinity, such as ACGCA to ACACA. 
 
 .. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Variance_occurence_in_sequence_vcf_3.png
-   :scale:  50%
+   :scale:  70%
    :align:  center
 
    Figure 7: Occurence of variance per reference sequence to different bases. In all the sequences the middle base is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads atleast mutated. 
 
 .. _GridPlot: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\gridplot.html
 
+Identifying high variance regions in both healthy cfDNA and ctDNA is important for constructing a data filter. It is vital to understand which regions are frequently mutated without 
+
+Furthermore, just as with the fastq files, variances can be seperated between alterations specific for a run and alterations specific for the method being used. For instance, CTC -> A could be a alteration that is specifically highly mutated in a particularly run, while CGC > A occurs often in every run with this method of rolling circle amplification and nanopore sequencing. Therefore, filtering should be able to account for both run specific and method specific alterations. In the same manner, high database of healthy cfDNA could accomplish a method specific filter and adding healthy cfDNA into every run a specific alterations filter.
+
 Script Tests
 ++++++++++++
-Before scripts are ran over multiple files and directories, they should be checked for quality. In order to check a script for it's functionality, test scripts can be written. These testing scripts use the assert function, to identify if the set criteria are met.
+Before scripts are run over multiple files and directories, they should be checked for quality. In order to check a script for it's functionality, test scripts can be written. These testing scripts use the assert function to identify if the set criteria are met.
 As an example the earlier described parse_fasta_file_error is checked for it's quality with the following testing script::
 
 	class TestDoneFastqParser:
@@ -224,8 +225,7 @@ As an example the earlier described parse_fasta_file_error is checked for it's q
         		for letter in 'ABCDEFGHIJKLMNOPQRSTUVWXYZ':
             			assert letter not in self.score 
 
-The class function is used to define which script is going to be checked for quality. Firstly the script is setup with a test file, this file is designed to identify flaws in the script. In other words, it consists off alot of errors which the script should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters.
-While this is an example of a test script, multiple scripts have been investigated for quality as described in the supplementairy.
+The class function is used to define which script is going to be checked for quality. Firstly the script is setup with a test file, this file is designed to identify flaws in the script. In other words, it consists off alot of errors which the script should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters. While this is an example of a test script, multiple scripts have been investigated for quality as described in the supplementairy.
 
 HPC
 +++
