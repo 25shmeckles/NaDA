@@ -1,0 +1,12 @@
+{
+  "Testing scripts/test_fasta.py::TestDoneFastqParser::()::test_has_id": true,
+  "Testing scripts/test_fasta.py::TestDoneFastqParser::()::test_score_correct": true,
+  "Testing scripts/test_fasta.py::TestDoneFastqParser::()::test_sequence_correct": true,
+  "Testing scripts/test_fasta.py::TestQualityScoreConvert::()::test_data_is_values": true,
+  "Testing scripts/test_fasta.py::TestQualityScoreConvert::()::test_value_1_or_smaller": true,
+  "test_.py::TestClass::()::test_two": true,
+  "test_.py::test_answer": true,
+  "test_.py::test_capital_case": true,
+  "test_.py::test_raises_exception_on_non_string_arguments": true,
+  "test_.py::test_two": true
+}
