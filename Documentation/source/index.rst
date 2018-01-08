@@ -20,7 +20,7 @@ Tumor genotyping is essential for improving the clinical outcome for many cancer
 
 Just recently, circulating tumor DNA (ctDNA) has been suggested as a new innovating method for identifying the tumor genetic landscape. These DNA fragments are derived from necrotic tumor cells and subsequently further fragmented by macrophages(2). ctDNA makes up for a portion of the whole cell-free DNA (cfDNA), increasingly so upon heavy tumor burden. Theoretically, ctDNA provides a better alternative for tumor genotyping, because of its noninvasive nature, ability to be used unlimited times, it accounts for most of both intratumoral and intermetastatic heterogeneity and has been shown to identify multiple types of alterations. However, ctDNA encounters some difficulties, such as low allelic fractions of ctDNA in patient's blood(3), especially on low tumor burden. Also, discrimination between cfDNA and ctDNA has seemed to be problematic. These problems hinder researchers to develop high specific and sensitive clinical tests.
 
-The Kloosterman group(UMC Utrecht) uses a new and innovating method called Cyclomics to identify alterations in ctDNA (Figure 1). Currently research upon this method is conducted for p53 mutation in patients with head and neck carcinoma's, but upon achieving a sensitive and specific test, Cyclomics could provide for identifying multiple driver mutations in ctDNA(4). Cyclomics uses rolling circle amplification to increase low allelic fractions of mutated ctDNA fragments. This library preparation for Nanopore sequencing increases its sensitivity. However, as with all sequencing methods, sequencing isn't flawless and covers real biological mutations but also asymmetric DNA errors, PCR and sequencing errors(5). Therefore, including multiple filtering steps upon the data achieved from the Nanopore sequencer is essential for identifying the real biological mutations and thus improving specificity and sensitivity of the clinical tests. In this report, data analyzing will be covered with Python, identifying regions with high and low mutational value as well as the higher occurrence of certain single nucleotide polymorphisms (SNPs).
+The Kloosterman group(UMC Utrecht) uses a new and innovating method called Cyclomics to identify alterations in ctDNA (Figure 1). Currently research upon this method is conducted for p53 mutation in patients with head and neck carcinoma's, but upon achieving a sensitive and specific test, Cyclomics could provide for identifying multiple driver mutations in ctDNA(4). Cyclomics uses rolling circle amplification to increase low allelic fractions of mutated ctDNA fragments. This library preparation for Nanopore sequencing increases its sensitivity. However, as with all sequencing methods, sequencing isn't flawless and covers real biological mutations but also asymmetric DNA errors, PCR and sequencing errors(5). Therefore, including multiple filtering steps upon the data achieved from the Nanopore sequencer is essential for identifying real biological mutations and thus improving specificity and sensitivity of the clinical tests. In this report, data analyzing will be covered with Python, identifying regions with high and low mutational value as well as the higher occurrence of certain single nucleotide polymorphisms (SNPs).
  
 .. figure::  C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Figure_workflow.png
    :scale:   70%
@@ -40,10 +40,7 @@ Fastq files
 **Quality score distribution**. Fastq are text-based files derived from sequencers such as Illumina and Nanopore that contain a biological sequence and for every base a quality score.
 this quality score represents the sequencers ability to call a base as true, in other words, the score says something about how sure the sequencer is that the right base is called. 
 if the score for the base is low, it's most likely the right base, while if the score is high the machine is unsure if it's the real base. Analyzing quality scores on sequences
-is important to be able to understand which regions of bases is difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more 
-likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area's with high quality scores. Clearifying which regions are high score is important
-for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations 
-and thus are able to increase tests sensitivity. In order to analyse fastq files the following script was written to strip the files:: 
+is important to be able to understand which regions of bases is difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area's with high quality scores. Clearifying which regions are high score is important for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations and thus are able to increase tests sensitivity. In order to analyse fastq files the following script was written to strip the files:: 
 
 	def parse_fasta_file_error(sequence_file):
 		data = {}
@@ -121,10 +118,7 @@ Sequences were chunked to pieces of four to six in order to analyze the impact o
    :scale:  30%
    :align:  center
 
-   Figure 4: **Quality score analysis with 6 senario's.** A - C) Meanscore for all combination in size (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of
-   chromosome 9. D - F) Scores for regions have been categorized into high, medium and low for regions of same size as A to C. Next, the amount of times a region was called under a 
-   certain category was counted and collected for the same data set. In these figures scores are set in percentage of total amount of times a region occurs in the data set.
-   (Interactive figure at GridPlot_)
+   Figure 4: **Quality score analysis with 6 senario's.** A - C) Meanscore for all combination in size (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of chromosome 9. D - F) Scores for regions have been categorized into high, medium and low for regions of same size as A to C. Next, the amount of times a region was called under a certain category was counted and collected for the same data set. In these figures scores are set in percentage of total amount of times a region occurs in the data set.(Interactive figure at GridPlot_)
 
 In table 1, highest and lowest five scoring sequence are highlighted. In conclusion, the highest scoring sequence has the biggest chance to have wrongly assigned bases in it's sequence.
 In contrast, bases in lower scoring sequences are more likely to been good assigned and are therefor indeed the right base. These findings should be taken into account when investigating 
@@ -160,7 +154,19 @@ mutations, as a mutation found in for instance TTCC are more likely to be a real
    Table 1: Highest and lowest five scoring sequences. A - C) score is meanscore for all combinations in same size and data set as figure 3. 
    D - F) score is percentage of sequence in category high for all combinations in same size and data set as figure 3. 
 
-**#Clustering**
+**Clustering**. Another way of visualizing the qualityscore in fastq files is by using clustering. Clustering is a method in which data point get coupled in groups (clusters) by a certrain geometry. Here K-Means is used for clustering, which makes clusters based on the distance between the points. in figure 5 three clusters are formed in which the yellow one represents sequences with often reported high score and few times reported low scores. In this cluster, alterations are more likely to be falsly assigned. Furthermore, in blue cluster, alterations are more likely to be rightfully assigned. Clustering of data can provide for a more clearer view on which sequences to include and exclude for mutation calling.
+
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\Source\\_static\\clusterplot.png
+   :scale:  50%
+   :align:  center
+
+   figure 5: **Clustering of data from 1139 fastq files.** Sequences of 5 bases are measured for qualityscore and reported in high or low score. Here the percentage of times sequence is reported in high and low score is visualized. Following, clustering was conducted using K-means, seperating three clusters. 
+
+Together fastq data suggest that qualityscore is important in identifying regions which are promosing for mutation calling and which regions should be avoided. As described earlier, regions with a high qualityscore should be avoided while looking for mutation. In contrast, low qualityscore region have potential for identifying mutations in cfDNA. 
+
+Importantly, the qualityscores of sequences can differ on the method being used. In this case our method involves rolling circle amplifcation and nanopore sequencing of cfDNA. In order to make a sensitive data filter, a big database of healthy cfDNA should investigated on qualityscore for sequences. Therefore, the filter can exclude and include regions with high and low qualityscores. Furthermore, qualityscores of sequences can differ on every run, causing some sequences to have higher or lower scores. For this discrepancy should also be accounted in the data filter. A possiblity is to include healthy cfDNA into every run to identify run specific sequence qualityscores.
+
+Here only run specific sequence qualityscores have been investigated. In order to visualize high and low score sequences specific for our method, data analysis should be conducted on multiple runs. Analysis of multiple runs can be simultaneously conducted using the High-Performance Computing (HPC) facility in the UMC, which will be done in a following segment of this paper. 
 
 Variant Call Format files
 +++++++++++++++++++++++++
@@ -171,17 +177,19 @@ are formatted with the reference included. For sequenced sites, amount of reads 
    :scale:  70%
    :align:  center
 
-   Figure 5: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C -> T, meaning that T subsitutes C. A) Bar plot with single nucleotide polymorphisms occurence as percentage of whole. B) Heatmap from same variances with amount of occurences in the files
+   Figure 6: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C > T, meaning that T subsitutes C. A) Bar plot with single nucleotide polymorphisms occurence as percentage of whole. B) Heatmap from same variances with amount of occurences in the files
 
-Both figures illustrate the common occurrence of G -> A mutation and to lesser extend due to C -> A. #what is more prompt to happen in normal biological system. #What could have happend here that made these mutations happen. #is there anyway we can change protocol to minimize these mutation frequenties. #difference between variances occuring in a single run (biased in that run) and variance occuring everytime by the machine (baised towards variance every run).
+Both figures illustrate the common occurrence of G > A mutation and to lesser extend due to C > A. The prevalance of these SNPs in contrast to other alterations are a strong indication that these alterations are caused by a non-biological mechanism, which can be errors in the rolling circle amplification, library preparation and sequencing of the ctDNA. In literature, cytosine deamination has been described to increase C:G > T:A noise levels (6). Also, less occurring alteration C > A has been reported to be caused by oxidative DNA damage during sample preparation(7). Both these types of alterations can be a result of polymerase-induced errors. Possible suggested methods to suppress these errors are adding DNA repair mechanisms upon polymerase chain reaction (PCR) and lowering heat. However, an in silico approach to polish background noise can also be devised. 
 
-Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped with to a heatmap with reference sequence. #just as previous lenght can be changed for surrounding bases
+Furthermore, just as with the fastq files, variances can be seperated between alterations specific for a run and alterations specific for the method being used. For instance, CTC -> A could be a alteration that is specifically highly mutated in a particularly run, while CGC > A occurs often in every run with this method of rolling circle amplification and nanopore sequencing. Therefore, filtering should be able to account for both run specific and method specific alterations. In the same manner, high database of healthy cfDNA could accomplish a method specific filter and adding healthy cfDNA into every run a specific alterations filter.
 
-.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Variance_occurence_in_sequence_vcf.png
+Next, SNPs were selected including 2 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped to a heatmap with reference sequence. Just as in previous figures, lenght of the surrounding bases can be changed to give a wider variatie of information. This gave more information about base combinations with high alteration affinity, such as ACGCA to ACACA. 
+
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Variance_occurence_in_sequence_vcf_3.png
    :scale:  50%
    :align:  center
 
-   Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle base is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads atleast mutated. 
+   Figure 7: Occurence of variance per reference sequence to different bases. In all the sequences the middle base is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads atleast mutated. 
 
 .. _GridPlot: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\gridplot.html
 
@@ -219,6 +227,9 @@ As an example the earlier described parse_fasta_file_error is checked for it's q
 The class function is used to define which script is going to be checked for quality. Firstly the script is setup with a test file, this file is designed to identify flaws in the script. In other words, it consists off alot of errors which the script should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters.
 While this is an example of a test script, multiple scripts have been investigated for quality as described in the supplementairy.
 
+HPC
++++
+
 References 
 ----------
 (Ask how to link ref in text)
@@ -228,6 +239,8 @@ References
 3: Beaver, J. A. et al. Detection of Cancer DNA in Plasma of Patients with Early-Stage Breast Cancer. Clin. Cancer Res. 20, 2643-2650 (2014).
 4: Paper of Kloosterman group (not yet released)
 5: Newman, A. M., Lovejoy, A. F., Klass, D. M., Kurtz, D. M., Chabon, J. J., Scherer, F., A. A. (2016). Integrated digital error suppression for improved detection of circulating tumor DNA. Nature Biotechnology, 34(5), 547-555.
+6: Chen, G., Mosier, S., Gocke, C. D., Lin, M. T., & Eshleman, J. R. (2014). Cytosine Deamination Is a Major Cause of Baseline Noise in Next-Generation Sequencing. Molecular Diagnosis and Therapy, 18(5), 587-593.
+7: Costello, M., Pugh, T. J., Fennell, T. J., Stewart, C., Lichtenstein, L., Meldrim, J. C., Getz, G. (2013). Discovery and characterization of artifactual mutations in deep coverage targeted capture sequencing data due to oxidative DNA damage during sample preparation. Nucleic Acids Research, 41(6), e67-e67.
 
 
 .. toctree::
