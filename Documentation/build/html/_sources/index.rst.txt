@@ -3,9 +3,11 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Internship report
-=============================================
-*Student:			Douwe Spaanderman*
+Data analyzing of ctDNA from Nanopore Sequencing with Python
+============================================================
+**Cyclomics data analysis: identifying and analyzing alterations in ctDNA for data filtering**
+
+*Student:			Douwe Spaanderman (5483352)*
 
 *Supervisor: 			Alessio Marcozzi*
 
@@ -14,11 +16,19 @@ Internship report
 
 Introduction
 ------------
-	
+Tumor genotyping is essential for improving the clinical outcome for many cancer patients. Not only is it important for tailoring drugs specific targets for the genetic landscape of the tumor. It is also vital for better diagnostics as well as follow up monitoring. Furthermore, increasing knowledge of tumor tissue genotyping can enhance our understanding of the molecular mechanisms of cancer. Today, tumor genotyping is conducted using local biopsies of tumor tissue. This method of achieving the genetic landscape is however heavily limited mostly due to its invasive nature. Therefore, tissue biopsies can only be conducted a limited amount of times, enhancing difficulties with tumor heterogeneity and the fluctuation of the genetic landscape of the tumor in time(1). Altogether these limitations require a new none invasive method to be able to tackle these difficulties.
 
+Just recently, circulating tumor DNA (ctDNA) has been suggested as a new innovating method for identifying the tumor genetic landscape. These DNA fragments are derived from necrotic tumor cells and subsequently further fragmented by macrophages(2). ctDNA makes up for a portion of the whole cell-free DNA (cfDNA), increasingly so upon heavy tumor burden. Theoretically, ctDNA provides a better alternative for tumor genotyping, because of its noninvasive nature, ability to be used unlimited times, it accounts for most of both intratumoral and intermetastatic heterogeneity and has been shown to identify multiple types of alterations. However, ctDNA encounters some difficulties, such as low allelic fractions of ctDNA in patient's blood(3), especially on low tumor burden. Also, discrimination between cfDNA and ctDNA has seemed to be problematic. These problems hinder researchers to develop high specific and sensitive clinical tests.
+
+The Kloosterman group(UMC Utrecht) uses a new and innovating method called Cyclomics to identify alterations in ctDNA (Figure 1). Currently research upon this method is conducted for p53 mutation in patients with head and neck carcinoma's, but upon achieving a sensitive and specific test, Cyclomics could provide for identifying multiple driver mutations in ctDNA(4). Cyclomics uses rolling circle amplification to increase low allelic fractions of mutated ctDNA fragments. This library preparation for Nanopore sequencing increases its sensitivity. However, as with all sequencing methods, sequencing isn't flawless and covers real biological mutations but also asymmetric DNA errors, PCR and sequencing errors(5). Therefore, including multiple filtering steps upon the data achieved from the Nanopore sequencer is essential for identifying the real biological mutations and thus improving specificity and sensitivity of the clinical tests. In this report, data analyzing will be covered with Python, identifying regions with high and low mutational value as well as the higher occurrence of certain single nucleotide polymorphisms (SNPs).
+ 
+.. figure::  C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Figure_workflow.png
+   :scale:   70%
+   :align:   center
+
+   Figure 1: Workflow, NOTE: made in paint, this is the test version
 
 **General workflow**
-**Figure of workflow**
 
 Results and discussion
 ----------------------
@@ -67,7 +77,7 @@ The data returns a dictionary with identification (id), sequence and scores for 
    :scale:   70%
    :align:   center
 
-   Figure 1: Distribution of error rate (quality score) for every individual base. 
+   Figure 2: Distribution of error rate (quality score) for every individual base. 
    The mean of all the quality scores is 0.21.
 
 While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score regions, 1139 fastq files from nanopore with data on chromosome 9 were likewise investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2. The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low quality score is important. 
@@ -76,7 +86,7 @@ While figure 1 gives a good overview on the importance of analyzing quality scor
    :scale:  70%
    :align:  center
 
-   Figure 2: Mean distribution of quality scores from all the fastq files.
+   Figure 3: Mean distribution of quality scores from all the fastq files.
 
 Next, regions of bases were selected instead of single bases to be able to identify high quality score regions. Size and overlap of the chunks of sequences could be selected by the
 following script::
@@ -111,7 +121,7 @@ Sequences were chunked to pieces of four to six in order to analyze the impact o
    :scale:  30%
    :align:  center
 
-   Figure 3: **Quality score analysis with 6 senario's.** A - C) Meanscore for all combination in size (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of
+   Figure 4: **Quality score analysis with 6 senario's.** A - C) Meanscore for all combination in size (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of
    chromosome 9. D - F) Scores for regions have been categorized into high, medium and low for regions of same size as A to C. Next, the amount of times a region was called under a 
    certain category was counted and collected for the same data set. In these figures scores are set in percentage of total amount of times a region occurs in the data set.
    (Interactive figure at GridPlot_)
@@ -161,7 +171,7 @@ are formatted with the reference included. For sequenced sites, amount of reads 
    :scale:  70%
    :align:  center
 
-   Figure 4: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C -> T, meaning that T subsitutes C. A) Bar plot with single nucleotide polymorphisms occurence as percentage of whole. B) Heatmap from same variances with amount of occurences in the files
+   Figure 5: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C -> T, meaning that T subsitutes C. A) Bar plot with single nucleotide polymorphisms occurence as percentage of whole. B) Heatmap from same variances with amount of occurences in the files
 
 Both figures illustrate the common occurrence of G -> A mutation and to lesser extend due to C -> A. #what is more prompt to happen in normal biological system. #What could have happend here that made these mutations happen. #is there anyway we can change protocol to minimize these mutation frequenties. #difference between variances occuring in a single run (biased in that run) and variance occuring everytime by the machine (baised towards variance every run).
 
@@ -174,10 +184,6 @@ Next, SNPs were selected including 4 surrounding bases for heatmap analysis. Pan
    Figure 5: Occurence of variance per reference sequence to different bases. In all the sequences the middle base is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads atleast mutated. 
 
 .. _GridPlot: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\gridplot.html
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
 
 Script Tests
 ++++++++++++
@@ -212,3 +218,18 @@ As an example the earlier described parse_fasta_file_error is checked for it's q
 
 The class function is used to define which script is going to be checked for quality. Firstly the script is setup with a test file, this file is designed to identify flaws in the script. In other words, it consists off alot of errors which the script should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters.
 While this is an example of a test script, multiple scripts have been investigated for quality as described in the supplementairy.
+
+References 
+----------
+(Ask how to link ref in text)
+
+1: Gerlinger, M. et al. Intratumor Heterogeneity and Branched Evolution Revealed by Multiregion Sequencing. N. Engl. J. Med. 366, 883-892 (2012).
+2: Choi, J.-J., Reich, C. F., Pisetsky, D. S. & Pisetsky, D. S. The role of macrophages in the in vitro generation of extracellular DNA from apoptotic and necrotic cells. Immunology 115, 55-62 (2005).
+3: Beaver, J. A. et al. Detection of Cancer DNA in Plasma of Patients with Early-Stage Breast Cancer. Clin. Cancer Res. 20, 2643-2650 (2014).
+4: Paper of Kloosterman group (not yet released)
+5: Newman, A. M., Lovejoy, A. F., Klass, D. M., Kurtz, D. M., Chabon, J. J., Scherer, F., A. A. (2016). Integrated digital error suppression for improved detection of circulating tumor DNA. Nature Biotechnology, 34(5), 547-555.
+
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents:
