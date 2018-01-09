@@ -273,7 +273,7 @@ def plot_vcf_snps(data, output_name, save_path):
     p.xaxis.axis_label = 'Single Nucleotide Polymorphism'
     p.yaxis.axis_label = 'amount of mutations'
     
-    output_file("{}/{}_SNP_plot.png".format(save_path, output_name))
+    output_file("{}/{}_SNP_plot.html".format(save_path, output_name))
     save(p)
 
 def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path):
@@ -320,7 +320,7 @@ def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path):
          ('occurence', '@scores'),
     ]
     
-    output_file("{}/{}_heatmap_sequences.png".format(save_path, output_name))
+    output_file("{}/{}_heatmap_sequences.html".format(save_path, output_name))
     save(p)
 
 def heatmap_vcf_files_snps(df_, output_name, save_path):
@@ -365,7 +365,7 @@ def heatmap_vcf_files_snps(df_, output_name, save_path):
          ('occurence', '@scores'),
     ]
     
-    output_file("{}/{}_heatmap_SNPs.png".format(save_path, output_name))
+    output_file("{}/{}_heatmap_SNPs.html".format(save_path, output_name))
     save(p)
 
 #Actual script for running files from dir and subdir
