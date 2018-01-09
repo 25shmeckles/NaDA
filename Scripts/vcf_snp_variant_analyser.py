@@ -399,15 +399,17 @@ def main(input_folder, output_name, save_path):
     heatmap_vcf_files_snps(df_, output_name, save_path)
     
 
-#Argument script
-parser = argparse.ArgumentParser(description="Vcf SNP analyzer")
-parser.add_argument("path", help="path of files")
-parser.add_argument("output", help="output name")
-parser.add_argument("save", help="path to save file")
-args = parser.parse_args()
+if __name__ == '__main__':
 
-input_folder = args.path
-output_name = args.output
-save_path = args.save
+    #Argument script
+    parser = argparse.ArgumentParser(description="Vcf SNP analyzer")
+    parser.add_argument("path", help="path of files")
+    parser.add_argument("output", help="output name")
+    parser.add_argument("save", help="path to save file")
+    args = parser.parse_args()
 
-main(input_folder, output_name, save_path)
+    input_folder = args.path
+    output_name = args.output
+    save_path = args.save
+
+    main(input_folder, output_name, save_path)
