@@ -373,6 +373,7 @@ def main(input_folder, output_name, save_path):
     #recursive=True
     variance_data = []
     highmutated_data = []
+    print('getting inputs')
     for subdir, dirs, files in os.walk(input_folder):
         for filename in files:
             if filename.split('.')[-1] == 'vcf':
@@ -387,16 +388,20 @@ def main(input_folder, output_name, save_path):
                     highmutated_data.append(mutated_reads_vcf_only(variance, data_all)[1])
             
     #plot SNPs
+    print('plotting SNPs')
     plot_vcf_snps(highmutated_data, output_name, save_path)
     
     #plot Heatmap_sequence
+    print('plotting Heatmap')
     data_dict = vcf_heatmap_snps(variance_data, highmutated_data)
     df_ = pd_df_heatmap_sequence(data_dict)
     heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path)
         
     #plot SNPs_heatmap
+    print('plotting SNPs_heatmap')
     df_ = pd_df_heatmap_variance(highmutated_data)
     heatmap_vcf_files_snps(df_, output_name, save_path)
+
     
 
 if __name__ == '__main__':
@@ -412,4 +417,6 @@ if __name__ == '__main__':
     output_name = args.output
     save_path = args.save
 
+    print('started')
     main(input_folder, output_name, save_path)
+    print('completed')
