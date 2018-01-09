@@ -115,7 +115,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         highmutated.append(removed)
-                        extended.append(data_all[i-1:i+2])
+                        extended.append(data_all[i-2:i+3])
                         continue
             if n3/(n1+n2+n3) > 0.25:
                 for i, items in enumerate(data_all):
@@ -125,7 +125,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         highmutated.append(removed)
-                        extended.append(data_all[i-1:i+2])
+                        extended.append(data_all[i-2:i+3])
         else:
             n1 = int(item[0])
             n2 = int(item[1])
@@ -134,7 +134,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                     mutated = ':'+','.join(item[0:2])+':'+score3[points]
                     if mutated in items:
                         highmutated.append(items)
-                        extended.append(data_all[i-1:i+2])
+                        extended.append(data_all[i-2:i+3])
         points += 1
     points = False
     return extended, highmutated
