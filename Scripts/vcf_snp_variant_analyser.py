@@ -304,7 +304,7 @@ def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size, v_or_b):
     except KeyError:
         print("KeyError occurred dataframe for {} hasn't changed to percentages".format(v_or_b))
     
-    print('{} from {}'.format(df, v_or_b))
+    #print('{} from {}'.format(df, v_or_b))
     return df
 
 def pd_df_heatmap_variance(data):
@@ -378,46 +378,51 @@ def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, v_or_b):
     extra)
     
     '''
-    df = pd.DataFrame(df_.stack(), columns=['scores']).reset_index()
+    if df_.empty == True:
+        print('DataFrame of {} is empty and no plot will be made'.format(v_or_b))
+        
+    else:
+        df = pd.DataFrame(df_.stack(), columns=['scores']).reset_index()
 
-    bases = list(df_.columns)
-    sequences = list(df_.index)
+        bases = list(df_.columns)
+        sequences = list(df_.index)
 
-    colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41", "#550b1d"]
-    mapper = LinearColorMapper(palette=colors, low=df.scores.min(), high=df.scores.max())
+        colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41",
+                  "#550b1d"]
+        mapper = LinearColorMapper(palette=colors, low=df.scores.min(), high=df.scores.max())
 
-    source = ColumnDataSource(df)
+        source = ColumnDataSource(df)
 
-    TOOLS = "hover,reset,xpan,xwheel_zoom"
+        TOOLS = "hover,reset,xpan,xwheel_zoom"
 
-    p = figure(title='Variant occurence in {}'.format(v_or_b), x_range=sequences,
-               y_range=list(reversed(bases)), x_axis_location='above', plot_width=900, plot_height=400,
-               tools=TOOLS, toolbar_location='below')
-    p.grid.grid_line_color = None
-    p.axis.axis_line_color = None
-    p.axis.major_tick_line_color = None
-    p.axis.major_label_text_font_size = "5pt"
-    p.axis.major_label_standoff = 0
-    p.xaxis.major_label_orientation = pi / 3
+        p = figure(title='Variant occurence in {}'.format(v_or_b), x_range=sequences,
+                   y_range=list(reversed(bases)), x_axis_location='above', plot_width=900, plot_height=400,
+                   tools=TOOLS, toolbar_location='below')
+        p.grid.grid_line_color = None
+        p.axis.axis_line_color = None
+        p.axis.major_tick_line_color = None
+        p.axis.major_label_text_font_size = "5pt"
+        p.axis.major_label_standoff = 0
+        p.xaxis.major_label_orientation = pi / 3
 
 
-    p.rect(y="Bases", x="Sequences", width=1, height=1,
-           source=source,
-           fill_color={'field': 'scores', 'transform': mapper},
-           line_color=None)
+        p.rect(y="Bases", x="Sequences", width=1, height=1,
+               source=source,
+               fill_color={'field': 'scores', 'transform': mapper},
+               line_color=None)
 
-    color_bar = ColorBar(color_mapper=mapper, major_label_text_font_size="5pt",
-                         ticker=BasicTicker(desired_num_ticks=len(colors)),
-                         label_standoff=6, border_line_color=None, location=(0, 0))
-    p.add_layout(color_bar, 'right')
+        color_bar = ColorBar(color_mapper=mapper, major_label_text_font_size="5pt",
+                             ticker=BasicTicker(desired_num_ticks=len(colors)),
+                             label_standoff=6, border_line_color=None, location=(0, 0))
+        p.add_layout(color_bar, 'right')
 
-    p.select_one(HoverTool).tooltips = [
-         ('mutation', '@Sequences -> @Bases'),
-         ('occurence', '@scores'),
-    ]
-    
-    output_file("{}/{}_{}_heatmap_sequences.html".format(save_path, output_name, v_or_b))
-    save(p)
+        p.select_one(HoverTool).tooltips = [
+             ('mutation', '@Sequences -> @Bases'),
+             ('occurence', '@scores'),
+        ]
+
+        output_file("{}/{}_{}_heatmap_sequences.html".format(save_path, output_name, v_or_b))
+        save(p)
 
 def heatmap_vcf_files_snps(df_, output_name, save_path, v_or_b):
     '''Heatmap of single nucleotide polymorphisms 
