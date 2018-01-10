@@ -6,7 +6,7 @@
 #$ -M d.j.spaanderman@umcutrecht.nl
 #$ -m beas
 
-import argparse, glob, os, pandas as pd, statistics, itertools, bokeh.palettes as bp
+import argparse, glob, os, pandas as pd, statistics, itertools, bokeh.palettes as bp, numpy as np
 from bokeh.plotting import figure, output_file, save, ColumnDataSource
 from bokeh.layouts import gridplot
 from bokeh.models import NumeralTickFormatter, HoverTool, GlyphRenderer, Range1d, LinearColorMapper, BasicTicker, PrintfTickFormatter, ColorBar, ColumnDataSource
@@ -245,8 +245,6 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
         else:
             for m in mutation_:
                 mutation.append(m) 
-                
-    print(sequence)
     
     dict_variance = {}
     points = 0
@@ -344,7 +342,7 @@ def highmutated_back_variance(variance_or_backbone_highmutated):
     return mutated_counter
 
 #plots
-def plot_vcf_snps(data, output_name, save_path):
+def plot_vcf_snps(data, output_name, save_path, v_or_b):
     '''plot single nucleotide polymorphisms
     data should be either mutated sequences from
     backbone or variance
@@ -356,7 +354,7 @@ def plot_vcf_snps(data, output_name, save_path):
     for item in y_:
         y.append(item/sum(y_))
 
-    p = figure(x_range=x, plot_width=400, plot_height=400, title='Distribution of mutations in sequence', background_fill_color="#E8DDCB")
+    p = figure(x_range=x, plot_width=400, plot_height=400, title='Distribution of mutations in {}'.format(v_or_b), background_fill_color="#E8DDCB")
     p.vbar(x, width=0.5, bottom=0, top=y, fill_color="#036564", line_color="#033649")
 
     p.yaxis[0].formatter = NumeralTickFormatter(format="0.0%")
@@ -366,10 +364,10 @@ def plot_vcf_snps(data, output_name, save_path):
     p.xaxis.axis_label = 'Single Nucleotide Polymorphism'
     p.yaxis.axis_label = 'amount of mutations'
     
-    output_file("{}/{}_SNP_plot.html".format(save_path, output_name))
+    output_file("{}/{}_{}_SNP_plot.html".format(save_path, output_name, v_or_b))
     save(p)
 
-def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path):
+def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, v_or_b):
     '''Heatmap of single nucleotide polymorphisms 
     from vcf files with surrounding sequence (4 bases
     extra)
@@ -387,7 +385,7 @@ def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path):
 
     TOOLS = "hover,reset,xpan,xwheel_zoom"
 
-    p = figure(title='Variant occurence in sequence', x_range=sequences,
+    p = figure(title='Variant occurence in {}'.format(v_or_b), x_range=sequences,
                y_range=list(reversed(bases)), x_axis_location='above', plot_width=900, plot_height=400,
                tools=TOOLS, toolbar_location='below')
     p.grid.grid_line_color = None
@@ -413,10 +411,10 @@ def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path):
          ('occurence', '@scores'),
     ]
     
-    output_file("{}/{}_heatmap_sequences.html".format(save_path, output_name))
+    output_file("{}/{}_{}_heatmap_sequences.html".format(save_path, output_name, v_or_b))
     save(p)
 
-def heatmap_vcf_files_snps(df_, output_name, save_path):
+def heatmap_vcf_files_snps(df_, output_name, save_path, v_or_b):
     '''Heatmap of single nucleotide polymorphisms 
     from vcf files
     
@@ -433,8 +431,8 @@ def heatmap_vcf_files_snps(df_, output_name, save_path):
 
     TOOLS = "hover,reset"
 
-    p = figure(title='Variant occurence in sequence', y_range=list(reversed(mutations)), plot_width=300, 
-               x_axis_location='above', plot_height=600, tools=TOOLS, toolbar_location='below')
+    p = figure(title='Variant occurence in {}'.format(v_or_b), y_range=list(reversed(mutations)), 
+               plot_width=300, x_axis_location='above', plot_height=600, tools=TOOLS, toolbar_location='below')
     p.grid.grid_line_color = None
     p.axis.axis_line_color = None
     p.axis.major_tick_line_color = None
@@ -458,7 +456,7 @@ def heatmap_vcf_files_snps(df_, output_name, save_path):
          ('occurence', '@scores'),
     ]
     
-    output_file("{}/{}_heatmap_SNPs.html".format(save_path, output_name))
+    output_file("{}/{}_{}_heatmap_SNPs.html".format(save_path, output_name, v_or_b))
     save(p)
 
 #Actual script for running files from dir and subdir
@@ -466,41 +464,72 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     #recursive=True
     variance_data = []
     variance_sequence = []
-    highmutated_data = []
+    highmutated_v = []
+    backbone_data = []
+    backbone_sequence = []
+    highmutated_b = []
+    points = 1
+    points_list = np.arange(500, 500000000, 500)
+    
     print('getting inputs')
     for subdir, dirs, files in os.walk(input_folder):
+        print('{} files are being processed'.format(len(files)))
         for filename in files:
-            if filename.split('.')[-1] == 'vcf':
+            if points in points_list:
+                print('file {} of {}'.format(points, len(files)))
+            points += 1
+            if filename.split('.')[-1] == 'vcf':    
                 file = os.path.join(input_folder, subdir, filename)
                 data = data_vcf_file(file, backbone_name)
                 data_all = vcf_whole_sequence_strip(file)
                 if bool(data) == True :
                     id_ = list(data.keys())[0]
                     variance = data[id_]['variance']
+                    backbone = data[id_]['backbone']
                     
-                    #whole sequence strip
+                    #for insert the Data
                     variance_list = []
                     for item in variance:
                         variance_list.append(item.split('\t',4)[3])
                     variance_sequence.append(''.join(variance_list))
 
                     variance_data.append(mutated_reads_vcf_only(variance, data_all, size)[0])
-                    highmutated_data.append(mutated_reads_vcf_only(variance, data_all, size)[1])
+                    highmutated_v.append(mutated_reads_vcf_only(variance, data_all, size)[1])
+                    
+                    #for backbone the Data
+                    backbone_list = []
+                    for item in backbone:
+                        backbone_list.append(item.split('\t',4)[3])
+                    backbone_sequence.append(''.join(backbone_list))
+                    
+                    backbone_data.append(mutated_reads_vcf_only(backbone, data_all, size)[0])
+                    highmutated_b.append(mutated_reads_vcf_only(backbone, data_all, size)[1])
             
     #plot SNPs
-    print('plotting SNPs')
-    plot_vcf_snps(highmutated_data, output_name, save_path)
+    print('plotting SNPs insert')
+    plot_vcf_snps(highmutated_v, output_name, save_path, 'insert')
+    print('plotting SNPs backbone')
+    plot_vcf_snps(highmutated_b, output_name, save_path, 'backbone')
     
     #plot Heatmap_sequence
-    print('plotting Heatmap')
-    data_dict = vcf_heatmap_snps(variance_data, highmutated_data, size)
+    print('plotting Heatmap insert')
+    data_dict = vcf_heatmap_snps(variance_data, highmutated_v, size)
     df_ = pd_df_heatmap_sequence(data_dict, variance_sequence, size)
-    heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path)
+    heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, 'insert')
+    
+    print('plotting Heatmap backbone')
+    data_dict = vcf_heatmap_snps(backbone_data, highmutated_b, size)
+    df_ = pd_df_heatmap_sequence(data_dict, backbone_sequence, size)
+    heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, 'backbone')
         
     #plot SNPs_heatmap
-    print('plotting SNPs_heatmap')
-    df_ = pd_df_heatmap_variance(highmutated_data)
-    heatmap_vcf_files_snps(df_, output_name, save_path)
+    print('plotting SNPs_heatmap insert')
+    df_ = pd_df_heatmap_variance(highmutated_v)
+    heatmap_vcf_files_snps(df_, output_name, save_path, 'insert')
+    
+    print('plotting SNPs_heatmap insert')
+    df_ = pd_df_heatmap_variance(highmutated_b)
+    heatmap_vcf_files_snps(df_, output_name, save_path, 'backbone')
 
     
 
