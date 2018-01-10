@@ -13,36 +13,46 @@ from bokeh.models import NumeralTickFormatter, HoverTool, GlyphRenderer, Range1d
 from collections import defaultdict, Counter
 from math import pi
 
-def data_vcf_file(file_name):
+def data_vcf_file(file_name, backbone_name):
     '''strips data from vcf files
     
     '''
     data = {}
     with open(file_name, 'r') as f:
-        id_ = False
-        backbone = []
-        variance = []
-        for line in f:
-            if line.startswith('##'):
-                continue
-            elif line.startswith('#'):
-                    if not id_: #if id_ == False
-                        id_ = line.strip()
+        loglist = f.readlines()
+        found = False
+        for lines in loglist:
+            if ('{}'.format(backbone_name)) in lines:
+                found = True
+                
+        f.seek(0)
+        if found is True:
+            id_ = False
+            backbone = []
+            variance = []
+            for line in f:
+                if line.startswith('##'):
+                    continue
+                elif line.startswith('#'):
+                        if not id_: #if id_ == False
+                            id_ = line.strip()
+                        else:
+                            print('WARNING: An ID was found without corresponding sequence.', id_)
+                            id_ = line.strip()
+                elif line.startswith('B'):
+                    if './.' in line:
+                        continue
                     else:
-                        print('WARNING: An ID was found without corresponding sequence.', id_)
-                        id_ = line.strip()
-            elif line.startswith('B'):
-                if './.' in line:
-                    continue
-                else:
-                    backbone.append(line.strip())
-            elif id_:
-                if './.' in line:
-                    continue
-                else:
-                    variance.append(line.strip())
-                    data[id_] = {'variance':variance, 
-                            'backbone':backbone}
+                        backbone.append(line.strip())
+                elif id_:
+                    if './.' in line:
+                        continue
+                    else:
+                        variance.append(line.strip())
+                        data[id_] = {'variance':variance, 
+                                'backbone':backbone}
+        else:
+            print('{} has other backbone than input'.format(file_name))
     return data
 
 def vcf_whole_sequence_strip(file_name):
@@ -67,7 +77,7 @@ def filter_score(s):
         return True
     return False
 
-def mutated_reads_vcf_only(variance_or_backbone, data_all):
+def mutated_reads_vcf_only(variance_or_backbone, data_all, size):
     '''mutations in vcf file with 3 sequences before and
     3 sequences after mutation. Overlap can occur if mutations
     are found beside each other. if location in sequence has
@@ -76,12 +86,27 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
     same location sequence can occur twice in return if A -> G
     and A -> T have both high enough scores
     
+    Update 10-1: size can be determined and so size of sequence
+    changes
+    
     Args:
         either variance or backbone data can be entered and
         data_all which is the strip of all the sequencing data
         in the same vcf file
     
     '''
+    lenght_before = 2
+    lenght_after = 3
+    
+    if size == 3:
+        lenght_before = 1
+        lenght_after = 2
+        continue
+    elif size == 5:
+        lenght_before = 2
+        lenght_after = 3
+        continue
+
     score_ = []
     score = []
     for items in variance_or_backbone:
@@ -115,7 +140,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         highmutated.append(removed)
-                        extended.append(data_all[i-2:i+3])
+                        extended.append(data_all[i-lenght_before:i+lenght_after])
                         continue
             if n3/(n1+n2+n3) > 0.25:
                 for i, items in enumerate(data_all):
@@ -125,7 +150,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         highmutated.append(removed)
-                        extended.append(data_all[i-2:i+3])
+                        extended.append(data_all[i-lenght_before:i+lenght_after])
         else:
             n1 = int(item[0])
             n2 = int(item[1])
@@ -134,12 +159,12 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all):
                     mutated = ':'+','.join(item[0:2])+':'+score3[points]
                     if mutated in items:
                         highmutated.append(items)
-                        extended.append(data_all[i-2:i+3])
+                        extended.append(data_all[i-lenght_before:i+lenght_after])
         points += 1
     points = False
     return extended, highmutated
 
-def vcf_heatmap_snps(data_surrounding, data_variance):
+def vcf_heatmap_snps(data_surrounding, data_variance, size):
     '''data generation for heatmap plot
     creates dictionary with key is surrounding sequence
     and types of variances:
@@ -172,11 +197,14 @@ def vcf_heatmap_snps(data_surrounding, data_variance):
     dict_variance = {}
     points = 0
     for se in sequence:
-        if se in dict_variance:
-            dict_variance[se].append(mutation[points])
+        if len(se) == size:
+            if se in dict_variance:
+                dict_variance[se].append(mutation[points])
+            else:
+                dict_variance[se] = [mutation[points]]
+            points += 1
         else:
-            dict_variance[se] = [mutation[points]]
-        points += 1
+            continue
         
     return dict_variance
 
@@ -369,7 +397,7 @@ def heatmap_vcf_files_snps(df_, output_name, save_path):
     save(p)
 
 #Actual script for running files from dir and subdir
-def main(input_folder, output_name, save_path):
+def main(input_folder, output_name, save_path, backbone_name, size):
     #recursive=True
     variance_data = []
     highmutated_data = []
@@ -378,14 +406,14 @@ def main(input_folder, output_name, save_path):
         for filename in files:
             if filename.split('.')[-1] == 'vcf':
                 file = os.path.join(input_folder, subdir, filename)
-                data = data_vcf_file(file)
+                data = data_vcf_file(file, backbone_name)
                 data_all = vcf_whole_sequence_strip(file)
                 if bool(data) == True :
                     id_ = list(data.keys())[0]
                     variance = data[id_]['variance']
 
-                    variance_data.append(mutated_reads_vcf_only(variance, data_all)[0])
-                    highmutated_data.append(mutated_reads_vcf_only(variance, data_all)[1])
+                    variance_data.append(mutated_reads_vcf_only(variance, data_all, size)[0])
+                    highmutated_data.append(mutated_reads_vcf_only(variance, data_all, size)[1])
             
     #plot SNPs
     print('plotting SNPs')
@@ -393,7 +421,7 @@ def main(input_folder, output_name, save_path):
     
     #plot Heatmap_sequence
     print('plotting Heatmap')
-    data_dict = vcf_heatmap_snps(variance_data, highmutated_data)
+    data_dict = vcf_heatmap_snps(variance_data, highmutated_data, size)
     df_ = pd_df_heatmap_sequence(data_dict)
     heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path)
         
@@ -408,14 +436,29 @@ if __name__ == '__main__':
 
     #Argument script
     parser = argparse.ArgumentParser(description="Vcf SNP analyzer")
+    group = parser.add_mutually_exclusive_group()
+    group.add_argument("-b", "--BB200", action="store_true", help="Only files with BB200 will be checked")
+    group.add_argument("-a", "--All_B", action="store_true", help="All backbones will be checked")
     parser.add_argument("path", help="path of files")
-    parser.add_argument("output", help="output name")
-    parser.add_argument("save", help="path to save file")
+    parser.add_argument("filename", help="output name")
+    parser.add_argument("save_path", help="path to save file")
+    parser.add_argument("sequence_size", help="select how many bases sequence analysis should be")
     args = parser.parse_args()
+    
+    if args.BB200:
+        backbone_name = 'BB200'
+        continue
+    
+    elif args.All_B:
+        backbone_name = 'BB'
+        continue 
 
+    print('selected backbone: {}'.format(backbone_name))
+    
     input_folder = args.path
-    output_name = args.output
+    output_name = args.filename
     save_path = args.save
+    size = args.sequence_size
 
     print('started')
     main(input_folder, output_name, save_path)
