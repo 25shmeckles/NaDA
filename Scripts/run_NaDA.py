@@ -18,12 +18,12 @@ if __name__ == '__main__':
     else:
         BB = ''
 
-    python3 = '/hpc/local/CentOS7/common/lang/python/3.6.1/bin/python'
+    #python3 = '/hpc/local/CentOS7/common/lang/python/3.6.1/bin/python'
     nada_root = '/hpc/cog_bioinf/kloosterman/users/dspaanderman/NaDA'
     
     #Cyclomics pipeline
-    cmd0 = f'module load python/3.6.1 && . {nada_root}/env/bin/activate'
-    cmd1 = f'{python3} {nada_root}/Script/vcf_snp_variant_analyser.py {BB} {args.path} {args.filename} {args.safe_path} {args.sequence_size}'
+    cmd0 = f'. {nada_root}/env/bin/activate'
+    cmd1 = f'python {nada_root}/Scripts/vcf_snp_variant_analyser.py {BB} {args.path} {args.filename} {args.save_path} {args.sequence_size}'
     cmd2 = 'deactivate'
     
     echo_cmd = f'echo "{cmd0} && {cmd1} && {cmd2}"'
