@@ -304,6 +304,7 @@ def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size, v_or_b):
     except KeyError:
         print("KeyError occurred dataframe for {} hasn't changed to percentages".format(v_or_b))
     
+    print('{} from {}'.format(df, v_or_b))
     return df
 
 def pd_df_heatmap_variance(data):
