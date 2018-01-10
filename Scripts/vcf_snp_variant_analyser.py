@@ -6,7 +6,7 @@
 #$ -M d.j.spaanderman@umcutrecht.nl
 #$ -m beas
 
-import argparse, glob, os, pandas as pd, statistics, bokeh.palettes as bp
+import argparse, glob, os, pandas as pd, statistics, itertools, bokeh.palettes as bp
 from bokeh.plotting import figure, output_file, save, ColumnDataSource
 from bokeh.layouts import gridplot
 from bokeh.models import NumeralTickFormatter, HoverTool, GlyphRenderer, Range1d, LinearColorMapper, BasicTicker, PrintfTickFormatter, ColorBar, ColumnDataSource
@@ -95,17 +95,23 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size):
         in the same vcf file
     
     '''
-    lenght_before = 2
-    lenght_after = 3
+    
     
     if size == 3:
         lenght_before = 1
         lenght_after = 2
-        continue
+        
     elif size == 5:
         lenght_before = 2
         lenght_after = 3
-        continue
+    
+    elif size == 7:
+        lenght_before = 3
+        lenght_after = 4
+        
+    else:
+        lenght_before = 2
+        lenght_after = 3
 
     score_ = []
     score = []
@@ -164,6 +170,52 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size):
     points = False
     return extended, highmutated
 
+def list_with_all_combinations(letters, size):
+    '''list of all combination letters
+    
+    '''
+    all_combinations = []
+    for i in itertools.product('ACTG', repeat = size):
+        size_ = '{}'*size
+        all_combinations.append(size_.format(*i))
+    
+    return all_combinations
+       
+def dictionary_sequence_counter(variance_or_backbone_data, size):
+    '''Put in is sequence derived from vcf files. These can be
+    from either variance or backbone. Than counts how many times
+    all_combinations can be found with overlap in all these vcf
+    files and put it into a dictionary. If item is not found in 
+    sequence, it will not appear in the dictionary
+    {AAAAA: 5}
+    
+    '''
+    x = '-----'.join(variance_or_backbone_data)
+    dictionary_sequence = {}
+    all_combinations = list_with_all_combinations('ACTG', int(size))
+
+    for item in all_combinations:
+        if item in x:
+            dictionary_sequence[item] = occurrences(x, item)
+        else:
+            continue
+            
+    return dictionary_sequence
+
+def occurrences(string, sub):
+    '''counts times something occurs in string
+    with sub being what you are looking for.
+    This is with overlap!
+    
+    '''
+    count = start = 0
+    while True:
+        start = string.find(sub, start) + 1
+        if start > 0:
+            count+=1
+        else:
+            return count
+
 def vcf_heatmap_snps(data_surrounding, data_variance, size):
     '''data generation for heatmap plot
     creates dictionary with key is surrounding sequence
@@ -193,7 +245,9 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
         else:
             for m in mutation_:
                 mutation.append(m) 
-
+                
+    print(sequence)
+    
     dict_variance = {}
     points = 0
     for se in sequence:
@@ -208,13 +262,16 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
         
     return dict_variance
 
-def pd_df_heatmap_sequence(data_dict):
+def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size):
     '''From dictionary makes panda's dataframe.
     Firstly makes dictionary with bases to 0
     values and inputs data_dict into that dictionary
     while counting it.
     Next a df is build from this dictionary with index
     is keys from data_dict
+    
+    Update 10-1, uses dictionary of either insert or 
+    backbone to calculate percentage of sequences mutated
     
     Example
     {'AAAA':[A, G, G]} -> {'A':1,'T':0,'C':0,'G':2} ->
@@ -236,6 +293,14 @@ def pd_df_heatmap_sequence(data_dict):
     df = pd.DataFrame(data=data_dictionary, index=x)
     df.columns.name = 'Bases'
     df.index.name = 'Sequences'
+    
+    #update 9-1
+    p = pd.DataFrame.from_dict(dictionary_sequence_counter(variance_or_backbone_data, size), orient='index')
+        
+    df['A'] = (df['A']/p[0])*100
+    df['C'] = (df['C']/p[0])*100
+    df['G'] = (df['G']/p[0])*100
+    df['T'] = (df['T']/p[0])*100
     
     return df
 
@@ -400,6 +465,7 @@ def heatmap_vcf_files_snps(df_, output_name, save_path):
 def main(input_folder, output_name, save_path, backbone_name, size):
     #recursive=True
     variance_data = []
+    variance_sequence = []
     highmutated_data = []
     print('getting inputs')
     for subdir, dirs, files in os.walk(input_folder):
@@ -411,6 +477,12 @@ def main(input_folder, output_name, save_path, backbone_name, size):
                 if bool(data) == True :
                     id_ = list(data.keys())[0]
                     variance = data[id_]['variance']
+                    
+                    #whole sequence strip
+                    variance_list = []
+                    for item in variance:
+                        variance_list.append(item.split('\t',4)[3])
+                    variance_sequence.append(''.join(variance_list))
 
                     variance_data.append(mutated_reads_vcf_only(variance, data_all, size)[0])
                     highmutated_data.append(mutated_reads_vcf_only(variance, data_all, size)[1])
@@ -422,7 +494,7 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     #plot Heatmap_sequence
     print('plotting Heatmap')
     data_dict = vcf_heatmap_snps(variance_data, highmutated_data, size)
-    df_ = pd_df_heatmap_sequence(data_dict)
+    df_ = pd_df_heatmap_sequence(data_dict, variance_sequence, size)
     heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path)
         
     #plot SNPs_heatmap
@@ -447,19 +519,17 @@ if __name__ == '__main__':
     
     if args.BB200:
         backbone_name = 'BB200'
-        continue
     
     elif args.All_B:
-        backbone_name = 'BB'
-        continue 
+        backbone_name = 'BB' 
 
     print('selected backbone: {}'.format(backbone_name))
     
     input_folder = args.path
     output_name = args.filename
-    save_path = args.save
-    size = args.sequence_size
+    save_path = args.save_path
+    size = float(args.sequence_size)
 
     print('started')
-    main(input_folder, output_name, save_path)
+    main(input_folder, output_name, save_path, backbone_name, size)
     print('completed')
