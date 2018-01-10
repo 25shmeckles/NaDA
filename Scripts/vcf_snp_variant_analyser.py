@@ -260,7 +260,7 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
         
     return dict_variance
 
-def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size):
+def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size, v_or_b):
     '''From dictionary makes panda's dataframe.
     Firstly makes dictionary with bases to 0
     values and inputs data_dict into that dictionary
@@ -295,10 +295,14 @@ def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size):
     #update 9-1
     p = pd.DataFrame.from_dict(dictionary_sequence_counter(variance_or_backbone_data, size), orient='index')
         
-    df['A'] = (df['A']/p[0])*100
-    df['C'] = (df['C']/p[0])*100
-    df['G'] = (df['G']/p[0])*100
-    df['T'] = (df['T']/p[0])*100
+    try: 
+        df['A'] = (df['A']/p[0])*100
+        df['C'] = (df['C']/p[0])*100
+        df['G'] = (df['G']/p[0])*100
+        df['T'] = (df['T']/p[0])*100
+        
+    except KeyError:
+        print("KeyError occurred dataframe for {} hasn't changed to percentages".format(v_or_b))
     
     return df
 
@@ -514,12 +518,12 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     #plot Heatmap_sequence
     print('plotting Heatmap insert')
     data_dict = vcf_heatmap_snps(variance_data, highmutated_v, size)
-    df_ = pd_df_heatmap_sequence(data_dict, variance_sequence, size)
+    df_ = pd_df_heatmap_sequence(data_dict, variance_sequence, size, 'insert')
     heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, 'insert')
     
     print('plotting Heatmap backbone')
     data_dict = vcf_heatmap_snps(backbone_data, highmutated_b, size)
-    df_ = pd_df_heatmap_sequence(data_dict, backbone_sequence, size)
+    df_ = pd_df_heatmap_sequence(data_dict, backbone_sequence, size, 'backbone')
     heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, 'backbone')
         
     #plot SNPs_heatmap
