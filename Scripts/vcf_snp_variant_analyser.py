@@ -6,6 +6,9 @@
 #$ -M d.j.spaanderman@umcutrecht.nl
 #$ -m beas
 
+import sys
+print(sys.version)
+
 import argparse, glob, os, pandas as pd, statistics, itertools, bokeh.palettes as bp, numpy as np
 from bokeh.plotting import figure, output_file, save, ColumnDataSource
 from bokeh.layouts import gridplot
