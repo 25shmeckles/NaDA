@@ -44,12 +44,12 @@ def data_vcf_file(file_name, backbone_name):
                         continue
                     else:
                         variance.append(line.strip())
-
+                        
         else:
             print('{} has other backbone than input'.format(file_name))
             
         data[id_] = {'variance':variance,'backbone':backbone}
-            
+        
     return data
 
 def vcf_whole_sequence_strip(file_name):
@@ -366,7 +366,7 @@ def plot_vcf_snps(data, output_name, save_path, v_or_b):
     p.xaxis.axis_label = 'Single Nucleotide Polymorphism'
     p.yaxis.axis_label = 'amount of mutations'
     
-    output_file("{}/{}_{}_SNP_plot.html".format(save_path, output_name, v_or_b))
+    output_file("{}\{}_{}_SNP_plot.html".format(save_path, output_name, v_or_b))
     save(p)
 
 def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, v_or_b):
@@ -418,7 +418,7 @@ def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, v_or_b):
              ('occurence', '@scores'),
         ]
 
-        output_file("{}/{}_{}_heatmap_sequences.html".format(save_path, output_name, v_or_b))
+        output_file("{}\{}_{}_heatmap_sequences.html".format(save_path, output_name, v_or_b))
         save(p)
 
 def heatmap_vcf_files_snps(df_, output_name, save_path, v_or_b):
@@ -463,7 +463,7 @@ def heatmap_vcf_files_snps(df_, output_name, save_path, v_or_b):
          ('occurence', '@scores'),
     ]
     
-    output_file("{}/{}_{}_heatmap_SNPs.html".format(save_path, output_name, v_or_b))
+    output_file("{}\{}_{}_heatmap_SNPs.html".format(save_path, output_name, v_or_b))
     save(p)
 
 #Actual script for running files from dir and subdir
@@ -486,6 +486,7 @@ def main(input_folder, output_name, save_path, backbone_name, size):
                 print('file {} of {}'.format(points, len(files)))
             points += 1
             if filename.split('.')[-1] == 'vcf':    
+                print(filename)
                 file = os.path.join(input_folder, subdir, filename)
                 data = data_vcf_file(file, backbone_name)
                 data_all = vcf_whole_sequence_strip(file)
