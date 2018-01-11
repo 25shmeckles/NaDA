@@ -244,14 +244,14 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
                 mutation.append(m) 
     
     dict_variance = {}
-    points = 0
+    points = -1
     for se in sequence:
+        points += 1
         if len(se) == size:
             if se in dict_variance:
                 dict_variance[se].append(mutation[points])
             else:
                 dict_variance[se] = [mutation[points]]
-            points += 1
         else:
             continue
         
