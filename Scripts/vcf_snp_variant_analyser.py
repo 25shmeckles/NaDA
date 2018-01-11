@@ -565,6 +565,9 @@ if __name__ == '__main__':
     output_name = args.filename
     save_path = args.save_path
     size = float(args.sequence_size)
+    print(input_folder)
+    print(output_name)
+    print(save_path)
 
     print('started')
     main(input_folder, output_name, save_path, backbone_name, size)
