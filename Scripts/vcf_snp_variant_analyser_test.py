@@ -74,7 +74,7 @@ def filter_score(s):
         return True
     return False
 
-def mutated_reads_vcf_only(variance_or_backbone, data_all, size):
+def mutated_reads_vcf_only(variance_or_backbone, data_all, size, file_name):
     '''mutations in vcf file with 3 sequences before and
     3 sequences after mutation. Overlap can occur if mutations
     are found beside each other. if location in sequence has
@@ -92,7 +92,6 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size):
         in the same vcf file
     
     '''
-    
     
     if size == 3:
         lenght_before = 1
@@ -122,10 +121,14 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size):
     score2 = []
     for s in score:
         score2.append(s.split(':')[1].split(','))
-
+        
     score3 = []
     for s2 in score:
         score3.append(s2.split(':')[2]+':'+s2.split(':')[3]+':'+s2.split(':')[4])
+        
+    data = []
+    for i, items in enumerate(data_all):
+        data.append('{}\t{}\t{}'.format(items, file_name, i))
     
     points = 0
     highmutated = []
@@ -136,35 +139,64 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size):
             n2 = int(item[1])
             n3 = int(item[2])
             if n2/(n1+n2+n3) > 0.25:
-                for i, items in enumerate(data_all):
-                    mutated = ':'+','.join(item[0:3])+':'+score3[points]
+                for i, items in enumerate(data):
+                    mutated = ':'+','.join(item[0:3])+':'+score3[points]+'\t'+file_name
                     if mutated in items:
                         r_ = items.split(breakpoint, 5)
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
-                        highmutated.append(removed)
-                        extended.append(data_all[i-lenght_before:i+lenght_after])
+                        
+                        if removed in highmutated:
+                            continue
+                        else:
+                            highmutated.append(removed)
+
+                        data_ = data[i-lenght_before:i]+[removed]+data[i+1:i+lenght_after]
+                        if data_ in extended:
+                            continue
+                        else:
+                            extended.append(data_)
                         continue
             if n3/(n1+n2+n3) > 0.25:
-                for i, items in enumerate(data_all):
-                    mutated = ':'+','.join(item[0:3])+':'+score3[points]
+                for i, items in enumerate(data):
+                    mutated = ':'+','.join(item[0:3])+':'+score3[points]+'\t'+file_name
                     if mutated in items:
                         r_ = items.split(breakpoint, 5)
-                        r = r_[4][0]
+                        r = r_[4][2]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
-                        highmutated.append(removed)
-                        extended.append(data_all[i-lenght_before:i+lenght_after])
+                        
+                        if removed in highmutated:
+                            continue
+                        else:
+                            highmutated.append(removed)
+                            
+                        data_ = data[i-lenght_before:i]+[removed]+data[i+1:i+lenght_after]
+                        if data_ in extended:
+                            continue
+                        else:
+                            extended.append(data_)
+                        continue
         else:
             n1 = int(item[0])
             n2 = int(item[1])
             if n2/(n1+n2) > 0.25:
-                for i, items in enumerate(data_all):
-                    mutated = ':'+','.join(item[0:2])+':'+score3[points]
+                for i, items in enumerate(data):
+                    mutated = ':'+','.join(item[0:2])+':'+score3[points]+'\t'+file_name
                     if mutated in items:
-                        highmutated.append(items)
-                        extended.append(data_all[i-lenght_before:i+lenght_after])
+                        if items in highmutated:
+                            continue
+                        else:
+                            highmutated.append(items)
+                            
+                        data_ = data[i-lenght_before:i+lenght_after]
+                        if data_ in extended:
+                            continue
+                        else:
+                            extended.append(data_)
         points += 1
+            
     points = False
+    
     return extended, highmutated
 
 def list_with_all_combinations(letters, size):
@@ -196,7 +228,7 @@ def dictionary_sequence_counter(variance_or_backbone_data, size):
             dictionary_sequence[item] = occurrences(x, item)
         else:
             continue
-            
+
     return dictionary_sequence
 
 def occurrences(string, sub):
@@ -225,9 +257,9 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
         data_variance = vcf_all_strip[3]
     
     '''
+    print(data_surrounding)
     sequence =[]
     mutation = []
-    points = 0
     for items in data_surrounding:
         for i in items:
             sequence_ = ([j.split('\t')[3] for j in i])
@@ -237,7 +269,7 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
 
     for mut in data_variance:
         mutation_ = ([m.split('\t')[4] for m in mut])
-        if not mutation_:
+        if mutation_ == []:
             continue
         else:
             for m in mutation_:
@@ -256,7 +288,7 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
             continue
             
     print(dict_variance)
-    
+    print(len(dict_variance))
     return dict_variance
 
 def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size, v_or_b):
@@ -303,6 +335,10 @@ def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size, v_or_b):
     except KeyError:
         print("KeyError occurred dataframe for {} hasn't changed to percentages".format(v_or_b))
     
+    print('after making %')
+    df.sort_index(inplace=True)
+    df.fillna(0, inplace=True)
+    print(df)
     #print('{} from {}'.format(df, v_or_b))
     return df
 
@@ -358,7 +394,8 @@ def plot_vcf_snps(data, output_name, save_path, v_or_b):
     for item in y_:
         y.append(item/sum(y_))
 
-    p = figure(x_range=x, plot_width=400, plot_height=400, title='Distribution of mutations in {}'.format(v_or_b), background_fill_color="#E8DDCB")
+    p = figure(x_range=x, plot_width=400, plot_height=400, 
+               title='Distribution of mutations in {}'.format(v_or_b), background_fill_color="#E8DDCB")
     p.vbar(x, width=0.5, bottom=0, top=y, fill_color="#036564", line_color="#033649")
 
     p.yaxis[0].formatter = NumeralTickFormatter(format="0.0%")
@@ -503,8 +540,8 @@ def main(input_folder, output_name, save_path, backbone_name, size):
                         variance_list.append(item.split('\t',4)[3])
                     variance_sequence.append(''.join(variance_list))
 
-                    variance_data.append(mutated_reads_vcf_only(variance, data_all, size)[0])
-                    highmutated_v.append(mutated_reads_vcf_only(variance, data_all, size)[1])
+                    variance_data.append(mutated_reads_vcf_only(variance, data_all, size, filename)[0])
+                    highmutated_v.append(mutated_reads_vcf_only(variance, data_all, size, filename)[1])
                     
                     #for backbone the Data
                     backbone_list = []
@@ -512,8 +549,8 @@ def main(input_folder, output_name, save_path, backbone_name, size):
                         backbone_list.append(item.split('\t',4)[3])
                     backbone_sequence.append(''.join(backbone_list))
                     
-                    backbone_data.append(mutated_reads_vcf_only(backbone, data_all, size)[0])
-                    highmutated_b.append(mutated_reads_vcf_only(backbone, data_all, size)[1])
+                    #backbone_data.append(mutated_reads_vcf_only(backbone, data_all, size, filename)[0])
+                    #highmutated_b.append(mutated_reads_vcf_only(backbone, data_all, size, filename)[1])
             
     #plot SNPs
     print('plotting SNPs insert')
