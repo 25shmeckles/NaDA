@@ -10,6 +10,42 @@ from bokeh.models import NumeralTickFormatter, HoverTool, GlyphRenderer, Range1d
 from sklearn.cluster import KMeans
 
 ##-FUNCTIONS-##
+def dictionary_sequence_counter(variance_or_backbone_data, size):
+    '''Put in is sequence derived from vcf files. These can be
+    from either variance or backbone. Than counts how many times
+    all_combinations can be found with overlap in all these vcf
+    files and put it into a dictionary. If item is not found in 
+    sequence, it will not appear in the dictionary
+    {AAAAA: 5}
+    
+    '''
+    x = '-----'.join(variance_or_backbone_data)
+    dictionary_sequence = {}
+    all_combinations = list_with_all_combinations('ACTG', size)
+
+    for item in all_combinations:
+        if item in x:
+            dictionary_sequence[item] = occurrences(x, item)
+        else:
+            continue
+            
+    return dictionary_sequence
+
+
+def occurrences(string, sub):
+    '''counts times something occurs in string
+    with sub being what you are looking for.
+    This is with overlap!
+    
+    '''
+    count = start = 0
+    while True:
+        start = string.find(sub, start) + 1
+        if start > 0:
+            count+=1
+        else:
+            return count
+        
 def pd_df_heatmap_variance(data):
     '''From highmutated data of vcf files makes
     pandas dataframe. this dataframe has
@@ -28,13 +64,16 @@ def pd_df_heatmap_variance(data):
     
     return df
 
-def pd_df_heatmap_sequence(data_dict):
+def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size):
     '''From dictionary makes panda's dataframe.
     Firstly makes dictionary with bases to 0
     values and inputs data_dict into that dictionary
     while counting it.
     Next a df is build from this dictionary with index
-    is keys from data_dict
+    is keys from data_dict.
+    
+    Update 9-1, uses dictionary of either insert or 
+    backbone to calculate percentage of sequences mutated
     
     Example
     {'AAAA':[A, G, G]} -> {'A':1,'T':0,'C':0,'G':2} ->
@@ -57,14 +96,25 @@ def pd_df_heatmap_sequence(data_dict):
     df.columns.name = 'Bases'
     df.index.name = 'Sequences'
     
+    #update 9-1
+    p = pd.DataFrame.from_dict(dictionary_sequence_counter(variance_or_backbone_data, size), orient='index')
+    
+    df['A'] = (df['A']/p[0])*100
+    df['C'] = (df['C']/p[0])*100
+    df['G'] = (df['G']/p[0])*100
+    df['T'] = (df['T']/p[0])*100
+    
     return df
 
-def vcf_heatmap_snps(data_surrounding, data_variance):
+def vcf_heatmap_snps(data_surrounding, data_variance, size):
     '''data generation for heatmap plot
     creates dictionary with key is surrounding sequence
     and types of variances:
     {'AAAAA':['G','T']}
     where G, T is variance for third A
+    
+    size can be set to how many bases, if sequence is set to 3,
+    every sequence that has a different size will be eliminated.
     
     Args:
         data_surrounding = vcf_all_strip[1]
@@ -92,15 +142,18 @@ def vcf_heatmap_snps(data_surrounding, data_variance):
     dict_variance = {}
     points = 0
     for se in sequence:
-        if se in dict_variance:
-            dict_variance[se].append(mutation[points])
+        if len(se) == size:
+            if se in dict_variance:
+                dict_variance[se].append(mutation[points])
+            else:
+                dict_variance[se] = [mutation[points]]
+            points += 1
         else:
-            dict_variance[se] = [mutation[points]]
-        points += 1
+            continue 
         
     return dict_variance
 
-def vcf_all_strip(path, txt_yes_no, txt_name, lenght):
+def vcf_all_strip(path, txt_yes_no, txt_name, lenght, backbone_name):
     '''strips vcf files of it's information
     
     Args:
@@ -111,13 +164,17 @@ def vcf_all_strip(path, txt_yes_no, txt_name, lenght):
         
     Return:
         backbone_data = list of mutated sequence with
-        25% or more reads with mutated base and 3 sequences
+        25% or more reads with mutated base and 4 sequences
         before and after = [0]
         variance_data = same for variance data = [1]
         highmutated_b = only the mutated sequence with 25%
         or more reads with the mutated base without other
         sequences = [2]
         highmutated_v = same for variance data = [3]
+        variance_sequence = list with the whole sequence found
+        in the vcf files for the insert = [4]
+        backbone_sequence = list with the whole sequence found
+        in the vcf files for the backbone = [5]
         
     Notes:
         some sequences (only in backbone) have reads that should
@@ -132,14 +189,27 @@ def vcf_all_strip(path, txt_yes_no, txt_name, lenght):
     variance_data = []
     highmutated_v = []
     highmutated_b = []
+    variance_sequence = []
+    backbone_sequence = []
 
     for file in glob.iglob('*.vcf'):
-        data = data_vcf_file(file)
+        data = data_vcf_file(file, backbone_name)
         data_all = vcf_whole_sequence_strip(file)
         if bool(data) == True:
             id_ = list(data.keys())[0]
             variance = data[id_]['variance']
             backbone = data[id_]['backbone']
+            
+            #whole sequence strip
+            variance_list = []
+            for item in variance:
+                variance_list.append(item.split('\t',4)[3])
+            variance_sequence.append(''.join(variance_list))
+                    
+            backbone_list = []
+            for item in backbone:
+                backbone_list.append(item.split('\t',4)[3])
+            backbone_sequence.append(''.join(backbone_list))
 
             variance_data.append(mutated_reads_vcf_only(variance, data_all, lenght)[0])
             backbone_data.append(mutated_reads_vcf_only(backbone, data_all, lenght)[0]) 
@@ -148,7 +218,8 @@ def vcf_all_strip(path, txt_yes_no, txt_name, lenght):
 
             if txt_yes_no == 'yes':
                 append_txt_file(txt_name, data, id_)
-    return backbone_data, variance_data, highmutated_b, highmutated_v
+                
+    return backbone_data, variance_data, highmutated_b, highmutated_v, variance_sequence, backbone_sequence
 
 def highmutated_back_variance(variance_or_backbone_highmutated):
     '''enter highmutated sequence from vcf file into here to count
@@ -339,8 +410,10 @@ def vcf_whole_sequence_strip(file_name):
                 data.append(line.strip())
     return data
 
-def data_vcf_file(file_name):
-    '''strips data from vcf files
+def data_vcf_file(file_name, backbone_name):
+    '''strips data from vcf files. backbone_name is important
+    if you want to run script on HPC. if contaminated you can
+    only check for desired backbone.
     
     returns:
         data = {id_ of file: {'variance': variance_data,
@@ -349,30 +422,41 @@ def data_vcf_file(file_name):
     '''
     data = {}
     with open(file_name, 'r') as f:
-        id_ = False
-        backbone = []
-        variance = []
-        for line in f:
-            if line.startswith('##'):
-                continue
-            elif line.startswith('#'):
+        loglist = f.readlines()
+        found = False
+        for lines in loglist:
+            if ('{}'.format(backbone_name)) in lines:
+                found = True
+                
+        f.seek(0)
+        if found is True:
+            id_ = False
+            variance = []
+            backbone = []
+            for line in f:
+                if line.startswith('##'):
+                    continue
+                elif line.startswith('#'):
                     if not id_: #if id_ == False
                         id_ = line.strip()
                     else:
                         print('WARNING: An ID was found without corresponding sequence.', id_)
                         id_ = line.strip()
-            elif line.startswith('B'):
-                if './.' in line:
-                    continue
-                else:
-                    backbone.append(line.strip())
-            elif id_:
-                if './.' in line:
-                    continue
-                else:
-                    variance.append(line.strip())
-                    data[id_] = {'variance':variance, 
-                            'backbone':backbone}
+                elif line.startswith('B'):
+                    if './.' in line:
+                        continue
+                    else:
+                        backbone.append(line.strip())
+                elif id_:
+                    if './.' in line:
+                        continue
+                    else:
+                        variance.append(line.strip())
+                        data[id_] = {'variance':variance, 
+                                     'backbone':backbone}
+        else:
+            print('{} has other backbone found'.format(file_name))
+            
     return data
 
 def dict_values_to_other_dict(dict_x, dict_y):
