@@ -129,7 +129,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size, file_name):
     data = []
     for i, items in enumerate(data_all):
         data.append('{}\t{}\t{}'.format(items, file_name, i))
-    
+        
     points = 0
     highmutated = []
     extended = []
@@ -182,19 +182,24 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size, file_name):
             if n2/(n1+n2) > 0.25:
                 for i, items in enumerate(data):
                     mutated = ':'+','.join(item[0:2])+':'+score3[points]+'\t'+file_name
-                    if mutated in items:
-                        if items in highmutated:
-                            continue
-                        else:
-                            highmutated.append(items)
-                            
+                    if mutated in items:                
+                        print(items)
                         data_ = data[i-lenght_before:i+lenght_after]
                         if data_ in extended:
                             continue
+                        elif data_ == []:
+                            continue
                         else:
                             extended.append(data_)
+                            
+                        if items in highmutated:
+                            continue
+                        elif data_ == []:
+                            continue
+                        else:
+                            highmutated.append(items)
         points += 1
-            
+    
     points = False
     
     return extended, highmutated
@@ -257,23 +262,28 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
         data_variance = vcf_all_strip[3]
     
     '''
-    print(data_surrounding)
     sequence =[]
     mutation = []
+    
+    print(data_surrounding)
     for items in data_surrounding:
         for i in items:
             sequence_ = ([j.split('\t')[3] for j in i])
             sequence_2 = [''.join(sequence_)]
             for s in sequence_2:
                 sequence.append(s)
-
+                
+    print(len(sequence))
+    
     for mut in data_variance:
         mutation_ = ([m.split('\t')[4] for m in mut])
-        if mutation_ == []:
+        if mut == 0:
             continue
         else:
             for m in mutation_:
                 mutation.append(m) 
+
+    print(len(mutation))
     
     dict_variance = {}
     points = -1
@@ -286,9 +296,7 @@ def vcf_heatmap_snps(data_surrounding, data_variance, size):
                 dict_variance[se] = [mutation[points]]
         else:
             continue
-            
-    print(dict_variance)
-    print(len(dict_variance))
+
     return dict_variance
 
 def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size, v_or_b):

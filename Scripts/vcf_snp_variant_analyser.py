@@ -142,58 +142,72 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size, file_name):
             if n2/(n1+n2+n3) > 0.25:
                 for i, items in enumerate(data):
                     mutated = ':'+','.join(item[0:3])+':'+score3[points]+'\t'+file_name
-                    if mutated in items:
+                    if mutated in items:                  
+                        data_ = data[i-lenght_before:i]+[removed]+data[i+1:i+lenght_after]
+                        if data_ in extended:
+                            continue
+                        elif data_ == []:
+                            continue
+                        else:
+                            extended.append(data_)
+                        
                         r_ = items.split(breakpoint, 5)
                         r = r_[4][0]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         
                         if removed in highmutated:
                             continue
+                        elif data_ == []:
+                            continue
                         else:
                             highmutated.append(removed)
                             
-                        data_ = data[i-lenght_before:i]+[removed]+data[i+1:i+lenght_after]
-                        if data_ in extended:
-                            continue
-                        else:
-                            extended.append(data_)
                         continue
+
             if n3/(n1+n2+n3) > 0.25:
                 for i, items in enumerate(data_all):
                     mutated = ':'+','.join(item[0:3])+':'+score3[points]
                     if mutated in items:
+                        data_ = data[i-lenght_before:i]+[removed]+data[i+1:i+lenght_after]
+                        if data_ in extended:
+                            continue
+                        elif data_ == []:
+                            continue
+                        else:
+                            extended.append(data_)
+                        
                         r_ = items.split(breakpoint, 5)
                         r = r_[4][2]
                         removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         
                         if removed in highmutated:
                             continue
-                        else:
-                            highmutated.append(removed)
-                            
-                        data_ = data[i-lenght_before:i]+[removed]+data[i+1:i+lenght_after]
-                        if data_ in extended:
+                        elif data_ == []:
                             continue
                         else:
-                            extended.append(data_)
-                        continue
+                            highmutated.append(removed)
+
         else:
             n1 = int(item[0])
             n2 = int(item[1])
             if n2/(n1+n2) > 0.25:
                 for i, items in enumerate(data):
                     mutated = ':'+','.join(item[0:2])+':'+score3[points]+'\t'+file_name
-                    if mutated in items:
-                        if items in highmutated:
-                            continue
-                        else:
-                            highmutated.append(items)
-                            
+                    if mutated in items:                            
                         data_ = data[i-lenght_before:i+lenght_after]
                         if data_ in extended:
                             continue
+                        elif data_ == []:
+                            continue
                         else:
                             extended.append(data_)
+                            
+                        if items in highmutated:
+                            continue
+                        elif data_ == []:
+                            continue
+                        else:
+                            highmutated.append(items)
         points += 1
     points = False
     
