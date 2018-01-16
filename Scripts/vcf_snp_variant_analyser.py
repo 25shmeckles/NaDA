@@ -618,5 +618,7 @@ if __name__ == '__main__':
     print(save_path)
 
     print('started')
+    start = time.time()
     main(input_folder, output_name, save_path, backbone_name, size)
-    print('completed')
+    end = time.time()
+    print('completed in {} seconds'.format(end-start))
