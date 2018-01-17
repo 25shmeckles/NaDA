@@ -475,7 +475,7 @@ def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, v_or_b):
         sequences = list(df_.index)
 
         colors = Viridis256
-        mapper = LinearColorMapper(palette=colors, low=df.scores.min(), high=df.scores.max())
+        mapper = LinearColorMapper(palette=colors, low=0, high=100)
 
         source = ColumnDataSource(df)
 
@@ -654,14 +654,14 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     df_location = pd.DataFrame({'occurrence':list(snp_location_insert.values())},
                                index=snp_location_insert.keys())
     df_location = df_location.sort_values(by=['occurrence'], ascending=False)
-    df_location.to_csv('{}\{}_variance_insert_location.csv'.format(save_path, output_name)) 
+    df_location.to_csv('{}/{}_variance_insert_location.csv'.format(save_path, output_name)) 
     print('DataFrame saved as {}_variance_insert_location at {}'.format(output_name, save_path))
     
     print('checking SNPs location backbone')
     df_location = pd.DataFrame({'occurrence':list(snp_location_backbone.values())},
                                index=snp_location_backbone.keys())
     df_location = df_location.sort_values(by=['occurrence'], ascending=False)
-    df_location.to_csv('{}\{}_variance_backbone_location.csv'.format(save_path, output_name)) 
+    df_location.to_csv('{}/{}_variance_backbone_location.csv'.format(save_path, output_name)) 
     print('DataFrame saved as {}_variance_backbone_location at {}'.format(output_name, save_path))
 
 if __name__ == '__main__':
