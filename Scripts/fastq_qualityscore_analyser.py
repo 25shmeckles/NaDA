@@ -361,7 +361,7 @@ def main(input_folder, output_name, save_path, size, overlap):
             points += 1
             if points in points_list:
                 print('file {} of {}'.format(points, len(files)))
-            if filename.split('.')[-1] == 'done_fastq':
+            if filename.split('.')[-1] == 'fastq':
                 filenames.append(filename)
                 file = os.path.join(input_folder, subdir, filename)
                 X = get_list_fastq(file, size, overlap, letters)[0]
