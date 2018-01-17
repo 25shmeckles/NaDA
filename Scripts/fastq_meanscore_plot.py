@@ -96,7 +96,7 @@ def main(input_folder, output_name, save_path):
 if __name__ == '__main__':
 
     #Argument script
-    parser = argparse.ArgumentParser(description="Vcf SNP analyzer")
+    parser = argparse.ArgumentParser(description="meanscore analyser")
     parser.add_argument("path", help="path of files")
     parser.add_argument("filename", help="output name")
     parser.add_argument("save_path", help="path to save file")
