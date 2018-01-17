@@ -1,10 +1,11 @@
 import sys
 print(sys.version)
 
-import argparse, glob, os, pandas as pd, statistics, itertools, bokeh.palettes as bp, numpy as np
+import argparse, glob, os, pandas as pd, statistics, itertools, bokeh.palettes as bp, numpy as np, time
 from bokeh.plotting import figure, output_file, save, ColumnDataSource
 from bokeh.layouts import gridplot
 from bokeh.models import NumeralTickFormatter, HoverTool, GlyphRenderer, Range1d, LinearColorMapper, BasicTicker, PrintfTickFormatter, ColorBar, ColumnDataSource
+from bokeh.palettes import Viridis256
 from collections import defaultdict, Counter
 from math import pi
 
@@ -391,6 +392,47 @@ def highmutated_back_variance(variance_or_backbone_highmutated):
     mutated_counter = Counter(mut)
     return mutated_counter
 
+def snp_location_list(variance_or_backbone_surrounding_data, size):
+    '''strips variance data from sequence location and alteration
+    to identify where mutation occurs.
+    '''
+    if size == 3:
+        lenght = 2
+        
+    elif size == 5:
+        lenght = 3
+    
+    elif size == 7:
+        lenght = 4
+        
+    else:
+        lenght = 3
+
+    snp_location = []
+    
+    for i in variance_or_backbone_surrounding_data:
+        ch = []
+        position = []
+        sequence = ''
+        snp = [] 
+        points = 0
+        for j in i:
+            points += 1
+            ch.append('ch'+j.split('\t')[0]+'-'+'position')
+            position.append(j.split('\t')[1])
+            sequence += j.split('\t')[3]
+            if points == lenght:
+                snp.append('->'+j.split('\t')[4])
+            else:
+                continue
+                
+        if len(position) == size:        
+            snp_location.append(ch[0]+position[0]+'-'+'to'+'-'+position[int(size)-1]+':'+sequence+snp[0])
+        else:
+            continue
+        
+    return snp_location
+
 #plots
 def plot_vcf_snps(data, output_name, save_path, v_or_b):
     '''plot single nucleotide polymorphisms
@@ -432,8 +474,7 @@ def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, v_or_b):
         bases = list(df_.columns)
         sequences = list(df_.index)
 
-        colors = ["#75968f", "#a5bab7", "#c9d9d3", "#e2e2e2", "#dfccce", "#ddb7b1", "#cc7878", "#933b41",
-                  "#550b1d"]
+        colors = Viridis256
         mapper = LinearColorMapper(palette=colors, low=df.scores.min(), high=df.scores.max())
 
         source = ColumnDataSource(df)
@@ -457,7 +498,7 @@ def heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, v_or_b):
                line_color=None)
 
         color_bar = ColorBar(color_mapper=mapper, major_label_text_font_size="5pt",
-                             ticker=BasicTicker(desired_num_ticks=len(colors)),
+                             ticker=BasicTicker(desired_num_ticks=10),
                              label_standoff=6, border_line_color=None, location=(0, 0))
         p.add_layout(color_bar, 'right')
 
@@ -523,6 +564,8 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     backbone_data = []
     backbone_sequence = []
     highmutated_b = []
+    snp_location_insert = {}
+    snp_location_backbone = {}
     points = 1
     points_list = np.arange(500, 500000000, 500)
     
@@ -548,7 +591,9 @@ def main(input_folder, output_name, save_path, backbone_name, size):
                         variance_list.append(item.split('\t',4)[3])
                     variance_sequence.append(''.join(variance_list))
 
-                    variance_data.append(mutated_reads_vcf_only(variance, data_all, size, filename)[0])
+                    
+                    variance_file_data = mutated_reads_vcf_only(variance, data_all, size, filename)[0]
+                    variance_data.append(variance_file_data)
                     highmutated_v.append(mutated_reads_vcf_only(variance, data_all, size, filename)[1])
                     
                     #for backbone the Data
@@ -557,9 +602,27 @@ def main(input_folder, output_name, save_path, backbone_name, size):
                         backbone_list.append(item.split('\t',4)[3])
                     backbone_sequence.append(''.join(backbone_list))
                     
-                    backbone_data.append(mutated_reads_vcf_only(backbone, data_all, size, filename)[0])
+                    backbone_file_data = mutated_reads_vcf_only(backbone, data_all, size, filename)[0]
+                    backbone_data.append(backbone_file_data)
                     highmutated_b.append(mutated_reads_vcf_only(backbone, data_all, size, filename)[1])
-            
+                    
+                    #checking location of mutation
+                    snp_location = snp_location_list(variance_file_data, size)
+                    for i in snp_location:
+                        if i in snp_location_insert:
+                            snp_location_insert[i] += 1
+                            continue
+                        else:
+                            snp_location_insert[i] = 1
+                            
+                    snp_location = snp_location_list(backbone_file_data, size)
+                    for i in snp_location:
+                        if i in snp_location_backbone:
+                            snp_location_backbone[i] += 1
+                            continue
+                        else:
+                            snp_location_backbone[i] = 1
+                    
     #plot SNPs
     print('plotting SNPs insert')
     plot_vcf_snps(highmutated_v, output_name, save_path, 'insert')
@@ -586,7 +649,20 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     df_ = pd_df_heatmap_variance(highmutated_b)
     heatmap_vcf_files_snps(df_, output_name, save_path, 'backbone')
 
+    #mutation location
+    print('checking SNPs location insert')
+    df_location = pd.DataFrame({'occurrence':list(snp_location_insert.values())},
+                               index=snp_location_insert.keys())
+    df_location = df_location.sort_values(by=['occurrence'], ascending=False)
+    df_location.to_csv('{}\{}_variance_insert_location.csv'.format(save_path, output_name)) 
+    print('DataFrame saved as {}_variance_insert_location at {}'.format(output_name, save_path))
     
+    print('checking SNPs location backbone')
+    df_location = pd.DataFrame({'occurrence':list(snp_location_backbone.values())},
+                               index=snp_location_backbone.keys())
+    df_location = df_location.sort_values(by=['occurrence'], ascending=False)
+    df_location.to_csv('{}\{}_variance_backbone_location.csv'.format(save_path, output_name)) 
+    print('DataFrame saved as {}_variance_backbone_location at {}'.format(output_name, save_path))
 
 if __name__ == '__main__':
 
