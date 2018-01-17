@@ -4,6 +4,10 @@ import argparse, pandas as pd, time, os, numpy as np
 from bokeh.plotting import figure, show, output_file
 
 def boxplot(df_, output_name, save_path):
+    '''boxplot of meanscore from fastq files.
+    groups are devided between nanopore runs
+    
+    '''
     df_.columns.name = 'group'
     cats = list(df_.columns.values)
     df = pd.DataFrame(df_.stack(), columns=['score']).reset_index()
