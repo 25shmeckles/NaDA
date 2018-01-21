@@ -223,17 +223,17 @@ def make_dataframe(data_high, data_medium, data_low):
     
     return df
 
-def save_meanscores_boxplot(meanscore, filenames, save_path, output_name):
+def save_meanscores_boxplot(meanscore, filenames, save_path, output_name, size, overlap):
     index_ = list(range(1, 1+len(meanscore)))
     df = pd.DataFrame(data=meanscore, index=index_)
     df.columns = [output_name]
     df.index.name = 'Name'
-    df.to_csv('{}/{}_boxplot.csv'.format(save_path, output_name)) 
+    df.to_csv('{}/{}_{}_{}_boxplot.csv'.format(save_path, output_name, size, overlap)) 
     
-    print('DataFrame Saved as {}_boxplot in directory {}'.format(output_name, save_path))
+    print('DataFrame Saved as {}_{}_{}_boxplot in directory {}'.format(output_name, size, overlap, save_path))
     
 #Plotting functions
-def score_plotting(df_normal, df_changed, save_path, output_name, plot):
+def score_plotting(df_normal, df_changed, save_path, output_name, plot, size, overlap):
         
     TOOLS = 'hover,reset,xpan,xwheel_zoom'
     
@@ -311,11 +311,11 @@ def score_plotting(df_normal, df_changed, save_path, output_name, plot):
     
     
     if plot == True:
-        output_file('{}/{}_score_plotting.html'.format(save_path, output_name))
+        output_file('{}/{}_{}_{}_score_plotting.html'.format(save_path, output_name, size, overlap))
         save(grid)
     return scores_h, scores_l
             
-def cluster_plot(scores_h, scores_l, df_changed , save_path, output_name):
+def cluster_plot(scores_h, scores_l, df_changed , save_path, output_name, size, overlap):
     
     TOOLS = 'hover,reset,xpan,xwheel_zoom'
     
@@ -340,7 +340,7 @@ def cluster_plot(scores_h, scores_l, df_changed , save_path, output_name):
         ('Low Score', '@Score_l%'),
     ]
     
-    output_file('{}/{}_score_clustering.html'.format(save_path, output_name))
+    output_file('{}/{}_{}_{}_score_clustering.html'.format(save_path, output_name, size, overlap))
     save(p)
     
 def main(input_folder, output_name, save_path, size, overlap):
@@ -411,7 +411,7 @@ def main(input_folder, output_name, save_path, size, overlap):
     df_s  = make_dataframe(all_high_scores, all_medium_scores, all_low_scores)
     
     #save data of meanscore
-    save_meanscores_boxplot(meanscore, filenames, save_path, output_name)
+    save_meanscores_boxplot(meanscore, filenames, save_path, output_name, size, overlap)
     
     #score plot
     print('getting score plot')
@@ -419,14 +419,14 @@ def main(input_folder, output_name, save_path, size, overlap):
     df_n = df_n.replace(0, np.nan)
     df_s = df_s.replace(0, np.nan)
 
-    score_plotting(df_n, df_s, save_path, output_name, True)
+    score_plotting(df_n, df_s, save_path, output_name, True, size, overlap)
     print('score plot compleet')
     
     #clustering
     print('clustering data')
-    s_h = score_plotting(df_n, df_s, save_path, output_name, False)[0]
-    s_l = score_plotting(df_n, df_s, save_path, output_name, False)[1]
-    cluster_plot(s_h, s_l, df_s, save_path, output_name)
+    s_h = score_plotting(df_n, df_s, save_path, output_name, False, size, overlap)[0]
+    s_l = score_plotting(df_n, df_s, save_path, output_name, False, size, overlap)[1]
+    cluster_plot(s_h, s_l, df_s, save_path, output_name, size, overlap)
     
     
 if __name__ == '__main__':
