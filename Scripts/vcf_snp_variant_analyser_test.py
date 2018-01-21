@@ -191,7 +191,7 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size, file_name):
                             continue
                         else:
                             extended.append(data_)
-                            
+
                         if items in highmutated:
                             continue
                         elif data_ == []:
@@ -327,7 +327,22 @@ def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size, v_or_b):
     df.index.name = 'Sequences'
     
     #update 9-1
-    p = pd.DataFrame.from_dict(dictionary_sequence_counter(variance_or_backbone_data, size), orient='index')
+    point = 0
+    data_dict = {}
+    print(variance_or_backbone_data)
+    if size >= 10:
+        for point in range(len(variance_or_backbone_data)):
+            if variance_or_backbone_data[point] in data_dict:
+                data_dict[variance_or_backbone_data[point]] += 1
+            else:
+                
+                data_dict[variance_or_backbone_data[point]] = 1
+        else:
+            p = pd.DataFrame.from_dict(data_dict, orient='index')
+        point += 1
+        
+    else:
+        p = pd.DataFrame.from_dict(dictionary_sequence_counter(variance_or_backbone_data, size), orient='index')
         
     try: 
         df['A'] = (df['A']/p[0])*100
@@ -341,7 +356,6 @@ def pd_df_heatmap_sequence(data_dict, variance_or_backbone_data, size, v_or_b):
     print('after making %')
     df.sort_index(inplace=True)
     df.fillna(0, inplace=True)
-    print(df)
     #print('{} from {}'.format(df, v_or_b))
     return df
 
@@ -401,6 +415,7 @@ def snp_location_list(variance_or_backbone_surrounding_data, size):
         lenght = 3
 
     snp_location = []
+    data_dict = {}
     
     for i in variance_or_backbone_surrounding_data:
         ch = []
@@ -414,16 +429,20 @@ def snp_location_list(variance_or_backbone_surrounding_data, size):
             position.append(j.split('\t')[1])
             sequence += j.split('\t')[3]
             if points == lenght:
-                snp.append('->'+j.split('\t')[4])
+                snp.append(j.split('\t')[4])
             else:
                 continue
                 
         if len(position) == size:        
-            snp_location.append(ch[0]+position[0]+'-'+'to'+'-'+position[int(size)-1]+':'+sequence+snp[0])
+            snp_location.append(ch[0]+position[0]+'-'+'to'+'-'+position[int(size)-1]+':'+sequence+'->'+snp[0])
         else:
             continue
+            
+        key = ch[0]+position[lenght-1]+':'+sequence[lenght-1]
+        value = snp[0]
+        data_dict[key] = value
         
-    return snp_location
+    return snp_location, data_dict
     
 
 #plots
@@ -559,6 +578,8 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     backbone_sequence = []
     highmutated_b = []
     variance_snp_location = {}
+    single_snp_data_dict = {}
+    single_list = []
     points = 1
     points_list = np.arange(500, 500000000, 500)
     
@@ -583,6 +604,8 @@ def main(input_folder, output_name, save_path, backbone_name, size):
                     variance_list = []
                     for item in variance:
                         variance_list.append(item.split('\t',4)[3])
+                        single_list.append('ch'+item.split('\t',4)[0]+'-'+'position'+
+                                           item.split('\t',4)[1]+':'+item.split('\t',4)[3])
                     variance_sequence.append(''.join(variance_list))
 
                     variance_file_data = mutated_reads_vcf_only(variance, data_all, size, filename)[0]
@@ -596,14 +619,30 @@ def main(input_folder, output_name, save_path, backbone_name, size):
                     backbone_sequence.append(''.join(backbone_list))
                     
                     #checking location of mutation
-                    snp_location = snp_location_list(variance_file_data, size)
+                    snp_location = snp_location_list(variance_file_data, size)[0]
                     for i in snp_location:
                         if i in variance_snp_location:
                             variance_snp_location[i] += 1
                             continue
                         else:
                             variance_snp_location[i] = 1
-                                
+                            
+                    #single location only, no surrounding bases
+                    point = 0
+                    data_dict = snp_location_list(variance_file_data, size)[1]
+                    key = list(data_dict.keys())
+                    value = list(data_dict.values())
+                    
+                    for point in range(len(key)):
+                        if len(key) >= 1:
+                            if key[point] in single_snp_data_dict:
+                                single_snp_data_dict[key[point]].append(value[point])
+                            else:
+                                single_snp_data_dict[key[point]] = [value[point]]
+                            point += 1
+                        else:
+                            continue
+                            
     #plot SNPs
     print('plotting SNPs insert')
     plot_vcf_snps(highmutated_v, output_name, save_path, 'insert')
@@ -612,6 +651,7 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     
     #plot Heatmap_sequence
     print('plotting Heatmap insert')
+    print(len(single_list[0]))
     data_dict = vcf_heatmap_snps(variance_data, highmutated_v, size)
     df_ = pd_df_heatmap_sequence(data_dict, variance_sequence, size, 'insert')
     heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, 'insert')
@@ -620,6 +660,14 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     data_dict = vcf_heatmap_snps(backbone_data, highmutated_b, size)
     df_ = pd_df_heatmap_sequence(data_dict, backbone_sequence, size, 'backbone')
     heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, 'backbone')
+    
+    print('plotting Heatmap of single base')
+    lenght_single = len(single_list[0])
+    print('this is the lenght of single base: {}'.format(lenght_single))
+    df_ = pd_df_heatmap_sequence(single_snp_data_dict, single_list, lenght_single, 'single_base')
+    heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, 'single_base')
+    #heatmap_vcf_files_snps_with_sequence(df_, output_name, save_path, 'single_base')
+    
         
     #plot SNPs_heatmap
     print('plotting SNPs_heatmap insert')
@@ -635,7 +683,6 @@ def main(input_folder, output_name, save_path, backbone_name, size):
     df_location = pd.DataFrame({'occurrence':list(variance_snp_location.values())},
                                index=variance_snp_location.keys())
     df_location = df_location.sort_values(by=['occurrence'], ascending=False)
-    print(df_location)
     
 
 if __name__ == '__main__':
