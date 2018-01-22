@@ -1,44 +1,3 @@
-.. Internship report documentation master file, created by
-   sphinx-quickstart on Wed Dec  6 10:37:32 2017.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
-
-Data analyzing of ctDNA from Nanopore Sequencing with Python
-============================================================
-**Cyclomics data analysis: identifying and analyzing alterations in ctDNA for data filtering**
-
-*Student:			Douwe Spaanderman (5483352)*
-
-*Supervisor: 			Alessio Marcozzi*
-
-*Group Kloosterman		Medical Genetics - UMC Utrecht*
-
-
-.. toctree::
-   :maxdepth: 2
-   :caption: Table of Contents
-
-   Introduction
-   General workflow
-   Results and Discussion
-   References
-
-Introduction
-------------
-Tumor genotyping is essential for improving the clinical outcome for many cancer patients. Not only is it important for tailoring drugs specific targets for the genetic landscape of the tumor. It is also vital for better diagnostics as well as follow up monitoring. Furthermore, increasing knowledge of tumor tissue genotyping can enhance our understanding of the molecular mechanisms of cancer. Today, tumor genotyping is conducted using local biopsies of tumor tissue. This method of achieving the genetic landscape is however heavily limited mostly due to its invasive nature. Therefore, tissue biopsies can only be conducted a limited amount of times, enhancing difficulties with tumor heterogeneity and the fluctuation of the genetic landscape of the tumor in time(1). Altogether these limitations require a new none invasive method to be able to tackle these difficulties.
-
-Just recently, circulating tumor DNA (ctDNA) has been suggested as a new innovating method for identifying the tumor genetic landscape. These DNA fragments are derived from necrotic tumor cells and subsequently further fragmented by macrophages(2). ctDNA makes up for a portion of the whole cell-free DNA (cfDNA), increasingly so upon heavy tumor burden. Theoretically, ctDNA provides a better alternative for tumor genotyping, because of its noninvasive nature, ability to be used unlimited times, it accounts for most of both intratumoral and intermetastatic heterogeneity and has been shown to identify multiple types of alterations. However, ctDNA encounters some difficulties, such as low allelic fractions of ctDNA in patient's blood(3), especially on low tumor burden. Also, discrimination between cfDNA and ctDNA has seemed to be problematic. These problems hinder researchers to develop high specific and sensitive clinical tests.
-
-The Kloosterman group(UMC Utrecht) uses a new and innovating method called Cyclomics to identify alterations in ctDNA (Figure 1). Currently research upon this method is conducted for p53 mutation in patients with head and neck carcinoma's, but upon achieving a sensitive and specific test, Cyclomics could provide for identifying multiple driver mutations in ctDNA(4). Cyclomics uses rolling circle amplification to increase low allelic fractions of mutated ctDNA fragments. This library preparation for Nanopore sequencing increases its sensitivity. However, as with all sequencing methods, sequencing isn't flawless and covers real biological mutations but also asymmetric DNA errors, PCR and sequencing errors(5). Therefore, including multiple filtering steps upon the data achieved from the Nanopore sequencer is essential for identifying real biological mutations and thus improving specificity and sensitivity of the clinical tests. In this report, data analyzing will be covered with Python, identifying regions with high and low mutational value as well as identifying single nucleotide polymorphisms(SNPs) in a p53 dataset.
- 
-.. figure::  C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Figure_workflow.jpg
-   :scale:   70%
-   :align:   center
-
-   Figure 1: **Workflow for Cyclomics**. A) for library preperation, patient blood is isolated, which contains circulating tumor DNA (ctDNA) fragments. Using a phosphorylated backbone, these fragments can be circularized and subsequently amplified with rolling circle amplification. This leaves very long reads, which are ideal for nanopore sequencing. B) Nanopore sequencing is used to identify nucleotides in a read and after base and variant calling gives fastq and vcf files. After applying a Data filter, true driver mutation can be identified.
-
-**General workflow**
-
 Results and discussion
 ----------------------
 Fastq files
@@ -238,15 +197,3 @@ The class function is used to define which script is going to be checked for qua
 
 HPC
 +++
-
-References 
-----------
-(Ask how to link ref in text)
-
-1: Gerlinger, M. et al. Intratumor Heterogeneity and Branched Evolution Revealed by Multiregion Sequencing. N. Engl. J. Med. 366, 883-892 (2012).
-2: Choi, J.-J., Reich, C. F., Pisetsky, D. S. & Pisetsky, D. S. The role of macrophages in the in vitro generation of extracellular DNA from apoptotic and necrotic cells. Immunology 115, 55-62 (2005).
-3: Beaver, J. A. et al. Detection of Cancer DNA in Plasma of Patients with Early-Stage Breast Cancer. Clin. Cancer Res. 20, 2643-2650 (2014).
-4: Paper of Kloosterman group (not yet released)
-5: Newman, A. M., Lovejoy, A. F., Klass, D. M., Kurtz, D. M., Chabon, J. J., Scherer, F., A. A. (2016). Integrated digital error suppression for improved detection of circulating tumor DNA. Nature Biotechnology, 34(5), 547-555.
-6: Chen, G., Mosier, S., Gocke, C. D., Lin, M. T., & Eshleman, J. R. (2014). Cytosine Deamination Is a Major Cause of Baseline Noise in Next-Generation Sequencing. Molecular Diagnosis and Therapy, 18(5), 587-593.
-7: Costello, M., Pugh, T. J., Fennell, T. J., Stewart, C., Lichtenstein, L., Meldrim, J. C., Getz, G. (2013). Discovery and characterization of artifactual mutations in deep coverage targeted capture sequencing data due to oxidative DNA damage during sample preparation. Nucleic Acids Research, 41(6), e67-e67.
