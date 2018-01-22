@@ -79,6 +79,7 @@ def main(input_folder, output_name, save_path):
     points = 0
     df = pd.DataFrame({'A' : []})
     points_list = np.arange(500, 500000000, 500)
+    list_of_files = []
     
     print('getting inputs')
     for subdir, dirs, files in os.walk(input_folder):
@@ -89,15 +90,19 @@ def main(input_folder, output_name, save_path):
                 print('file {} of {}'.format(points, len(files)))
             if filename.split('.')[-1] == 'csv':
                 file = os.path.join(input_folder, subdir, filename)
-                file_code = file[-20:-12]
-                df_ = pd.read_csv(file)
-                df_ = df_.set_index('Name')
-                df_ = df_.add_suffix(file_code)
-                
-                if df.empty:
-                    df = df_
+                if file[:-20] in list_of_files:
+                    continue
                 else:
-                    df = pd.merge(df, df_, left_index=True, right_index=True, how='outer')
+                    df_ = pd.read_csv(file)
+                    df_ = df_.set_index('Name')
+                    df_ = df_.add_suffix('_')
+
+                    if df.empty:
+                        df = df_
+                    else:
+                        df = pd.merge(df, df_, left_index=True, right_index=True, how='outer')
+                        
+                list_of_files.append(file[:-20])
                 
     #boxplot
     boxplot(df, output_name, save_path)
