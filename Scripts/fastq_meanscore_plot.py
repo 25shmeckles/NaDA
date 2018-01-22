@@ -1,7 +1,7 @@
 #Important, need csv files from fastq_variant_analyser
 
 import argparse, pandas as pd, time, os, numpy as np
-from bokeh.plotting import figure, show, output_file
+from bokeh.plotting import figure, show, output_file, save
 
 def boxplot(df_, output_name, save_path):
     '''boxplot of meanscore from fastq files.
@@ -69,7 +69,7 @@ def boxplot(df_, output_name, save_path):
     p.xaxis.major_label_text_font_size="12pt"
 
     output_file('{}\{}_boxplot.html'.format(save_path, output_name))
-    show(p)
+    save(p)
     
 def main(input_folder, output_name, save_path):
     '''get df out of csv file and make it into
