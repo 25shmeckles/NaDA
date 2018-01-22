@@ -25,7 +25,8 @@ def make_df_percentages(df, size):
     for i, items in enumerate(all_dict):
         for j, item in enumerate(data_dict):
             if item in items:
-                data[list(all_dict.keys())[i]] = ((list(all_dict.values())[i]/list(data_dict.values())[j])*100) 
+                score = ((list(all_dict.values())[i]/list(data_dict.values())[j])*100)
+                data[list(all_dict.keys())[i]] = '{}%'.format(score)
     
     df = pd.DataFrame({df_columns_name:list(data.values())},
                      index=data.keys())
@@ -81,19 +82,27 @@ def main(input_folder, output_name, save_path, size, i_or_b):
                         df = df_p
                     else:
                         df = pd.merge(df, df_p, left_index=True, right_index=True, how='outer')
+
+                    if df.empty:
+                        df = df_
+                    else:
+                        df = pd.merge(df, df_, left_index=True, right_index=True, how='outer')
                     
     #print to excel
-    book = load_workbook('{}/{}_location.xlsx'.format(save_path, output_name))
-    writer = pd.ExcelWriter('{}/{}_location.xlsx'.format(save_path, output_name), engine='openpyxl') 
-    writer.book = book
-    writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
+    if os.path.isfile('{}/{}_location.xlsx'.format(save_path, output_name)) == True:
+        book = load_workbook('{}/{}_location.xlsx'.format(save_path, output_name))
+        writer = pd.ExcelWriter('{}/{}_location.xlsx'.format(save_path, output_name), engine='openpyxl') 
+        writer.book = book
+        writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
+
+        df.to_excel(writer,'{}_{}'.format(i_or_b, size))
+        writer.save()
     
-    df.to_excel(writer,'{}_{}'.format(i_or_b, size))
-    writer.save()
-    
-    #writer = pd.ExcelWriter('{}/{}_location.xlsx'.format(save_path, output_name))
-    #df.to_excel(writer,'{}_{}'.format(i_or_b, size))
-    #writer.save()
+    else:
+        writer = pd.ExcelWriter('{}/{}_location.xlsx'.format(save_path, output_name))
+        df.to_excel(writer,'{}_{}'.format(i_or_b, size))
+        writer.save()
+        
     print('DataFrame saved as {}_variance_backbone_location at {}'.format(output_name, save_path))
     
 if __name__ == '__main__':
