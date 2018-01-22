@@ -1,6 +1,6 @@
 #Important, need csv files from fastq_variant_analyser
 
-import argparse, pandas as pd, time, os, numpy as np
+import argparse, pandas as pd, time, os, numpy as np, math
 from bokeh.plotting import figure, show, output_file, save
 
 def boxplot(df_, output_name, save_path):
@@ -67,8 +67,10 @@ def boxplot(df_, output_name, save_path):
     p.ygrid.grid_line_color = "white"
     p.grid.grid_line_width = 2
     p.xaxis.major_label_text_font_size="12pt"
+    p.xaxis.major_label_orientation = math.pi/2
 
     output_file('{}\{}_boxplot.html'.format(save_path, output_name))
+    print('Boxplot saved as {}_boxplot.html at {}'.format(output_name, save_path))
     save(p)
     
 def main(input_folder, output_name, save_path):
@@ -87,8 +89,11 @@ def main(input_folder, output_name, save_path):
                 print('file {} of {}'.format(points, len(files)))
             if filename.split('.')[-1] == 'csv':
                 file = os.path.join(input_folder, subdir, filename)
+                file_code = file[-20:-12]
                 df_ = pd.read_csv(file)
                 df_ = df_.set_index('Name')
+                df_ = df_.add_suffix(file_code)
+                
                 if df.empty:
                     df = df_
                 else:
