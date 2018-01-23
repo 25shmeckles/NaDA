@@ -2,9 +2,6 @@ Results and discussion
 ----------------------
 Fastq files
 +++++++++++
-
-#Where are both the Fastq and vcf files derived from. Are they from healthy individuals, how many persons, ect.
-
 **Quality score distribution**. Fastq are text-based files derived from sequencers such as Illumina and Nanopore that contain a biological sequence and for every base a quality score.
 this quality score represents the sequencers ability to call a base as true, in other words, the score says something about how sure the sequencer is that the right base is called. 
 if the score for the base is low, it's most likely the right base, while if the score is high the machine is unsure if it's the real base. Analyzing quality scores on sequences
@@ -36,7 +33,7 @@ is important to be able to understand which regions of bases is difficult to get
                  	   		id_ = False
     		return data
 
-The data returns a dictionary with identification (id), sequence and scores for individual bases in the fastq file . Following this script, plotting was conducted as shown in figure 1. Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurence of high and low score regions. In these high score regions bases have more chance to be falsly assigned and are thus less reliable for mutation identification. Likewise, mutations found in low score regions are more likely to be rightly assigned and thus true mutations. 
+The data returns a dictionary with identification (id), sequence and scores for individual bases in the fastq file. Following this script, plotting was conducted as shown in figure 1. Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurence of high and low score regions. In these high score regions bases have more chance to be falsly assigned and are thus less reliable for mutation identification. Likewise, mutations found in low score regions are more likely to be rightly assigned and thus true mutations. 
 
 .. figure::  C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Fastq_files_qualityscore.png
    :scale:   70%
@@ -121,7 +118,15 @@ mutations, as a mutation found in for instance TTCC are more likely to be a real
    Table 1: Highest and lowest five scoring sequences. A - C) score is meanscore for all combinations in same size and data set as figure 3. 
    D - F) score is percentage of sequence in category high for all combinations in same size and data set as figure 3. 
 
-**Clustering**. Another way of visualizing the qualityscore in fastq files is by using clustering. Clustering is a method in which data point get coupled in groups (clusters) by a certrain geometry. Here K-Means is used for clustering, which makes clusters based on the distance between the points. in figure 5 three clusters are formed in which the yellow one represents sequences with often reported high score and few times reported low scores. In this cluster, alterations are more likely to be falsly assigned. Furthermore, in blue cluster, alterations are more likely to be rightfully assigned. Clustering of data can provide for a more clearer view on which sequences to include and exclude for mutation calling.
+**Clustering**. Another way of visualizing the qualityscore in fastq files is by using clustering. Clustering is a method in which data point get coupled in groups (clusters) by a certrain geometry. Here K-Means is used for clustering, which makes clusters based on the the following algorithm:
+
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\Source\\_static\\K-Means.png
+   :scale:  70%
+   :align:  center
+
+#explain what this algorithm does
+
+in figure 5 three clusters are formed in which the yellow one represents sequences with often reported high score and few times reported low scores. In this cluster, alterations are more likely to be falsly assigned. Furthermore, in blue cluster, alterations are more likely to be rightfully assigned. Clustering of data can provide for a more clearer view on which sequences to include and exclude for mutation calling.
 
 .. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\Source\\_static\\clusterplot.png
    :scale:  50%
@@ -138,17 +143,17 @@ Here only run specific sequence qualityscores have been investigated. In order t
 Variant Call Format files
 +++++++++++++++++++++++++
 **Mutation distribution of single nucleotide polymorphisms**. Variant Call Format (VCF) files are text files containing data of single positions in the genome. In these files, variants
-are formatted with the reference included. For sequenced sites, amount of reads found with mutation and reference are given. The dataset visualized here is derived from the cyclomics project, sequencing was preformed with nanopore and the data contains a sequence part from chromosome 17 (around 160 nucleotides) and a backbone, which is used for circulair pcr reaction. In total 1187 VCF files were used for variant calling. Here, VCF files are screened for single nucleotide polymorphism (SNP) occurence. Firsly, files were stripped of reported mutated bases, other data was discarded. As described earlier, every variant site has a number of reads that covers this site. These reads can be both coupled to the mutation and the reference. For example, on position 7577503 a SNP was found in 6 reads and 3 reads were coupled to the reference. While the amount of reads coupled to the mutation in contrast to the reads is important, here occurence of certain SNPs have been firsly investigated. In order to investigated the amount of SNPs in the files, VCF files were simallarly stripped as Fastq files and seperated by either sequence or backbone. Next, for the variants a parameter was set at a minimum of 25 percent of the reads that should be coupled to the mutant variant and visualized in figure 4:
+are formatted with the reference included. For sequenced sites, amount of reads found with mutation and reference are given. The dataset visualized here is derived from the cyclomics project, sequencing was preformed with nanopore and the data contains a part of the p53 gen on chromosome 17 (around 160 nucleotides) and a backbone, which is used for circulair pcr reaction. In total 1187 VCF files were used for variant calling. Here, VCF files are screened for single nucleotide polymorphism (SNP) occurence. Firsly, files were stripped of reported mutated bases, other data was discarded. As described earlier, every variant site has a number of reads that covers this site. These reads can be both coupled to the mutation and the reference. For example, on position 7577503 a SNP was found in 6 reads and 3 reads were coupled to the reference. While the amount of reads coupled to the mutation in contrast to the reads is important, here occurence of certain SNPs have been firsly investigated. In order to investigated the amount of SNPs in the files, VCF files were simallarly stripped as Fastq files and seperated by either sequence or backbone. Next, for the variants a parameter was set at a minimum of 25 percent of the reads that should be coupled to the mutant variant and visualized in figure 4:
 
 .. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Combined_vcf_snp_analysis.png
    :scale:  70%
    :align:  center
 
-   Figure 6: Distriution of SNPs in the sequence of 1187 VCF files. Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C > T, meaning that T subsitutes C. A) Bar plot with single nucleotide polymorphisms occurence as percentage of whole. B) Heatmap from same variances with amount of occurences in the files
+   Figure 6: Distriution of SNPs in the sequence of the p53 gen for 1187 VCF files. Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C > T, meaning that T subsitutes C. A) Bar plot with single nucleotide polymorphisms occurence as percentage of whole. B) Heatmap from same variances with amount of occurences in the files
 
 Both figures illustrate the common occurrence of G > A mutation and to lesser extend due to C > A. The prevalance of these SNPs in contrast to other alterations are a strong indication that these alterations are caused by a non-biological mechanism, which can be errors in the rolling circle amplification, library preparation and sequencing of the ctDNA. In literature, cytosine deamination has been described to increase C:G > T:A noise levels (6). Also, less occurring alteration C > A has been reported to be caused by oxidative DNA damage during sample preparation(7). Both these types of alterations can be a result of polymerase-induced errors. Possible suggested methods to suppress these errors are adding DNA repair mechanisms upon polymerase chain reaction (PCR) and lowering heat. However, an in silico approach to polish background noise can also be devised. 
 
-Next, SNPs were selected including 2 surrounding bases for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped to a heatmap with reference sequence. Just as in previous figures, lenght of the surrounding bases can be changed to give a wider variety of information. This gave more information about base combinations with high alteration affinity, such as ACGCA to ACACA. 
+Next, SNPs were selected in a triplet for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped to a heatmap with reference sequence. Just as in previous figures, lenght of the surrounding bases can be changed to give a wider variety of information. This gave more information about base combinations with high alteration affinity, such as ACGCA to ACACA. 
 
 .. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Variance_occurence_in_sequence_vcf_3.png
    :scale:  70%
@@ -158,9 +163,12 @@ Next, SNPs were selected including 2 surrounding bases for heatmap analysis. Pan
 
 .. _GridPlot: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\gridplot.html
 
-Identifying high variance regions in both healthy cfDNA and ctDNA is important for constructing a data filter. It is vital to understand which regions are frequently mutated without 
+Identifying high variance regions in both healthy cfDNA and ctDNA is important for constructing a data filter. 
+It is vital to understand which regions are frequently mutated without 
 
-Furthermore, just as with the fastq files, variances can be seperated between alterations specific for a run and alterations specific for the method being used. For instance, CTC -> A could be a alteration that is specifically highly mutated in a particularly run, while CGC > A occurs often in every run with this method of rolling circle amplification and nanopore sequencing. Therefore, filtering should be able to account for both run specific and method specific alterations. In the same manner, high database of healthy cfDNA could accomplish a method specific filter and adding healthy cfDNA into every run a specific alterations filter.
+Furthermore, just as with the fastq files, variances can be seperated between alterations specific for a run and alterations specific for the method being used. For instance, CTC -> A could be a alteration that is specifically highly mutated in a particularly run, while CGC > A occurs often in every run with this method of rolling circle amplification and nanopore sequencing. Therefore, filtering should be able to account for both run specific and method specific alterations. In the same manner, high database of healthy cfDNA could accomplish a method specific filter and adding healthy cfDNA into every run a specific alterations filter. Also more covenient, backbone data could be used to identify run specific errors as the backbone doesn't change between runs and should thus never contain alterations.
+
+
 
 Script Tests
 ++++++++++++
