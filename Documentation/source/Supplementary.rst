@@ -1,5 +1,25 @@
 Supplementary
 -------------
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Fastq_gridplot_WT_cat.png
+   :scale:  70%
+   :align:  center
+
+   Supplementary figure 1: **Hexameer sequence analysis devided in category high, medium and low for chunk 0 and 1 of the p53 wild-type database.** Instead of mean qualityscore, data analysis is manipulated by assigning Hexameer, when found, into either high, medium or low score and visualized here. Interactive figure as well as mean qualityscore plot of these chunks can be found here. (WT_chunk0_, WT_chunk1_)
+
+.. _WT_chunk0: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk0_6.0_5.0_score_plotting.html
+.. _WT_chunk1: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk1_6.0_5.0_score_plotting.html
+
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Fastq_gridplot_MUT.png
+   :scale:  70%
+   :align:  center
+
+   Supplementary figure 2: **pentameer sequence analysis for chunks 0-2 and 4 of the p53 mutant database.** Figure illustrates the mean qualityscore for each tetrameer possible in one chunk. The interactive figure can be found here and visualizes data analysis when devided into high, medium and low group. (MUT_chunk0_, MUT_chunk1_, MUT_chunk2_ and MUT_chunk4_)
+
+.. _MUT_chunk0: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_chunk0_4.0_3.0_score_plotting.html
+.. _MUT_chunk1: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_chunk1_4.0_3.0_score_plotting.html
+.. _MUT_chunk2: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_chunk2_4.0_3.0_score_plotting.html
+.. _MUT_chunk4: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_chunk4_4.0_3.0_score_plotting.html
+
 
 .. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Variance_occurence_in_WT.png
    :scale:  70%

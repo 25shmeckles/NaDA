@@ -65,7 +65,9 @@ following function::
             			result.append(iterable[:size])
             			iterable = iterable[size-overlap:] 
 
-Sequences were chunked to pieces of four (tetrameer) to six (hexameer) in order to analyze the impact of different sized regions on base calling quality. Following, the mean of all the qualityscores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being devided in categories of high, medium and low qualityscore (figure 3 D - F). Categorizing was done after calculating mean of sequence, subsequently, categories were counted for each sequence. Categorizing was conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of the qualityscore get's more normalized and shift further towards medium, which have been accounted for by lowering high requirements and highering low requirements as following::
+Sequences were chunked to pieces of four (tetrameer) to six (hexameer) in order to analyze the impact of different sized regions on base calling quality.
+#why this size
+Following, the mean of all the qualityscores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being devided in categories of high, medium and low qualityscore (figure 3 D - F). Categorizing was done after calculating mean of sequence, subsequently, categories were counted for each sequence. Categorizing was conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of the qualityscore get's more normalized and shift further towards medium, which have been accounted for by lowering high requirements and highering low requirements as following::
 
 	def high_medium_low_scores(listed_scores, size):
     		group_score = []
@@ -157,14 +159,21 @@ While meanscores give an indication on qualityscore analysis, both qualityscore 
    :scale:  70%
    :align:  center
 
-   figure 7: Interactive figure can be found here(WT_chunk0_, WT_chunk1_, WT_chunk2_ and WT_chunk3_)
+   figure 7: **tetrameer sequence analysis for chunks zero to three of the p53 wild-type database.** Figures illustrates the mean qualityscore for each tetrameer possible in one chunk. Interactive figure can be found here and also visualizes data analysis when devided into high, medium and low group.(WT_chunk0_, WT_chunk1_, WT_chunk2_ and WT_chunk3_)
 
 .. _WT_chunk0: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk0_4.0_3.0_score_plotting.html
 .. _WT_chunk1: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk1_4.0_3.0_score_plotting.html
 .. _WT_chunk2: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk2_4.0_3.0_score_plotting.html
 .. _WT_chunk3: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk3_4.0_3.0_score_plotting.html
 
-Similarly to the boxplot, their seems to be a lack of consistency between chunks as high reported tetrameers differ heavely between these chunks. Similair results are visuable for bigger sized chunks(#link to supple) and chunks derived from p53 mutant dataset(#link to supple). Also variability between chunks can be clearly visualized in fastq clustering. 
+Similarly to the boxplot, their seems to be a lack of consistency between chunks as high reported tetrameers differ heavely between these chunks. Similair results are visuable for bigger sized chunks(supplementary_1_) and chunks derived from p53 mutant dataset(supplementary_2_). These datasets show that their is yet to be proven for a correlation between qualityscores and specific regions or chunks. However, clustering could clarify for the occurence of high qualityscore regions by better identification of these regions. In order to cluster data derived from dataset chunks, the same algorithm is used as described above. #In figure 8 clustering of chunks 0 to 3 has been visualized.
+
+.. _supplementary_1: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
+.. _supplementary_2: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
+
+#clustering figures
+
+#conclusion and what's next with fastq
 
 Variant Call Format files
 +++++++++++++++++++++++++
