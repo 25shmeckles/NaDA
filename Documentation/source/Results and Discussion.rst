@@ -159,17 +159,28 @@ While meanscores give an indication on qualityscore analysis, both qualityscore 
    :scale:  70%
    :align:  center
 
-   figure 7: **tetrameer sequence analysis for chunks zero to three of the p53 wild-type database.** Figures illustrates the mean qualityscore for each tetrameer possible in one chunk. Interactive figure can be found here and also visualizes data analysis when devided into high, medium and low group.(WT_chunk0_, WT_chunk1_, WT_chunk2_ and WT_chunk3_)
+   Figure 7: **tetrameer sequence analysis for chunks zero to three of the p53 wild-type database.** Figures illustrates the mean qualityscore for each tetrameer possible in one chunk. A) chunk0. B) chunk1. C) chunk2. D) chunk3. Interactive figure can be found here and also visualizes data analysis when devided into high, medium and low group.(WT_chunk0_, WT_chunk1_, WT_chunk2_ and WT_chunk3_)
 
 .. _WT_chunk0: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk0_4.0_3.0_score_plotting.html
 .. _WT_chunk1: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk1_4.0_3.0_score_plotting.html
 .. _WT_chunk2: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk2_4.0_3.0_score_plotting.html
 .. _WT_chunk3: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk3_4.0_3.0_score_plotting.html
 
-Similarly to the boxplot, their seems to be a lack of consistency between chunks as high reported tetrameers differ heavely between these chunks. Similair results are visuable for bigger sized chunks(supplementary_1_) and chunks derived from p53 mutant dataset(supplementary_2_). These datasets show that their is yet to be proven for a correlation between qualityscores and specific regions or chunks. However, clustering could clarify for the occurence of high qualityscore regions by better identification of these regions. In order to cluster data derived from dataset chunks, the same algorithm is used as described above. #In figure 8 clustering of chunks 0 to 3 has been visualized.
+Similarly to the boxplot, their seems to be a lack of consistency between chunks as high reported tetrameers differ heavely between these chunks. Similair results are visuable for bigger sized chunks(supplementary_1_) and chunks derived from p53 mutant dataset(supplementary_2_). These datasets show that their is yet to be proven for a correlation between qualityscores and specific regions or chunks. However, clustering could clarify for the occurence of high qualityscore regions by better identification of these regions. In order to cluster data derived from dataset chunks, the same algorithm is used as described above. In figure 8 clustering of chunks 0 to 3 has been visualized.
 
 .. _supplementary_1: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
 .. _supplementary_2: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
+
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\Source\\_static\\Fastq_gridplot_WT_cluster.png
+   :scale:  70%
+   :align:  center
+
+   Figure 8: **Clustering of hexameer sequence for chunks zero to three of the p53 wild-type database.** A) chunk0. B) chunk1. C) chunk2. D) chunk3. Interactive cluster plot can be found here. (WT_chunk0_cluster_, WT_chunk1_cluster_, WT_chunk2_cluster_ and WT_chunk3_cluster_)
+
+.. _WT_chunk0_cluster: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk0_6.0_5.0_score_clustering.html
+.. _WT_chunk1_cluster: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk1_6.0_5.0_score_clustering.html
+.. _WT_chunk2_cluster: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk2_6.0_5.0_score_clustering.html
+.. _WT_chunk3_cluster: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxWT_chunk3_6.0_5.0_score_clustering.html
 
 #clustering figures
 
