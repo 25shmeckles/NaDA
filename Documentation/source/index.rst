@@ -22,3 +22,4 @@ Data analyzing of ctDNA from Nanopore Sequencing with Python
    General workflow
    Results and Discussion
    References
+   Supplementary
