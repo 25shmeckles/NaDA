@@ -1,0 +1,500 @@
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Results and discussion &#8212; Internship report 3.0a1 documentation</title>
+    <link rel="stylesheet" href="_static/alabaster.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '3.0a1',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  true,
+        SOURCELINK_SUFFIX: '.txt'
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="References" href="References.html" />
+    <link rel="prev" title="General workflow" href="General workflow.html" />
+   
+  <link rel="stylesheet" href="_static/custom.css" type="text/css" />
+  
+  
+  <meta name="viewport" content="width=device-width, initial-scale=0.9, maximum-scale=0.9" />
+
+  </head>
+  <body>
+  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="results-and-discussion">
+<h1>Results and discussion<a class="headerlink" href="#results-and-discussion" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="fastq-files">
+<h2>Fastq files<a class="headerlink" href="#fastq-files" title="Permalink to this headline">¶</a></h2>
+<p><strong>Quality score distribution</strong>. Fastq are text-based files derived from sequencers such as Illumina and Nanopore that contain a biological sequence and for every base a quality score.
+this quality score represents the sequencers ability to call a base as true, in other words, the score says something about how sure the sequencer is that the right base is called.
+if the score for the base is low, it’s most likely the right base, while if the score is high the machine is unsure if it’s the real base. Analyzing quality scores on sequences
+is important to be able to understand which regions of bases is difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area’s with high quality scores. Clearifying which regions have high scores is important for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations and thus are able to increase tests sensitivity. In order to analyse fastq files the following function was written to strip the files:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_fasta_file_error</span><span class="p">(</span><span class="n">sequence_file</span><span class="p">):</span>
+        <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
+                <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sequence_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+                <span class="n">id_</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="n">sequence</span> <span class="o">=</span> <span class="kc">False</span>
+                <span class="k">for</span> <span class="n">line</span> <span class="ow">in</span> <span class="n">f</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;+&#39;</span><span class="p">,</span><span class="s1">&#39;</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">]:</span>
+                                <span class="k">continue</span>
+                        <span class="k">elif</span> <span class="n">line</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="s1">&#39;@&#39;</span><span class="p">):</span>
+                                <span class="k">if</span> <span class="ow">not</span> <span class="n">id_</span><span class="p">:</span> <span class="c1">#if id_ == False</span>
+                                        <span class="n">id_</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                                <span class="k">else</span><span class="p">:</span>
+                                        <span class="nb">print</span><span class="p">(</span><span class="s1">&#39;WARNING: An ID was found</span>
+                                                <span class="n">without</span> <span class="n">corresponding</span>
+                                                <span class="n">sequence</span><span class="o">.</span><span class="s1">&#39;, id_)</span>
+                                        <span class="n">id_</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="n">id_</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">sequence</span><span class="p">:</span>
+                                <span class="n">sequence</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                        <span class="k">elif</span> <span class="n">id_</span> <span class="ow">and</span> <span class="n">sequence</span><span class="p">:</span>
+                                <span class="n">score</span> <span class="o">=</span> <span class="n">line</span><span class="o">.</span><span class="n">strip</span><span class="p">()</span>
+                                <span class="n">data</span><span class="p">[</span><span class="n">id_</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s1">&#39;sequence&#39;</span><span class="p">:</span><span class="n">sequence</span><span class="p">,</span>
+                                                <span class="s1">&#39;score&#39;</span><span class="p">:</span><span class="n">score</span><span class="p">}</span>
+                                <span class="n">sequence</span> <span class="o">=</span> <span class="kc">False</span>
+                                <span class="n">id_</span> <span class="o">=</span> <span class="kc">False</span>
+        <span class="k">return</span> <span class="n">data</span>
+</pre></div>
+</div>
+<p>The data returns a dictionary with identification (id), sequence and scores for individual bases in the fastq file. Following this script, plotting was conducted as shown in figure 1. Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurence of high and low score regions. In these high score regions bases have more chance to be falsly assigned and are thus less reliable for mutation identification. Likewise, mutations found in low score regions are more likely to be rightly assigned and thus true mutations.</p>
+<div class="figure align-center" id="id1">
+<a class="reference internal image-reference" href="_images/Fastq_files_qualityscore.png"><img alt="_images/Fastq_files_qualityscore.png" src="_images/Fastq_files_qualityscore.png" style="width: 630.0px; height: 420.0px;" /></a>
+<p class="caption"><span class="caption-text">Figure 2: Distribution of error rate (quality score) for every individual base. Here every 10th base is visualized on the X-axis to clearify the data. The mean of all the quality scores is 0.21.</span></p>
+</div>
+<p>While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score regions, 1139 fastq files from nanopore with data on chromosome 9 were likewise investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2. The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low mean quality score is important.</p>
+<div class="figure align-center" id="id2">
+<a class="reference internal image-reference" href="_images/Mean_distribution_of_all_quality_score.png"><img alt="_images/Mean_distribution_of_all_quality_score.png" src="_images/Mean_distribution_of_all_quality_score.png" style="width: 381.0px; height: 373.0px;" /></a>
+<p class="caption"><span class="caption-text">Figure 3: Mean distribution of quality scores from all the fastq files.</span></p>
+</div>
+<p>Next, regions of bases were selected instead of single bases to be able to identify high quality score regions. Size and overlap of the chunks of sequences could be selected by the
+following function:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">split_overlap</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">overlap</span><span class="p">):</span>
+        <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">overlap</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;size&quot; must be an integer with</span>
+                                 <span class="o">&gt;=</span> <span class="mi">1</span> <span class="k">while</span> <span class="s2">&quot;overlap&quot;</span> <span class="n">must</span> <span class="n">be</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="s1">&#39;)</span>
+        <span class="n">result</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="n">size</span><span class="p">:</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iterable</span><span class="p">)</span>
+                        <span class="k">return</span> <span class="n">result</span>
+                <span class="k">else</span><span class="p">:</span>
+                        <span class="n">result</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">iterable</span><span class="p">[:</span><span class="n">size</span><span class="p">])</span>
+                        <span class="n">iterable</span> <span class="o">=</span> <span class="n">iterable</span><span class="p">[</span><span class="n">size</span><span class="o">-</span><span class="n">overlap</span><span class="p">:]</span>
+</pre></div>
+</div>
+<p>Sequences were chunked to pieces of four (tetrameer) to six (hexameer) in order to analyze the impact of different sized regions on base calling quality.
+#why this size
+Following, the mean of all the qualityscores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being devided in categories of high, medium and low qualityscore (figure 3 D - F). Categorizing was done after calculating mean of sequence, subsequently, categories were counted for each sequence. Categorizing was conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of the qualityscore get’s more normalized and shift further towards medium, which have been accounted for by lowering high requirements and highering low requirements as following:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">high_medium_low_scores</span><span class="p">(</span><span class="n">listed_scores</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
+        <span class="n">group_score</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">listed_scores</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">s</span> <span class="o">&gt;=</span> <span class="p">(</span><span class="mf">0.40</span><span class="o">-</span><span class="mf">0.02</span><span class="o">*</span><span class="n">size</span><span class="p">):</span>
+                        <span class="n">group_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;High&#39;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">s</span> <span class="o">&lt;=</span> <span class="p">(</span><span class="mf">0.15</span><span class="o">+</span><span class="mf">0.01</span><span class="o">*</span><span class="n">size</span><span class="p">):</span>
+                        <span class="n">group_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Low&#39;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                        <span class="n">group_score</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39;Medium&#39;</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">group_score</span>
+</pre></div>
+</div>
+<div class="figure align-center" id="id3">
+<a class="reference internal image-reference" href="_images/Fastq_gridplots.png"><img alt="_images/Fastq_gridplots.png" src="_images/Fastq_gridplots.png" style="width: 544.8px; height: 370.8px;" /></a>
+<p class="caption"><span class="caption-text">Figure 4: <strong>Quality score analysis with 6 senario’s.</strong> A - C) Meanscore for all combination in size (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of chromosome 9. D - F) Scores for regions have been categorized into high, medium and low for regions of same size as A to C. Next, the amount of times a region was called under a certain category was counted and collected for the same data set. In these figures scores are set in percentage of total amount of times a region occurs in the data set.(Interactive figure at <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\gridplot.html">GridPlot</a>)</span></p>
+</div>
+<p>In table 1, highest and lowest five scoring sequence are highlighted. In conclusion, the highest scoring sequence has the biggest chance to have wrongly assigned bases in it’s sequence.
+In contrast, bases in lower scoring sequences are more likely to been good assigned and are therefor indeed the right base. These findings should be taken into account when investigating
+mutations, as a mutation found in for instance TTCC is more likely to be a real mutations than a mutation found in GCTT.</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="10%" />
+<col width="6%" />
+<col width="10%" />
+<col width="6%" />
+<col width="10%" />
+<col width="6%" />
+<col width="10%" />
+<col width="6%" />
+<col width="10%" />
+<col width="6%" />
+<col width="10%" />
+<col width="6%" />
+</colgroup>
+<thead valign="bottom">
+<tr class="row-odd"><th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>A</dd>
+</dl>
+</th>
+<th class="head">Score</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>D</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>Score</dt>
+<dd>%</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>B</dd>
+</dl>
+</th>
+<th class="head">Score</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>E</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>Score</dt>
+<dd>%</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>C</dd>
+</dl>
+</th>
+<th class="head">Score</th>
+<th class="head"><dl class="first last docutils">
+<dt>sequence</dt>
+<dd>F</dd>
+</dl>
+</th>
+<th class="head"><dl class="first last docutils">
+<dt>Score</dt>
+<dd>%</dd>
+</dl>
+</th>
+</tr>
+</thead>
+<tbody valign="top">
+<tr class="row-even"><td>GCTT</td>
+<td>0.364</td>
+<td>GCTT</td>
+<td>59.41</td>
+<td>AGCTT</td>
+<td>0.422</td>
+<td>CCTTG</td>
+<td>66.00</td>
+<td>AGCTTT</td>
+<td>0.501</td>
+<td>TCATAC</td>
+<td>91.52</td>
+</tr>
+<tr class="row-odd"><td>CTTG</td>
+<td>0.353</td>
+<td>CTTG</td>
+<td>58.04</td>
+<td>GCCTT</td>
+<td>0.405</td>
+<td>CTTGC</td>
+<td>65.52</td>
+<td>TTCGCA</td>
+<td>0.499</td>
+<td>AGCCTT</td>
+<td>90.00</td>
+</tr>
+<tr class="row-even"><td>TAAT</td>
+<td>0.313</td>
+<td>TAAT</td>
+<td>46.72</td>
+<td>GCTTG</td>
+<td>0.393</td>
+<td>CTTTA</td>
+<td>65.00</td>
+<td>GGGACG</td>
+<td>0.489</td>
+<td>CTTTAC</td>
+<td>88.88</td>
+</tr>
+<tr class="row-odd"><td>GTAG</td>
+<td>0.298</td>
+<td>GTAG</td>
+<td>43.12</td>
+<td>GCTTA</td>
+<td>0.372</td>
+<td>GTAGC</td>
+<td>64.38</td>
+<td>CCATGT</td>
+<td>0.482</td>
+<td>TAGCCA</td>
+<td>87.50</td>
+</tr>
+<tr class="row-even"><td>TAGC</td>
+<td>0.293</td>
+<td>TAGC</td>
+<td>42.61</td>
+<td>ATTGA</td>
+<td>0.367</td>
+<td>CGGAG</td>
+<td>63.16</td>
+<td>GAATCT</td>
+<td>0.466</td>
+<td>TGCTAC</td>
+<td>83.33</td>
+</tr>
+<tr class="row-odd"><td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+<td>…</td>
+<td>&#160;</td>
+</tr>
+<tr class="row-even"><td>GGAT</td>
+<td>0.136</td>
+<td>GGTT</td>
+<td>3.82</td>
+<td>TTAAA</td>
+<td>0.112</td>
+<td>CGGGA</td>
+<td>3.92</td>
+<td>CCTAAT</td>
+<td>0.058</td>
+<td>TCCACT</td>
+<td>1.33</td>
+</tr>
+<tr class="row-odd"><td>CCCT</td>
+<td>0.135</td>
+<td>CCTC</td>
+<td>3.64</td>
+<td>GTCTT</td>
+<td>0.104</td>
+<td>CTCCT</td>
+<td>3.88</td>
+<td>TTCACA</td>
+<td>0.054</td>
+<td>TTATCC</td>
+<td>1.23</td>
+</tr>
+<tr class="row-even"><td>GTTC</td>
+<td>0.131</td>
+<td>ATCC</td>
+<td>3.53</td>
+<td>TTGGA</td>
+<td>0.100</td>
+<td>CTCCA</td>
+<td>2.93</td>
+<td>TTTTTC</td>
+<td>0.053</td>
+<td>CCTCCT</td>
+<td>1.18</td>
+</tr>
+<tr class="row-odd"><td>CCTC</td>
+<td>0.129</td>
+<td>GATC</td>
+<td>3.35</td>
+<td>GGACC</td>
+<td>0.098</td>
+<td>CGATC</td>
+<td>2.89</td>
+<td>CCAATC</td>
+<td>0.050</td>
+<td>TCGGAT</td>
+<td>1.05</td>
+</tr>
+<tr class="row-even"><td>TTCC</td>
+<td>0.128</td>
+<td>CTCC</td>
+<td>2.79</td>
+<td>TTTTT</td>
+<td>0.085</td>
+<td>TCGGA</td>
+<td>1.62</td>
+<td>GGACGT</td>
+<td>0.049</td>
+<td>GGGACC</td>
+<td>0.96</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<div>Table 1: Highest and lowest five scoring sequences. A - C) score is meanscore for all combinations in same size and data set as figure 3.
+D - F) score is percentage of sequence in category high for all combinations in same size and data set as figure 3.</div></blockquote>
+<p><strong>Clustering</strong>. Another way of visualizing the qualityscore in fastq files is by using clustering. Clustering is a method in which data point get coupled in groups (clusters) by a certrain geometry. Here K-Means is used for clustering, which makes clusters based on the the following algorithm:</p>
+<div class="figure align-center">
+<a class="reference internal image-reference" href="_images/K-Means.png"><img alt="_images/K-Means.png" src="_images/K-Means.png" style="width: 109.19999999999999px; height: 35.0px;" /></a>
+</div>
+<p>#explain what this algorithm does</p>
+<p>in figure 5 three clusters are formed in which the yellow one represents sequences with often reported high score and few times reported low scores. In this cluster, alterations are more likely to be falsly assigned. Furthermore, in blue cluster, alterations are more likely to be rightfully assigned. Clustering of data can provide for a more clearer view on which sequences to include and exclude for mutation calling.</p>
+<div class="figure align-center" id="id4">
+<a class="reference internal image-reference" href="_images/clusterplot.png"><img alt="_images/clusterplot.png" src="_images/clusterplot.png" style="width: 864.0px; height: 324.0px;" /></a>
+<p class="caption"><span class="caption-text">figure 5: <strong>Clustering of data from 1139 fastq files.</strong> Sequences of 5 bases are measured for qualityscore and reported in high or low score. Here the percentage of times sequence is reported in high and low score is visualized. Following, clustering was conducted using K-means, seperating three clusters.</span></p>
+</div>
+<p>Together fastq data suggest that qualityscore is important in identifying regions which are promosing for mutation calling and which regions should be avoided. As described earlier, regions with a high qualityscore should be avoided while looking for mutation. In contrast, low qualityscore region have potential for identifying mutations in cfDNA.</p>
+<p>Importantly, the qualityscores of sequences can differ on the method being used. In this case our method involves rolling circle amplifcation and nanopore sequencing of cfDNA. In order to make a sensitive data filter, a big database of healthy cfDNA should investigated on qualityscore for sequences. Therefore, the filter can exclude and include regions with respectivilly high and low qualityscores. Furthermore, qualityscores of sequences can differ on every run, causing some sequences to have higher or lower scores. For this discrepancy should also be accounted in the data filter. A possiblity is to either include healthy cfDNA into every run or compare backbone sequence to identify run specific sequence qualityscore differences.</p>
+<p>Here only run specific sequence qualityscores have been investigated. In order to visualize high and low score sequences specific for our method, data analysis should be conducted on multiple runs. Analysis of multiple runs can be simultaneously conducted using the High-Performance Computing (HPC) facility in the UMC, which will be done in the following segment.
+On the HPC multiple ctDNA datasets derived from cyclomics are available for analysis, here the focus goes towards the rolling circle amplification p53 mutated and wild-type(WT) datasets. Firstly, a <a class="reference external" href="https://github.com/DouweSpaanderman/NaDA/blob/master/Scripts/fastq_qualityscore_analyser.py">fastq_script</a> was written to achieve similair data analysis and visualization as described above. Minor visualization updates were conducted to improve data visibility. Both datasets are seperated in equaly sized chunks, around 4000 files each, and analysed as individual chunks to increase script parallelization, thus increasing speed. For all files meanscores were calculated and visualized in figure 6. This boxplot clearly visualizes the lack of consistency between qualityscores in the same sequence run. Therefor, this could give an indication that qualityscores have limited value for developing a data filter.</p>
+<div class="figure align-center" id="id5">
+<a class="reference internal image-reference" href="_images/RCAxMUT_WT_boxplot.png"><img alt="_images/RCAxMUT_WT_boxplot.png" src="_images/RCAxMUT_WT_boxplot.png" style="width: 525.0px; height: 525.0px;" /></a>
+<p class="caption"><span class="caption-text">Figure 6: <strong>Boxplot of meanscore from several chunks in p53 mutated and WT dataset.</strong></span></p>
+</div>
+<p>While meanscores give an indication on qualityscore analysis, both qualityscore plotting and clustering is yet to determine if high and low score region excist and percist in multiple chunks and datasets. For every chunk derived from a dataset, sequences have been analysed and visualized as tetrameer, pentameer and hexameer. Here, tetrameers of wild-type chunk 0 to 3 have been plotted as shown in figure 7.</p>
+<div class="figure align-center" id="id6">
+<a class="reference internal image-reference" href="_images/Fastq_gridplot_WT.png"><img alt="_images/Fastq_gridplot_WT.png" src="_images/Fastq_gridplot_WT.png" style="width: 1087.1px; height: 885.5px;" /></a>
+<p class="caption"><span class="caption-text">Figure 7: <strong>tetrameer sequence analysis for chunks zero to three of the p53 wild-type database.</strong> Figures illustrates the mean qualityscore for each tetrameer possible in one chunk. A) chunk0. B) chunk1. C) chunk2. D) chunk3. Interactive figure can be found here and also visualizes data analysis when devided into high, medium and low group.(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk0_4.0_3.0_score_plotting.html">WT_chunk0</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk1_4.0_3.0_score_plotting.html">WT_chunk1</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk2_4.0_3.0_score_plotting.html">WT_chunk2</a> and <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk3_4.0_3.0_score_plotting.html">WT_chunk3</a>)</span></p>
+</div>
+<p>Similarly to the boxplot, their seems to be a lack of consistency between chunks as high reported tetrameers differ heavely between these chunks. Similair results are visuable for bigger sized chunks(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\Supplementary.html">supplementary_1</a>) and chunks derived from p53 mutant dataset(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\Supplementary.html">supplementary_2</a>). These datasets show that their is yet to be proven for a correlation between qualityscores and specific regions or chunks. However, clustering could clarify for the occurence of high qualityscore regions by better identification of these regions. In order to cluster data derived from dataset chunks, the same algorithm is used as described above. In figure 8 clustering of chunks 0 to 3 has been visualized.</p>
+<div class="figure align-center" id="id7">
+<a class="reference internal image-reference" href="_images/Fastq_gridplot_WT_cluster.png"><img alt="_images/Fastq_gridplot_WT_cluster.png" src="_images/Fastq_gridplot_WT_cluster.png" style="width: 1089.1999999999998px; height: 1066.8px;" /></a>
+<p class="caption"><span class="caption-text">Figure 8: <strong>Clustering of hexameer sequence for chunks zero to three of the p53 wild-type database.</strong> A) chunk0. B) chunk1. C) chunk2. D) chunk3. Interactive cluster plot can be found here. (<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk0_6.0_5.0_score_clustering.html">WT_chunk0_cluster</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk1_6.0_5.0_score_clustering.html">WT_chunk1_cluster</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk2_6.0_5.0_score_clustering.html">WT_chunk2_cluster</a> and <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk3_6.0_5.0_score_clustering.html">WT_chunk3_cluster</a>)</span></p>
+</div>
+<p>#clustering figures</p>
+<p>#conclusion and what’s next with fastq</p>
+</div>
+<div class="section" id="variant-call-format-files">
+<h2>Variant Call Format files<a class="headerlink" href="#variant-call-format-files" title="Permalink to this headline">¶</a></h2>
+<p><strong>Mutation distribution of single nucleotide polymorphisms</strong>. Variant Call Format (VCF) files are text files containing data of single positions in the genome. In these files, variants
+are formatted with the reference included. For sequenced sites, amount of reads found with mutation and reference are given. The dataset visualized here is derived from the cyclomics project, sequencing was preformed with nanopore and the data contains a part of the p53 gen on chromosome 17 (around 160 nucleotides) and a backbone, which is used for circulair pcr reaction. In total 1187 VCF files were used for variant calling. Here, VCF files are screened for single nucleotide polymorphism (SNP) occurence. Firstly, files were stripped of reported mutated bases, other data was discarded. As described earlier, every variant site has a number of reads that covers this site. These reads can be both coupled to the mutation and the reference. For example, on position 7577503 a SNP was found in 6 reads and 3 reads were coupled to the reference. While the amount of reads coupled to the mutation in contrast to the reads is important, here occurence of certain SNPs have been firsly investigated. In order to investigated the amount of SNPs in the files, VCF files were simallarly stripped as Fastq files and seperated by either sequence or backbone. Next, for the variants a parameter was set at a minimum of 25 percent of the reads that should be coupled to the mutant variant and visualized in figure 4:</p>
+<div class="figure align-center" id="id8">
+<a class="reference internal image-reference" href="_images/Combined_vcf_snp_analysis.png"><img alt="_images/Combined_vcf_snp_analysis.png" src="_images/Combined_vcf_snp_analysis.png" style="width: 736.4px; height: 356.29999999999995px;" /></a>
+<p class="caption"><span class="caption-text">Figure 6: Distriution of SNPs in the sequence of the p53 gen for 1187 VCF files. Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C &gt; T, meaning that T subsitutes C. A) Bar plot with single nucleotide polymorphisms occurence as percentage of whole. B) Heatmap from same variances with amount of occurences in the files</span></p>
+</div>
+<p>Both figures illustrate the common occurrence of G &gt; A mutation and to lesser extend due to C &gt; A. The prevalance of these SNPs in contrast to other alterations are a strong indication that these alterations are caused by a non-biological mechanism, which can be errors in the rolling circle amplification, library preparation and sequencing of the ctDNA. In literature, cytosine deamination has been described to increase C:G &gt; T:A noise levels (6). Also, less occurring alteration C &gt; A has been reported to be caused by oxidative DNA damage during sample preparation(7). Both these types of alterations can be a result of polymerase-induced errors. Possible suggested methods to suppress these errors are adding DNA repair mechanisms upon polymerase chain reaction (PCR) and lowering heat. However, an in silico approach to polish background noise can also be devised.</p>
+<p>Next, SNPs were selected in a triplet for heatmap analysis. Pandas was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped to a heatmap with reference sequence. Just as in previous figures, lenght of the surrounding bases can be changed to give a wider variety of information. This gave more information about base combinations with high alteration affinity, such as ACGCA to ACACA.</p>
+<div class="figure align-center" id="id9">
+<a class="reference internal image-reference" href="_images/Variance_occurence_in_sequence_vcf_3.png"><img alt="_images/Variance_occurence_in_sequence_vcf_3.png" src="_images/Variance_occurence_in_sequence_vcf_3.png" style="width: 802.1999999999999px; height: 315.7px;" /></a>
+<p class="caption"><span class="caption-text">Figure 7: Occurence of variance per reference sequence to different bases. In all the sequences the middle base is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads atleast mutated.</span></p>
+</div>
+<p>Identifying high variance regions in both healthy cfDNA and ctDNA is important for constructing a data filter. #something</p>
+<p>Furthermore, just as with the fastq files, variances can be seperated between alterations specific for a run and alterations specific for the method being used. For instance, CTC &gt; A could be an alteration that is specifically highly mutated in a particularly run, while CGC &gt; A occurs often in every run with this method of rolling circle amplification and nanopore sequencing. Therefore, filtering should be able to account for both run specific and method specific alterations. In the same manner, high database of healthy cfDNA could accomplish a method specific filter and adding healthy cfDNA into every run a specific alterations filter. Also more covenient, backbone data could be used to identify run specific errors as the backbone doesn’t change between runs and should thus never contain alterations.</p>
+<p>Further analysis on VCF files was conducted on the HPC system. In order to conduct VCF analysis on the HPC, a vcf analyis <a class="reference external" href="https://github.com/DouweSpaanderman/NaDA/blob/master/Scripts/vcf_snp_variant_analyser.py">script</a> was written. This script analysis mutation occurence as a percentage of amount of times sequence has been reported in the dataset. This script was run over multiple Datasets available from cyclomics, which were p53 wild-type(WT), mutated(MUT), 1% mutated and 10% mutated. Vcf script were also directly visualized the dataset in heatmap and barplot. Here, the p53 mutated dataset has been visualized in figure x. As expected, mutation occurence (GGATA &gt; T) can be clearly visualised in this dataset. Furthermore, WT analysis showed a compleet absence of this mutation (<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\Supplementary.html">supplementary_a</a>) and the other two dataset are in concordance with the percentage mutated (<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\Supplementary.html">supplementary_b</a>).</p>
+<p>Extraordinarily, apart from the expected mutation, in all four datasets other pentameers seem to be mutated aswell. Especially, CAACC is reported to be highly mutated (around 30%) for all the datasets. This could indicate either the occurence of other mutations in the dataset or the identification of pentameers which cause error’s throughout our workflow.</p>
+<div class="figure align-center" id="id10">
+<a class="reference internal image-reference" href="_images/Variance_occurence_in_sequence_vcf_3.png"><img alt="_images/Variance_occurence_in_sequence_vcf_3.png" src="_images/Variance_occurence_in_sequence_vcf_3.png" style="width: 802.1999999999999px; height: 315.7px;" /></a>
+<p class="caption"><span class="caption-text">Figure x: Occurence of alterations as a percentages of the amount of times sequence has been reported in the dataset. In all the sequences the middle base has been reported to be mutated in some of the vcf files. Dataset used here is p53 mutated. Interactive figure can be found here(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxMUT_insert_5.0_heatmap_sequences.html">MUT_heatmap</a>)</span></p>
+</div>
+<p>Importantly, the identified alterations could persist anywhere the pentameer is located in the sequence. Furthermore, if a alteration occurs in one specific position it is more prone to be an actual mutation. In contrast, alterations occuring in multiple location with the same pentameer could indicate to a systematic problem with pcr or sequencing causing an falsly identified mutation. In order to visualize the location of the mutation, both a heatmap covering single nucleotides instead of pentameers was constructed (figure x) and another script was prepaired to compare pentameer locations in the sequence(link of excel).</p>
+</div>
+<div class="section" id="script-tests">
+<h2>Script Tests<a class="headerlink" href="#script-tests" title="Permalink to this headline">¶</a></h2>
+<p>Before scripts are run over multiple files and directories, they should be checked for quality. In order to check a script for it’s functionality, test scripts can be written. These testing scripts use the assert function to identify if the set criteria are met.
+As an example the earlier described parse_fasta_file_error is checked for it’s quality with the following testing script:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TestDoneFastqParser</span><span class="p">:</span>
+
+        <span class="k">def</span> <span class="nf">setup_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="n">sequence_file</span> <span class="o">=</span> <span class="s1">&#39;C:/Users/Douwe/Documents/Python/test_cases/test_fastq2.done_fastq&#39;</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">dl</span><span class="o">.</span><span class="n">parse_fasta_file_error</span><span class="p">(</span><span class="n">sequence_file</span><span class="p">)</span>
+                <span class="n">id_</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">score</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="p">[</span><span class="n">id_</span><span class="p">][</span><span class="s1">&#39;score&#39;</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">check_valid_DNA_sequence</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">s</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">l</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">upper</span><span class="p">()):</span>
+                        <span class="k">if</span> <span class="ow">not</span> <span class="n">l</span> <span class="ow">in</span> <span class="s1">&#39;ACTGN&#39;</span><span class="p">:</span>
+                                <span class="k">return</span> <span class="kc">False</span>
+                <span class="k">return</span> <span class="kc">True</span>
+
+        <span class="k">def</span> <span class="nf">test_has_id</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">for</span> <span class="nb">id</span> <span class="ow">in</span> <span class="s1">&#39;@&#39;</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="nb">id</span> <span class="ow">in</span> <span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">keys</span><span class="p">())[</span><span class="mi">0</span><span class="p">]</span>
+
+        <span class="k">def</span> <span class="nf">test_sequence_correct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">assert</span> <span class="bp">self</span><span class="o">.</span><span class="n">check_valid_DNA_sequence</span><span class="p">(</span><span class="n">v</span><span class="p">[</span><span class="s1">&#39;sequence&#39;</span><span class="p">])</span> <span class="o">==</span> <span class="kc">True</span>
+
+        <span class="k">def</span> <span class="nf">test_score_correct</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+                <span class="k">for</span> <span class="n">letter</span> <span class="ow">in</span> <span class="s1">&#39;ABCDEFGHIJKLMNOPQRSTUVWXYZ&#39;</span><span class="p">:</span>
+                        <span class="k">assert</span> <span class="n">letter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span>
+</pre></div>
+</div>
+<p>The class function is used to define which script is going to be checked for quality. Firstly the script is setup with a test file, this file is designed to identify flaws in the script. In other words, it consists off alot of errors which the script should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters. While this is an example of a test script, multiple scripts have been investigated for quality as described in the supplementairy.</p>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+<h1 class="logo"><a href="index.html">Internship report</a></h1>
+
+
+
+
+
+
+
+
+<h3>Navigation</h3>
+<p class="caption"><span class="caption-text">Table of Contents</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="General workflow.html">General workflow</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Results and discussion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#fastq-files">Fastq files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#variant-call-format-files">Variant Call Format files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#script-tests">Script Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="References.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Supplementary.html">Supplementary</a></li>
+</ul>
+
+<div class="relations">
+<h3>Related Topics</h3>
+<ul>
+  <li><a href="index.html">Documentation overview</a><ul>
+      <li>Previous: <a href="General workflow.html" title="previous chapter">General workflow</a></li>
+      <li>Next: <a href="References.html" title="next chapter">References</a></li>
+  </ul></li>
+</ul>
+</div>
+<div id="searchbox" style="display: none" role="search">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <div><input type="text" name="q" /></div>
+      <div><input type="submit" value="Go" /></div>
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="footer">
+      &copy;2017, Douwe Spaanderman.
+      
+      |
+      Powered by <a href="http://sphinx-doc.org/">Sphinx 1.6.3</a>
+      &amp; <a href="https://github.com/bitprophet/alabaster">Alabaster 0.7.10</a>
+      
+      |
+      <a href="_sources/Results and Discussion.rst.txt"
+          rel="nofollow">Page source</a>
+    </div>
+
+    
+
+    
+  </body>
+</html>
