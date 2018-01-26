@@ -47,7 +47,7 @@
 <p><strong>Quality score distribution</strong>. Fastq are text-based files derived from sequencers such as Illumina and Nanopore that contain a biological sequence and for every base a quality score.
 this quality score represents the sequencers ability to call a base as true, in other words, the score says something about how sure the sequencer is that the right base is called.
 if the score for the base is low, it’s most likely the right base, while if the score is high the machine is unsure if it’s the real base. Analyzing quality scores on sequences
-is important to be able to understand which regions of bases is difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area’s with high quality scores. Clearifying which regions have high scores is important for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations and thus are able to increase tests sensitivity. In order to analyse fastq files the following function was written to strip the files:</p>
+is important to be able to understand which regions of bases are difficult to get base called. More importantly, a mutation called in a region with low quality score is therefore more likely to be a real mutation in contrast to a mutation that occurs through wrong base calling in area’s with high quality scores. Clarifying which regions have high scores is important for achieving tests with high specificity, as these regions will not be selected for variant calling. Likewise, regions with low score are good targets for identifying mutations and thus are able to increase test sensitivity. In order to analyse fastq files the following function was written to strip the files:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">parse_fasta_file_error</span><span class="p">(</span><span class="n">sequence_file</span><span class="p">):</span>
         <span class="n">data</span> <span class="o">=</span> <span class="p">{}</span>
                 <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">sequence_file</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
@@ -75,18 +75,17 @@ is important to be able to understand which regions of bases is difficult to get
         <span class="k">return</span> <span class="n">data</span>
 </pre></div>
 </div>
-<p>The data returns a dictionary with identification (id), sequence and scores for individual bases in the fastq file. Following this script, plotting was conducted as shown in figure 1. Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurence of high and low score regions. In these high score regions bases have more chance to be falsly assigned and are thus less reliable for mutation identification. Likewise, mutations found in low score regions are more likely to be rightly assigned and thus true mutations.</p>
+<p>The data returns a dictionary with identification (id), sequence and scores for individual bases in the fastq file. Following this script, the plotting was conducted as shown in figure 1. Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurrence of high and low score regions. In these high score regions, bases have more chance to be falsely assigned and are thus less reliable for mutation identification. Likewise, mutations found in low score regions are more likely to be rightly assigned and thus true mutations.</p>
 <div class="figure align-center" id="id1">
 <a class="reference internal image-reference" href="_images/Fastq_files_qualityscore.png"><img alt="_images/Fastq_files_qualityscore.png" src="_images/Fastq_files_qualityscore.png" style="width: 630.0px; height: 420.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 2: Distribution of error rate (quality score) for every individual base. Here every 10th base is visualized on the X-axis to clearify the data. The mean of all the quality scores is 0.21.</span></p>
+<p class="caption"><span class="caption-text">Figure 2: <strong>Distribution of error rate (quality score) for every individual base.</strong> Here every 10th base is visualized on the X-axis to clarify the data. The mean of all the quality scores is 0.21.</span></p>
 </div>
-<p>While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score regions, 1139 fastq files from nanopore with data on chromosome 9 were likewise investigated for quality score distribution. Firstly, meanscores of the quality scores were plotted in figure 2. The meanscores of the files is a good first indication on the sequence quality and can be used to filter and select files for variant calling, where a low mean quality score is important.</p>
+<p>While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score regions, 1139 fastq files from Nanopore with reads on chromosome 9 were likewise investigated for quality score distribution. Firstly, mean scores of the quality scores were plotted in figure 2. The mean scores of the files are a good first indication of the sequence quality and can be used to filter and select files for variant calling, where a low mean quality score is important.</p>
 <div class="figure align-center" id="id2">
 <a class="reference internal image-reference" href="_images/Mean_distribution_of_all_quality_score.png"><img alt="_images/Mean_distribution_of_all_quality_score.png" src="_images/Mean_distribution_of_all_quality_score.png" style="width: 381.0px; height: 373.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 3: Mean distribution of quality scores from all the fastq files.</span></p>
+<p class="caption"><span class="caption-text">Figure 3: <strong>Mean distribution of quality scores</strong>. Mean scores from 1139 fastq files were calculated and visualised in a violin plot.</span></p>
 </div>
-<p>Next, regions of bases were selected instead of single bases to be able to identify high quality score regions. Size and overlap of the chunks of sequences could be selected by the
-following function:</p>
+<p><strong>Region quality score distribution</strong>. Next, regions of bases were selected instead of single bases to be able to identify high quality score regions. Size and overlap of the chunks of sequences could be selected by the following function:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">split_overlap</span><span class="p">(</span><span class="n">iterable</span><span class="p">,</span><span class="n">size</span><span class="p">,</span><span class="n">overlap</span><span class="p">):</span>
         <span class="k">if</span> <span class="n">size</span> <span class="o">&lt;</span> <span class="mi">1</span> <span class="ow">or</span> <span class="n">overlap</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s1">&#39;&quot;size&quot; must be an integer with</span>
@@ -101,9 +100,7 @@ following function:</p>
                         <span class="n">iterable</span> <span class="o">=</span> <span class="n">iterable</span><span class="p">[</span><span class="n">size</span><span class="o">-</span><span class="n">overlap</span><span class="p">:]</span>
 </pre></div>
 </div>
-<p>Sequences were chunked to pieces of four (tetrameer) to six (hexameer) in order to analyze the impact of different sized regions on base calling quality.
-#why this size
-Following, the mean of all the qualityscores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being devided in categories of high, medium and low qualityscore (figure 3 D - F). Categorizing was done after calculating mean of sequence, subsequently, categories were counted for each sequence. Categorizing was conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of the qualityscore get’s more normalized and shift further towards medium, which have been accounted for by lowering high requirements and highering low requirements as following:</p>
+<p>Sequences were chunked to pieces of four (tetrameer) to six (hexameer) in order to analyze the impact of different sized regions on base calling quality. Following, the mean of all the quality scores of the same chunks of sequences were either plotted directly (figure 3 A - C) or indirectly after being divided in categories of high, medium and low quality score (figure 3 D - F). Categorizing was done before calculating mean of a sequence, subsequently, categories were counted for each sequence. Categorizing was conducted to manipulate and increase data analysis. Parameters for categorizing were randomly selected and differentiate for each size, because with larger regions, the mean of the quality score get’s more normalized and shift further towards medium, which have been accounted for by lowering high requirements and increasing low requirements as following:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">def</span> <span class="nf">high_medium_low_scores</span><span class="p">(</span><span class="n">listed_scores</span><span class="p">,</span> <span class="n">size</span><span class="p">):</span>
         <span class="n">group_score</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">listed_scores</span><span class="p">:</span>
@@ -118,150 +115,64 @@ Following, the mean of all the qualityscores of the same chunks of sequences wer
 </div>
 <div class="figure align-center" id="id3">
 <a class="reference internal image-reference" href="_images/Fastq_gridplots.png"><img alt="_images/Fastq_gridplots.png" src="_images/Fastq_gridplots.png" style="width: 544.8px; height: 370.8px;" /></a>
-<p class="caption"><span class="caption-text">Figure 4: <strong>Quality score analysis with 6 senario’s.</strong> A - C) Meanscore for all combination in size (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of chromosome 9. D - F) Scores for regions have been categorized into high, medium and low for regions of same size as A to C. Next, the amount of times a region was called under a certain category was counted and collected for the same data set. In these figures scores are set in percentage of total amount of times a region occurs in the data set.(Interactive figure at <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\gridplot.html">GridPlot</a>)</span></p>
+<p class="caption"><span class="caption-text">Figure 4: <strong>Quality score analysis in 6 scenarios.</strong> A - C) Mean score for all combinations in chunk sizes (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of chromosome 9. D - F) Scores for regions have been categorized into high, medium and low for regions of the same size as A to C. Next, the amount of times a region was called under a certain category was counted and collected for the same data set. In these figures, scores are set in percentage of the total amount of times a region occurs in the data set.(Interactive figure at <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\gridplot.html">GridPlot</a>)</span></p>
 </div>
-<p>In table 1, highest and lowest five scoring sequence are highlighted. In conclusion, the highest scoring sequence has the biggest chance to have wrongly assigned bases in it’s sequence.
-In contrast, bases in lower scoring sequences are more likely to been good assigned and are therefor indeed the right base. These findings should be taken into account when investigating
-mutations, as a mutation found in for instance TTCC is more likely to be a real mutations than a mutation found in GCTT.</p>
+<p>In table 1, highest and lowest five scoring sequences are highlighted. In conclusion, the highest scoring sequence has the biggest chance to have wrongly assigned bases in its sequence. In contrast, bases in lower scoring sequences have been most likely rightfully assigned and are therefore indeed the right base. These findings should be taken into account when investigating mutations, as a mutation found in, for instance TTCC, is more likely to be a real mutation than a alterations found in GCTT.</p>
 <table border="1" class="docutils">
 <colgroup>
-<col width="10%" />
-<col width="6%" />
-<col width="10%" />
-<col width="6%" />
-<col width="10%" />
-<col width="6%" />
-<col width="10%" />
-<col width="6%" />
-<col width="10%" />
-<col width="6%" />
-<col width="10%" />
-<col width="6%" />
+<col width="20%" />
+<col width="13%" />
+<col width="20%" />
+<col width="13%" />
+<col width="20%" />
+<col width="13%" />
 </colgroup>
 <thead valign="bottom">
-<tr class="row-odd"><th class="head"><dl class="first last docutils">
-<dt>sequence</dt>
-<dd>A</dd>
-</dl>
-</th>
+<tr class="row-odd"><th class="head">C</th>
 <th class="head">Score</th>
-<th class="head"><dl class="first last docutils">
-<dt>sequence</dt>
-<dd>D</dd>
-</dl>
-</th>
-<th class="head"><dl class="first last docutils">
-<dt>Score</dt>
-<dd>%</dd>
-</dl>
-</th>
-<th class="head"><dl class="first last docutils">
-<dt>sequence</dt>
-<dd>B</dd>
-</dl>
-</th>
+<th class="head">B</th>
 <th class="head">Score</th>
-<th class="head"><dl class="first last docutils">
-<dt>sequence</dt>
-<dd>E</dd>
-</dl>
-</th>
-<th class="head"><dl class="first last docutils">
-<dt>Score</dt>
-<dd>%</dd>
-</dl>
-</th>
-<th class="head"><dl class="first last docutils">
-<dt>sequence</dt>
-<dd>C</dd>
-</dl>
-</th>
+<th class="head">C</th>
 <th class="head">Score</th>
-<th class="head"><dl class="first last docutils">
-<dt>sequence</dt>
-<dd>F</dd>
-</dl>
-</th>
-<th class="head"><dl class="first last docutils">
-<dt>Score</dt>
-<dd>%</dd>
-</dl>
-</th>
 </tr>
 </thead>
 <tbody valign="top">
 <tr class="row-even"><td>GCTT</td>
 <td>0.364</td>
-<td>GCTT</td>
-<td>59.41</td>
 <td>AGCTT</td>
 <td>0.422</td>
-<td>CCTTG</td>
-<td>66.00</td>
 <td>AGCTTT</td>
 <td>0.501</td>
-<td>TCATAC</td>
-<td>91.52</td>
 </tr>
 <tr class="row-odd"><td>CTTG</td>
 <td>0.353</td>
-<td>CTTG</td>
-<td>58.04</td>
 <td>GCCTT</td>
 <td>0.405</td>
-<td>CTTGC</td>
-<td>65.52</td>
 <td>TTCGCA</td>
 <td>0.499</td>
-<td>AGCCTT</td>
-<td>90.00</td>
 </tr>
 <tr class="row-even"><td>TAAT</td>
 <td>0.313</td>
-<td>TAAT</td>
-<td>46.72</td>
 <td>GCTTG</td>
 <td>0.393</td>
-<td>CTTTA</td>
-<td>65.00</td>
 <td>GGGACG</td>
 <td>0.489</td>
-<td>CTTTAC</td>
-<td>88.88</td>
 </tr>
 <tr class="row-odd"><td>GTAG</td>
 <td>0.298</td>
-<td>GTAG</td>
-<td>43.12</td>
 <td>GCTTA</td>
 <td>0.372</td>
-<td>GTAGC</td>
-<td>64.38</td>
 <td>CCATGT</td>
 <td>0.482</td>
-<td>TAGCCA</td>
-<td>87.50</td>
 </tr>
 <tr class="row-even"><td>TAGC</td>
 <td>0.293</td>
-<td>TAGC</td>
-<td>42.61</td>
 <td>ATTGA</td>
 <td>0.367</td>
-<td>CGGAG</td>
-<td>63.16</td>
 <td>GAATCT</td>
 <td>0.466</td>
-<td>TGCTAC</td>
-<td>83.33</td>
 </tr>
 <tr class="row-odd"><td>…</td>
-<td>&#160;</td>
-<td>…</td>
-<td>&#160;</td>
-<td>…</td>
-<td>&#160;</td>
-<td>…</td>
 <td>&#160;</td>
 <td>…</td>
 <td>&#160;</td>
@@ -270,104 +181,70 @@ mutations, as a mutation found in for instance TTCC is more likely to be a real 
 </tr>
 <tr class="row-even"><td>GGAT</td>
 <td>0.136</td>
-<td>GGTT</td>
-<td>3.82</td>
 <td>TTAAA</td>
 <td>0.112</td>
-<td>CGGGA</td>
-<td>3.92</td>
 <td>CCTAAT</td>
 <td>0.058</td>
-<td>TCCACT</td>
-<td>1.33</td>
 </tr>
 <tr class="row-odd"><td>CCCT</td>
 <td>0.135</td>
-<td>CCTC</td>
-<td>3.64</td>
 <td>GTCTT</td>
 <td>0.104</td>
-<td>CTCCT</td>
-<td>3.88</td>
 <td>TTCACA</td>
 <td>0.054</td>
-<td>TTATCC</td>
-<td>1.23</td>
 </tr>
 <tr class="row-even"><td>GTTC</td>
 <td>0.131</td>
-<td>ATCC</td>
-<td>3.53</td>
 <td>TTGGA</td>
 <td>0.100</td>
-<td>CTCCA</td>
-<td>2.93</td>
 <td>TTTTTC</td>
 <td>0.053</td>
-<td>CCTCCT</td>
-<td>1.18</td>
 </tr>
 <tr class="row-odd"><td>CCTC</td>
 <td>0.129</td>
-<td>GATC</td>
-<td>3.35</td>
 <td>GGACC</td>
 <td>0.098</td>
-<td>CGATC</td>
-<td>2.89</td>
 <td>CCAATC</td>
 <td>0.050</td>
-<td>TCGGAT</td>
-<td>1.05</td>
 </tr>
 <tr class="row-even"><td>TTCC</td>
 <td>0.128</td>
-<td>CTCC</td>
-<td>2.79</td>
 <td>TTTTT</td>
 <td>0.085</td>
-<td>TCGGA</td>
-<td>1.62</td>
 <td>GGACGT</td>
 <td>0.049</td>
-<td>GGGACC</td>
-<td>0.96</td>
 </tr>
 </tbody>
 </table>
 <blockquote>
-<div>Table 1: Highest and lowest five scoring sequences. A - C) score is meanscore for all combinations in same size and data set as figure 3.
-D - F) score is percentage of sequence in category high for all combinations in same size and data set as figure 3.</div></blockquote>
-<p><strong>Clustering</strong>. Another way of visualizing the qualityscore in fastq files is by using clustering. Clustering is a method in which data point get coupled in groups (clusters) by a certrain geometry. Here K-Means is used for clustering, which makes clusters based on the the following algorithm:</p>
-<div class="figure align-center">
-<a class="reference internal image-reference" href="_images/K-Means.png"><img alt="_images/K-Means.png" src="_images/K-Means.png" style="width: 109.19999999999999px; height: 35.0px;" /></a>
-</div>
-<p>#explain what this algorithm does</p>
-<p>in figure 5 three clusters are formed in which the yellow one represents sequences with often reported high score and few times reported low scores. In this cluster, alterations are more likely to be falsly assigned. Furthermore, in blue cluster, alterations are more likely to be rightfully assigned. Clustering of data can provide for a more clearer view on which sequences to include and exclude for mutation calling.</p>
+<div>Table 1: <strong>Highest and lowest five scoring sequences</strong>. A - C) score is mean score for all combinations of same size and data set as figure 3.</div></blockquote>
+<p><strong>Clustering</strong>. Another way of visualizing the quality score in fastq files is by using clustering. Clustering is a method in which data points get coupled in groups (clusters) by a certain geometry. Here K-Means is used for clustering, which makes clusters based on the distance between data points and a selected centroid. The centroid is the mean of a cluster and is defined by a trial and error process. This process is repeated until centroids are selected, which happens when the within-cluster sum of squares is minimised.</p>
+<p>In figure 5 three clusters are formed in which the yellow one represents sequences with often reported high score and few times reported low scores. In this cluster, alterations are more likely to be falsely assigned. Furthermore, in blue cluster, alterations are more likely to be rightfully assigned. Clustering of data can provide for a more clearer view on which sequences to include and exclude for mutation calling.</p>
 <div class="figure align-center" id="id4">
-<a class="reference internal image-reference" href="_images/clusterplot.png"><img alt="_images/clusterplot.png" src="_images/clusterplot.png" style="width: 864.0px; height: 324.0px;" /></a>
-<p class="caption"><span class="caption-text">figure 5: <strong>Clustering of data from 1139 fastq files.</strong> Sequences of 5 bases are measured for qualityscore and reported in high or low score. Here the percentage of times sequence is reported in high and low score is visualized. Following, clustering was conducted using K-means, seperating three clusters.</span></p>
+<a class="reference internal image-reference" href="_images/clusterplot.png"><img alt="_images/clusterplot.png" src="_images/clusterplot.png" style="width: 1005.1999999999999px; height: 397.59999999999997px;" /></a>
+<p class="caption"><span class="caption-text">Figure 5: <strong>Clustering of data from 1139 fastq files.</strong> Sequences of 5 bases (pentameer) are measured for quality score and reported in high or low score. Here the percentage of amount a sequence is reported in high and low score is visualized. Following, clustering was conducted using K-means, separating three clusters.</span></p>
 </div>
-<p>Together fastq data suggest that qualityscore is important in identifying regions which are promosing for mutation calling and which regions should be avoided. As described earlier, regions with a high qualityscore should be avoided while looking for mutation. In contrast, low qualityscore region have potential for identifying mutations in cfDNA.</p>
-<p>Importantly, the qualityscores of sequences can differ on the method being used. In this case our method involves rolling circle amplifcation and nanopore sequencing of cfDNA. In order to make a sensitive data filter, a big database of healthy cfDNA should investigated on qualityscore for sequences. Therefore, the filter can exclude and include regions with respectivilly high and low qualityscores. Furthermore, qualityscores of sequences can differ on every run, causing some sequences to have higher or lower scores. For this discrepancy should also be accounted in the data filter. A possiblity is to either include healthy cfDNA into every run or compare backbone sequence to identify run specific sequence qualityscore differences.</p>
-<p>Here only run specific sequence qualityscores have been investigated. In order to visualize high and low score sequences specific for our method, data analysis should be conducted on multiple runs. Analysis of multiple runs can be simultaneously conducted using the High-Performance Computing (HPC) facility in the UMC, which will be done in the following segment.
-On the HPC multiple ctDNA datasets derived from cyclomics are available for analysis, here the focus goes towards the rolling circle amplification p53 mutated and wild-type(WT) datasets. Firstly, a <a class="reference external" href="https://github.com/DouweSpaanderman/NaDA/blob/master/Scripts/fastq_qualityscore_analyser.py">fastq_script</a> was written to achieve similair data analysis and visualization as described above. Minor visualization updates were conducted to improve data visibility. Both datasets are seperated in equaly sized chunks, around 4000 files each, and analysed as individual chunks to increase script parallelization, thus increasing speed. For all files meanscores were calculated and visualized in figure 6. This boxplot clearly visualizes the lack of consistency between qualityscores in the same sequence run. Therefor, this could give an indication that qualityscores have limited value for developing a data filter.</p>
+<p>Together fastq data suggest that quality score is important in identifying regions which are promising for mutation calling and which regions should be avoided. As described earlier, regions with a high quality score should be avoided while looking for mutation. In contrast, low quality score regions have potential for identifying mutations in cfDNA.</p>
+<p>Importantly, the quality scores of sequences can differ on the method being used. In this case our method involves rolling circle amplification and nanopore sequencing of cfDNA. In order to make a sensitive data filter, a big database of healthy cfDNA should be investigated on quality score for sequences. Therefore, the filter can exclude and include regions with respectively high and low quality scores. Furthermore, quality scores of sequences can differ on every run, causing some sequences to have higher or lower scores. For this discrepancy should also be accounted in the data filter. A possibility is to either include healthy cfDNA into every run or compare backbone sequences to identify run specific sequence quality score differences.</p>
+<p><strong>p53 wild-type and mutant dataset analysis</strong>. So far, only run specific sequence quality scores have been investigated. In order to visualize high and low score sequences specific for our method, data analysis should be conducted on multiple runs. Analysis of multiple runs can be simultaneously conducted using the High-Performance Computing (HPC) facility in the UMC, which will be done in the following segment.</p>
+<p>On the HPC multiple ctDNA datasets derived from cyclomics are available for analysis, here the focus goes towards the rolling circle amplification p53 mutated and wild-type(WT) datasets. Firstly, a <a class="reference external" href="https://github.com/DouweSpaanderman/NaDA/blob/master/Scripts/fastq_qualityscore_analyser.py">fastq_script</a> was written to achieve similar data analysis and visualization as described above. Minor visualization updates were conducted to improve data visibility. Both datasets are separated in equally sized chunks, around 4000 files each, and analysed as individual chunks to increase script parallelization, thus increasing speed. For all files mean scores were calculated and visualized in figure 6.</p>
 <div class="figure align-center" id="id5">
 <a class="reference internal image-reference" href="_images/RCAxMUT_WT_boxplot.png"><img alt="_images/RCAxMUT_WT_boxplot.png" src="_images/RCAxMUT_WT_boxplot.png" style="width: 525.0px; height: 525.0px;" /></a>
-<p class="caption"><span class="caption-text">Figure 6: <strong>Boxplot of meanscore from several chunks in p53 mutated and WT dataset.</strong></span></p>
+<p class="caption"><span class="caption-text">Figure 6: <strong>Boxplot of mean score from p53 mutated and WT dataset.</strong> For both datasets chunk 0 to 9 have been visualized. Chunk 10 to 24 were excluded, but contained similar results.</span></p>
 </div>
-<p>While meanscores give an indication on qualityscore analysis, both qualityscore plotting and clustering is yet to determine if high and low score region excist and percist in multiple chunks and datasets. For every chunk derived from a dataset, sequences have been analysed and visualized as tetrameer, pentameer and hexameer. Here, tetrameers of wild-type chunk 0 to 3 have been plotted as shown in figure 7.</p>
+<p>This boxplot clearly visualizes the lack of consistency between quality scores in the same sequence run. Therefor, this could give an indication that quality scores have limited value for developing a data filter.</p>
+<p>While mean scores give an indication on quality score analysis, both quality score plotting and clustering is yet to determine if high and low score region exist and persist in multiple chunks and datasets. For every chunk derived from a dataset, sequences have been analysed and visualized as tetrameer, pentameer and hexameer. Here, tetrameers of wild-type chunk 0 to 3 have been plotted as shown in figure 7.</p>
 <div class="figure align-center" id="id6">
-<a class="reference internal image-reference" href="_images/Fastq_gridplot_WT.png"><img alt="_images/Fastq_gridplot_WT.png" src="_images/Fastq_gridplot_WT.png" style="width: 1087.1px; height: 885.5px;" /></a>
-<p class="caption"><span class="caption-text">Figure 7: <strong>tetrameer sequence analysis for chunks zero to three of the p53 wild-type database.</strong> Figures illustrates the mean qualityscore for each tetrameer possible in one chunk. A) chunk0. B) chunk1. C) chunk2. D) chunk3. Interactive figure can be found here and also visualizes data analysis when devided into high, medium and low group.(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk0_4.0_3.0_score_plotting.html">WT_chunk0</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk1_4.0_3.0_score_plotting.html">WT_chunk1</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk2_4.0_3.0_score_plotting.html">WT_chunk2</a> and <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk3_4.0_3.0_score_plotting.html">WT_chunk3</a>)</span></p>
+<a class="reference internal image-reference" href="_images/Fastq_gridplot_WT.png"><img alt="_images/Fastq_gridplot_WT.png" src="_images/Fastq_gridplot_WT.png" style="width: 1100.3999999999999px; height: 887.5999999999999px;" /></a>
+<p class="caption"><span class="caption-text">Figure 7: <strong>tetrameer sequence analysis for chunks zero to three of the p53 wild-type database.</strong> Figures illustrates the mean qualityscore for each tetrameer possible in one chunk. A) chunk 0. B) chunk 1. C) chunk 2. D) chunk 3. Interactive figure can be found here and also visualizes data analysis when divided into high, medium and low group.(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk0_4.0_3.0_score_plotting.html">WT_chunk0</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk1_4.0_3.0_score_plotting.html">WT_chunk1</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk2_4.0_3.0_score_plotting.html">WT_chunk2</a> and <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk3_4.0_3.0_score_plotting.html">WT_chunk3</a>)</span></p>
 </div>
-<p>Similarly to the boxplot, their seems to be a lack of consistency between chunks as high reported tetrameers differ heavely between these chunks. Similair results are visuable for bigger sized chunks(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\Supplementary.html">supplementary_1</a>) and chunks derived from p53 mutant dataset(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\Supplementary.html">supplementary_2</a>). These datasets show that their is yet to be proven for a correlation between qualityscores and specific regions or chunks. However, clustering could clarify for the occurence of high qualityscore regions by better identification of these regions. In order to cluster data derived from dataset chunks, the same algorithm is used as described above. In figure 8 clustering of chunks 0 to 3 has been visualized.</p>
+<p>Similarly to the boxplot, there seems to be a lack of consistency between chunks as high reported tetrameers differ heavily between these chunks. Similar results are visible for bigger sized chunks(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\Supplementary.html">supplementary_1</a>) and chunks derived from the p53 mutant dataset(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\Supplementary.html">supplementary_2</a>). These datasets show that their is yet to be proven that a correlation between quality scores and specific regions or chunks exists. However, clustering could clarify the occurrence of high quality score regions by better identification of these regions. In order to cluster data derived from dataset chunks, the same algorithm is used as described above. In figure 8 clustering of chunks 0 to 3 from p53 WT has been visualized.</p>
 <div class="figure align-center" id="id7">
-<a class="reference internal image-reference" href="_images/Fastq_gridplot_WT_cluster.png"><img alt="_images/Fastq_gridplot_WT_cluster.png" src="_images/Fastq_gridplot_WT_cluster.png" style="width: 1089.1999999999998px; height: 1066.8px;" /></a>
-<p class="caption"><span class="caption-text">Figure 8: <strong>Clustering of hexameer sequence for chunks zero to three of the p53 wild-type database.</strong> A) chunk0. B) chunk1. C) chunk2. D) chunk3. Interactive cluster plot can be found here. (<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk0_6.0_5.0_score_clustering.html">WT_chunk0_cluster</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk1_6.0_5.0_score_clustering.html">WT_chunk1_cluster</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk2_6.0_5.0_score_clustering.html">WT_chunk2_cluster</a> and <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk3_6.0_5.0_score_clustering.html">WT_chunk3_cluster</a>)</span></p>
+<a class="reference internal image-reference" href="_images/Fastq_gridplot_WT_cluster.png"><img alt="_images/Fastq_gridplot_WT_cluster.png" src="_images/Fastq_gridplot_WT_cluster.png" style="width: 1092.0px; height: 1072.3999999999999px;" /></a>
+<p class="caption"><span class="caption-text">Figure 8: <strong>Clustering of hexameer sequence for chunks zero to three of the p53 wild-type database.</strong> Data points are visualised as percentage reported in high (y-axis) and low score(x-axis). A) chunk 0. B) chunk 1. C) chunk 2. D) chunk 3. Interactive cluster plot can be found here. (<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk0_6.0_5.0_score_clustering.html">WT_chunk0_cluster</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk1_6.0_5.0_score_clustering.html">WT_chunk1_cluster</a>, <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk2_6.0_5.0_score_clustering.html">WT_chunk2_cluster</a> and <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxWT_chunk3_6.0_5.0_score_clustering.html">WT_chunk3_cluster</a>)</span></p>
 </div>
-<p>#clustering figures</p>
-<p>#conclusion and what’s next with fastq</p>
+<p>Clustering is able to identify regions that have both been reported often as high score and few times as low scores. However, between chunks there is a huge discrepancy in quality scores. Chunk 0 and 2 have an overall much lower quality score in comparison with chunk 1 and 2, which was also identified with mean quality scores in figure 6. This big difference in overall quality of the chunks seems to indicate that quality score can’t be used for constructing a data filter. Nevertheless, if regions are always present in the same cluster between chunks, high and low quality score regions could still be identified. Additionally, quality score mean shouldn’t have to influence score from a single region in comparison to other regions in the same chunk.</p>
+<p>Identification of these regions could help data filtering for mutation, as bases in regions with high quality score are less likely to be rightfully assigned and the other way around for low quality score region. Therefore respectively, these regions could be excluded or included in variant calling. Currently, quality score analysis shows a lot of inconsistency between chunks of the same dataset. Thus, it is yet impossible to conclude any regions that have either a high or low quality score. Therefor, quality score has currently no application in creating a data filter. with all this in mind, while quality score shows limited possibilities, regions should still be compared between chunks for in which cluster they are reported. This could clarify if there is a correlation between regions and quality scores.</p>
 </div>
 <div class="section" id="variant-call-format-files">
 <h2>Variant Call Format files<a class="headerlink" href="#variant-call-format-files" title="Permalink to this headline">¶</a></h2>
@@ -395,8 +272,7 @@ are formatted with the reference included. For sequenced sites, amount of reads 
 </div>
 <div class="section" id="script-tests">
 <h2>Script Tests<a class="headerlink" href="#script-tests" title="Permalink to this headline">¶</a></h2>
-<p>Before scripts are run over multiple files and directories, they should be checked for quality. In order to check a script for it’s functionality, test scripts can be written. These testing scripts use the assert function to identify if the set criteria are met.
-As an example the earlier described parse_fasta_file_error is checked for it’s quality with the following testing script:</p>
+<p>Before functions and scripts are run over multiple files and directories, they should be checked for quality. In order to check a function for its functionality, test scripts can be written. These testing scripts use the assert function to identify if the set criteria are met. As an example the earlier described parse_fasta_file_error function is checked for its quality with the following testing script:</p>
 <div class="highlight-default"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">TestDoneFastqParser</span><span class="p">:</span>
 
         <span class="k">def</span> <span class="nf">setup_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
@@ -424,7 +300,7 @@ As an example the earlier described parse_fasta_file_error is checked for it’s
                         <span class="k">assert</span> <span class="n">letter</span> <span class="ow">not</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">score</span>
 </pre></div>
 </div>
-<p>The class function is used to define which script is going to be checked for quality. Firstly the script is setup with a test file, this file is designed to identify flaws in the script. In other words, it consists off alot of errors which the script should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters. While this is an example of a test script, multiple scripts have been investigated for quality as described in the supplementairy.</p>
+<p>The class function is used to define which function is going to be checked for quality. Firstly the function is setup with a test file, this file is designed to identify flaws in the function. In other words, it consists off alot of errors which the function should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters. While this is an example of a test script, every function and script is checked for there quality. Testing scripts can be found <a class="reference external" href="https://github.com/DouweSpaanderman/NaDA/tree/master/Testing%20scripts">here</a>.</p>
 </div>
 </div>
 
