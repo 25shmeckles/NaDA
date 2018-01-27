@@ -221,7 +221,7 @@ Similar to figure 11, wild-type, 1% and 10% have been analysed for position spec
 
 However, while the expected alteration is found in our datasets, for those datasets other alteration were also identified. These alterations were not in line with our expectations and could have a number of explanations. Firstly, it could be a real passenger mutation which is not normally present in the reference. Secondly, these alterations could be caused by protocol errors, such as pcr errors and sequencing errors. For both these alterations could be accounted for by excluding certain positions in the data filter. Nevertheless, this could only help to construct a data filter specific for p53 databases as specific positions get excluded and our aim is to construct a data filter that can be applied to multiple gene databases. 
 
-In order to construct a data filter usable for multiple genes, regions rather than single positions were investigated for SNPs. Region selection could help identifying SNPs due to protocol errors and help exclude them from analysis. First, chunks of trimeers and pentameers were similarly selected as described in region SNP analysis. Subsequently, these chunks were plotted in a similar heatmap as visualized in figure 12. Mutation occurrence (GGATA > T) could again be clearly visualised in this dataset. Furthermore, WT analysis showed a complete absence of this mutation (supplementary_4_) and the other two datasets are in concordance with the percentage mutated (supplementary_5_). 
+In order to construct a data filter usable for multiple genes, regions rather than single positions were investigated for SNPs. Region selection could help identifying SNPs due to protocol errors and help exclude them from analysis. First, chunks of trimeers and pentameers were similarly selected as described in region SNP analysis. Subsequently, these chunks were plotted in a heatmap visualized in figure 12. Mutation occurrence (GGATA > T) could again be clearly visualised in this dataset. Furthermore, WT analysis showed a complete absence of this mutation (supplementary_4_) and the other two datasets are in concordance with the percentage mutated (supplementary_5_). 
 
 .. _supplementary_4: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
 .. _supplementary_5: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
@@ -232,16 +232,31 @@ Extraordinarily, apart from the expected mutation, in all four datasets other pe
    :scale:  70%
    :align:  center
 
-   Figure 12: **SNPs analysis for pentameer chunks* Occurrence of SNP is visualized as a percentage of the amount of time sequence has been reported in the dataset. In all the sequences the middle base has been reported to be mutated in some of the vcf files. The dataset used here is p53 mutated. Interactive figure can be found here(MUT_heatmap_)
-
-# this is where i left offfff
+   Figure 12: **SNPs analysis for pentameer chunks**. Occurrence of SNP is visualized as a percentage of the amount of time sequence has been reported in the dataset. In all the chunks the middle base has been reported to be mutated in some of the vcf files. The dataset used here is p53 mutated. Interactive figure can be found here(MUT_heatmap_)
 
 .. _script: https://github.com/DouweSpaanderman/NaDA/blob/master/Scripts/vcf_snp_variant_analyser.py
 .. _MUT_heatmap: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_insert_5.0_heatmap_sequences.html
 
-Importantly, the identified alterations could persist anywhere the pentameer is located in the sequence. Furthermore, if a alteration occurs in one specific position it is more prone to be an actual mutation. In contrast, alterations occuring in multiple location with the same pentameer could indicate to a systematic problem with pcr or sequencing causing an falsly identified mutation. In order to visualize the location of the mutation, both a heatmap covering single nucleotides instead of pentameers was constructed (figure x) and another script was prepaired to compare pentameer locations in the sequence(link of excel). 
+Importantly, the identified alterations could persist anywhere the pentameer is located in the sequence. Furthermore, if an alteration occurs in one specific position it is more prone to be an actual mutation. In contrast, alterations occurring in multiple location with the same pentameer could indicate a systematic problem with pcr or sequencing causing falsely identified mutation. In order to visualize the location of the altered chunks, another script was prepared to compare pentameer locations in the sequence. This script constructed an excel_ (!!!!!link and make pretty!!!!) with the position of the chunks, including SNP, the percentage of times this particular chunk with SNP occurs in a certain location and the amount of times this specific alteration was found in the dataset. 
 
+.. _excel: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_insert_5.0_heatmap_sequences.html
 
+As expected, the p53 mutated altered chunk GGATA > T on locations 7578263 to 7578267 was  reported as the only occurrence of this particular sequence with alteration in the whole dataset. Which empowers the conclusion that this is in fact a real mutation. Similarly, other found alterations such as CAACC > G at position 7578333 to 7578337 were also only reported here in the whole sequence. Furthermore, this alteration hasn't been reported yet in GRCh37.13 reference(8). Also, this alteration is located in an intron and is thus less likely to be a driver mutations. Altogether, while it's most likely a passenger mutation due to its consistency between samples, the probability that it's an error cannot be ruled out. 
+
+Currently we are able to identify SNPs occurring in ctDNA when we compare them to cfDNA. Also, we are able to visualize all SNPs occurring in a dataset and are already able to use this knowledge to analyse p53 datasets. However, we have yet to establish enough data, to identify method specific alterations for a broader approach. A future perspective should thus be to gather more cfDNA datasets with Cyclomics, in order to analyse often mutated sequences for data filtering.
+
+Apart from insert data, backbone was also analysed for SNPs. Backbone data could have an application in identifying run specific alterations, which are errors that occur in the sequence and differ in each run. After identification, these run specific errors could be included in data filtering. Firstly, backbone data was similairly stripped and analysed as insert data and also visualized using heatmap. In figure 13 backbone heatmaps from p53 wild-type and 10% mutated were visualized, which clearly shows the occurrence of run specific errors.
+
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\backbone_variance_WT_10.png
+   :scale:  70%
+   :align:  center
+
+   Figure 13: **SNPs analysis for backbone**. Occurrence of SNP is visualized as a percentage of the amount of time sequence has been reported in backbone. In all the chunks the middle base has been reported to be mutated in some of the vcf files. A) Backbone from p53 wild-type. B) Backbone from p53 10% mutated. Interactive figure can be found here(Backbone_WT_ and Backbone_10_)
+
+.. _Backbone_WT: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\RCAxWT_backbone_5.0_heatmap_sequences.html
+.. _Backbone_10: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\RCAxPool5_xI2_backbone_5.0_heatmap_sequences.html
+
+Similar to insert data, backbone data has also been investigated for SNP locations (excel_). Because backbone shouldn't contain any SNPs, applying reported SNPs to the data filter could provide for run specific background noise canceling. Importantly, SNPs should at least have a 10% occurrence in the backbone to be applied in the data filter, to limit sequence exclusion. 
 
 Script Tests
 ++++++++++++
