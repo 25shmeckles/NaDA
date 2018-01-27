@@ -215,20 +215,27 @@ This script was run over multiple datasets available from Cyclomics, which were 
 
 .. _single_base_insert_MUT: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\RCAxMUT_single_base_insert_1_heatmap_sequences.html
 
-Similar to figure 11, wild-type, 1% and 10% have been analysed for postion specific SNPs (supplementary_3_). As expected, wild-type shows no occurrence of the specific mutation and the other datasets are in concordance with the percentages of reads that should contain the SNP. 
+Similar to figure 11, wild-type, 1% and 10% have been analysed for position specific SNPs (supplementary_3_). As expected, wild-type shows no occurrence of the specific mutation and the other datasets are in concordance with the percentages of reads that should contain the SNP. Therefor, this script_ is able to identify true mutations in this p53 dataset.
 
-mutation occurence (GGATA > T) can be clearly visualised in this dataset. Furthermore, WT analysis showed a compleet absence of this mutation (supplementary_a_) and the other two dataset are in concordance with the percentage mutated (supplementary_b_). 
+.. _supplementary_3: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
 
-Extraordinarily, apart from the expected mutation, in all four datasets other pentameers seem to be mutated aswell. Especially, CAACC is reported to be highly mutated (around 30%) for all the datasets. This could indicate either the occurence of other mutations in the dataset or the identification of pentameers which cause error's throughout our workflow.
+However, while the expected alteration is found in our datasets, for those datasets other alteration were also identified. These alterations were not in line with our expectations and could have a number of explanations. Firstly, it could be a real passenger mutation which is not normally present in the reference. Secondly, these alterations could be caused by protocol errors, such as pcr errors and sequencing errors. For both these alterations could be accounted for by excluding certain positions in the data filter. Nevertheless, this could only help to construct a data filter specific for p53 databases as specific positions get excluded and our aim is to construct a data filter that can be applied to multiple gene databases. 
 
-.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Variance_occurence_in_sequence_vcf_3.png
+In order to construct a data filter usable for multiple genes, regions rather than single positions were investigated for SNPs. Region selection could help identifying SNPs due to protocol errors and help exclude them from analysis. First, chunks of trimeers and pentameers were similarly selected as described in region SNP analysis. Subsequently, these chunks were plotted in a similar heatmap as visualized in figure 12. Mutation occurrence (GGATA > T) could again be clearly visualised in this dataset. Furthermore, WT analysis showed a complete absence of this mutation (supplementary_4_) and the other two datasets are in concordance with the percentage mutated (supplementary_5_). 
+
+.. _supplementary_4: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
+.. _supplementary_5: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
+
+Extraordinarily, apart from the expected mutation, in all four datasets other pentameers seem to be mutated as well. Especially, CAACC is reported to be highly mutated (around 30%) for all the datasets. This could indicate either the occurrence of other mutations in the dataset or the identification of pentameers which cause error's throughout our workflow.
+
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Variance_occurence_in_MUT.png
    :scale:  70%
    :align:  center
 
-   Figure x: Occurence of alterations as a percentages of the amount of times sequence has been reported in the dataset. In all the sequences the middle base has been reported to be mutated in some of the vcf files. Dataset used here is p53 mutated. Interactive figure can be found here(MUT_heatmap_)
+   Figure 12: **SNPs analysis for pentameer chunks* Occurrence of SNP is visualized as a percentage of the amount of time sequence has been reported in the dataset. In all the sequences the middle base has been reported to be mutated in some of the vcf files. The dataset used here is p53 mutated. Interactive figure can be found here(MUT_heatmap_)
 
-.. _supplementary_a: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
-.. _supplementary_b: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\Supplementary.html
+# this is where i left offfff
+
 .. _script: https://github.com/DouweSpaanderman/NaDA/blob/master/Scripts/vcf_snp_variant_analyser.py
 .. _MUT_heatmap: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_insert_5.0_heatmap_sequences.html
 

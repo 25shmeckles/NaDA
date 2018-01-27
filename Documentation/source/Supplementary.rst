@@ -24,7 +24,7 @@ Supplementary
    :scale:  70%
    :align:  center
 
-   Supplementary Figure 3: **Single position SNPs analysis for p53 wild-type, 1% and 10% mutated database**. Occurrence of SNP is visualized as a percentage of times it has been reported with a SNP to the total amount of times it has been reported in the dataset. A) wild-type database. B) 1% p53 mutated database. C) 10% p53 mutated database. Interactive figure can be respectively found here(single_base_insert_WT_, single_base_insert_1%_ and single_base_insert_10%_)
+   Supplementary Figure 3: **Single position SNPs analysis for p53 wild-type, 1% and 10% mutated database**. Occurrence of SNP is visualized as a percentage of times it has been reported with a SNP to the total amount of times it has been reported in the dataset. A) wild-type database. B) 1% p53 mutated database. C) 10% p53 mutated database. Interactive figure can be respectively found here. (single_base_insert_WT_, single_base_insert_1%_ and single_base_insert_10%_)
 
 .. _single_base_insert_WT: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\RCAxWT_single_base_insert_1_heatmap_sequences.html
 .. _single_base_insert_1%: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\RCAxPool5_xI1_single_base_insert_1_heatmap_sequences.html
