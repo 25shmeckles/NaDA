@@ -13,13 +13,22 @@ Supplementary
    :scale:  70%
    :align:  center
 
-   Supplementary figure 2: **pentameer sequence analysis for chunks 0-2 and 4 of the p53 mutant database.** Figure illustrates the mean qualityscore for each tetrameer possible in one chunk. The interactive figure can be found here and visualizes data analysis when devided into high, medium and low group. (MUT_chunk0_, MUT_chunk1_, MUT_chunk2_ and MUT_chunk4_)
+   Supplementary Figure 2: **pentameer sequence analysis for chunks 0-2 and 4 of the p53 mutant database.** Figure illustrates the mean qualityscore for each tetrameer possible in one chunk. The interactive figure can be found here and visualizes data analysis when devided into high, medium and low group. (MUT_chunk0_, MUT_chunk1_, MUT_chunk2_ and MUT_chunk4_)
 
 .. _MUT_chunk0: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_chunk0_4.0_3.0_score_plotting.html
 .. _MUT_chunk1: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_chunk1_4.0_3.0_score_plotting.html
 .. _MUT_chunk2: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_chunk2_4.0_3.0_score_plotting.html
 .. _MUT_chunk4: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_chunk4_4.0_3.0_score_plotting.html
 
+.. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\single_base_insert_MUT.png
+   :scale:  70%
+   :align:  center
+
+   Supplementary Figure 3: **Single position SNPs analysis for p53 wild-type, 1% and 10% mutated database**. Occurrence of SNP is visualized as a percentage of times it has been reported with a SNP to the total amount of times it has been reported in the dataset. A) wild-type database. B) 1% p53 mutated database. C) 10% p53 mutated database. Interactive figure can be respectively found here(single_base_insert_WT_, single_base_insert_1%_ and single_base_insert_10%_)
+
+.. _single_base_insert_WT: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\RCAxWT_single_base_insert_1_heatmap_sequences.html
+.. _single_base_insert_1%: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\RCAxPool5_xI1_single_base_insert_1_heatmap_sequences.html
+.. _single_base_insert_10%: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\RCAxPool5_xI2_single_base_insert_1_heatmap_sequences.html
 
 .. figure:: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Variance_occurence_in_WT.png
    :scale:  70%
