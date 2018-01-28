@@ -7,7 +7,7 @@ Just recently, circulating tumor DNA (ctDNA) has been suggested as a new innovat
 The Kloosterman group (UMC Utrecht) uses a new and innovating method called Cyclomics to identify alterations in ctDNA (Figure 1). Current research upon this method is conducted for p53 mutation in patients with head and neck carcinoma's, but upon achieving a sensitive and specific test, Cyclomics could provide for identifying multiple driver mutations in ctDNA. Cyclomics uses rolling circle amplification to increase low allelic fractions of mutated ctDNA fragments(4_). This library preparation for Nanopore sequencing increases its sensitivity. However, as with all sequencing methods, sequencing isn't flawless and covers real biological mutations, but also asymmetric DNA errors, PCR and sequencing errors (5_). Therefore, including multiple filtering steps upon the data achieved from the Nanopore sequencer is essential for identifying real biological mutations and thus improving specificity and sensitivity of the clinical tests. In this report, data analyzing will be covered with Python, identifying regions with high and low mutational value as well as identifying single nucleotide polymorphisms (SNPs) in a p53 dataset.
  
 .. figure::  https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Figure_workflow.jpg
-   :width: 600px
+   :width: 800px
    :height: 400px
    :align: center
 
