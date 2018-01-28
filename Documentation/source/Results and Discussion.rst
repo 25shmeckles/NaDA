@@ -239,8 +239,6 @@ Extraordinarily, apart from the expected mutation, in all four datasets other pe
 
 Importantly, the identified alterations could persist anywhere the pentameer is located in the sequence. Furthermore, if an alteration occurs in one specific position it is more prone to be an actual mutation. In contrast, alterations occurring in multiple location with the same pentameer could indicate a systematic problem with pcr or sequencing causing falsely identified mutation. In order to visualize the location of the altered chunks, another script was prepared to compare pentameer locations in the sequence. This script constructed an excel_ (!!!!!link and make pretty!!!!) with the position of the chunks, including SNP, the percentage of times this particular chunk with SNP occurs in a certain location and the amount of times this specific alteration was found in the dataset. 
 
-.. _excel: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\RCAxMUT_insert_5.0_heatmap_sequences.html
-
 As expected, the p53 mutated altered chunk GGATA > T on locations 7578263 to 7578267 was  reported as the only occurrence of this particular sequence with alteration in the whole dataset. Which empowers the conclusion that this is in fact a real mutation. Similarly, other found alterations such as CAACC > G at position 7578333 to 7578337 were also only reported here in the whole sequence. Furthermore, this alteration hasn't been reported yet in GRCh37.13 reference(8). Also, this alteration is located in an intron and is thus less likely to be a driver mutations. Altogether, while it's most likely a passenger mutation due to its consistency between samples, the probability that it's an error cannot be ruled out. 
 
 Currently we are able to identify SNPs occurring in ctDNA when we compare them to cfDNA. Also, we are able to visualize all SNPs occurring in a dataset and are already able to use this knowledge to analyse p53 datasets. However, we have yet to establish enough data, to identify method specific alterations for a broader approach. A future perspective should thus be to gather more cfDNA datasets with Cyclomics, in order to analyse often mutated sequences for data filtering.
@@ -257,6 +255,8 @@ Apart from insert data, backbone was also analysed for SNPs. Backbone data could
 .. _Backbone_10: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\RCAxPool5_xI2_backbone_5.0_heatmap_sequences.html
 
 Similar to insert data, backbone data has also been investigated for SNP locations (excel_). Because backbone shouldn't contain any SNPs, applying reported SNPs to the data filter could provide for run specific background noise canceling. Importantly, SNPs should at least have a 10% occurrence in the backbone to be applied in the data filter, to limit sequence exclusion. 
+
+.. _excel: C:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\source\\_static\\Excel.xlsx
 
 Script Tests
 ++++++++++++

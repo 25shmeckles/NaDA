@@ -7,19 +7,24 @@ Data analyzing of ctDNA from Nanopore Sequencing with Python
 ============================================================
 **Cyclomics data analysis: identifying and analyzing alterations in ctDNA for data filtering**
 
-*Student:			Douwe Spaanderman (5483352)*
+.. *Student:			Douwe Spaanderman (5483352)*
+.. *Supervisor: 			Alessio Marcozzi*
+.. *Group Kloosterman		Medical Genetics - UMC Utrecht*
 
-*Supervisor: 			Alessio Marcozzi*
+This is the interactive version of the bachelor internship report from Douwe Spaanderman, which consist of an introduction, general workflow, results and discussion and a conclusion. Additional references and supplementary can also be found here. Programming used for analysis can be found in my GitHub_. Also, Sphinx-doc is used to construct this report.
 
-*Group Kloosterman		Medical Genetics - UMC Utrecht*
+.. _GitHub: https://github.com/DouweSpaanderman/NaDA/
 
+Table of Contents
++++++++++++++++++
 
 .. toctree::
    :maxdepth: 2
-   :caption: Table of Contents
 
    Introduction
    General workflow
    Results and Discussion
+   Conclusion
    References
    Supplementary
+

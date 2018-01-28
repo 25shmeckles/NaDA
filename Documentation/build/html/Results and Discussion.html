@@ -23,7 +23,7 @@
     <script type="text/javascript" src="_static/doctools.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="References" href="References.html" />
+    <link rel="next" title="Conclusion" href="Conclusion.html" />
     <link rel="prev" title="General workflow" href="General workflow.html" />
    
   <link rel="stylesheet" href="_static/custom.css" type="text/css" />
@@ -276,15 +276,15 @@ is important to be able to understand which regions of bases are difficult to ge
 <a class="reference internal image-reference" href="_images/Variance_occurence_in_MUT.png"><img alt="_images/Variance_occurence_in_MUT.png" src="_images/Variance_occurence_in_MUT.png" style="width: 787.5px; height: 306.59999999999997px;" /></a>
 <p class="caption"><span class="caption-text">Figure 12: <strong>SNPs analysis for pentameer chunks</strong>. Occurrence of SNP is visualized as a percentage of the amount of time sequence has been reported in the dataset. In all the chunks the middle base has been reported to be mutated in some of the vcf files. The dataset used here is p53 mutated. Interactive figure can be found here(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxMUT_insert_5.0_heatmap_sequences.html">MUT_heatmap</a>)</span></p>
 </div>
-<p>Importantly, the identified alterations could persist anywhere the pentameer is located in the sequence. Furthermore, if an alteration occurs in one specific position it is more prone to be an actual mutation. In contrast, alterations occurring in multiple location with the same pentameer could indicate a systematic problem with pcr or sequencing causing falsely identified mutation. In order to visualize the location of the altered chunks, another script was prepared to compare pentameer locations in the sequence. This script constructed an <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxMUT_insert_5.0_heatmap_sequences.html">excel</a> (!!!!!link and make pretty!!!!) with the position of the chunks, including SNP, the percentage of times this particular chunk with SNP occurs in a certain location and the amount of times this specific alteration was found in the dataset.</p>
+<p>Importantly, the identified alterations could persist anywhere the pentameer is located in the sequence. Furthermore, if an alteration occurs in one specific position it is more prone to be an actual mutation. In contrast, alterations occurring in multiple location with the same pentameer could indicate a systematic problem with pcr or sequencing causing falsely identified mutation. In order to visualize the location of the altered chunks, another script was prepared to compare pentameer locations in the sequence. This script constructed an <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\Excel.xlsx">excel</a> (!!!!!link and make pretty!!!!) with the position of the chunks, including SNP, the percentage of times this particular chunk with SNP occurs in a certain location and the amount of times this specific alteration was found in the dataset.</p>
 <p>As expected, the p53 mutated altered chunk GGATA &gt; T on locations 7578263 to 7578267 was  reported as the only occurrence of this particular sequence with alteration in the whole dataset. Which empowers the conclusion that this is in fact a real mutation. Similarly, other found alterations such as CAACC &gt; G at position 7578333 to 7578337 were also only reported here in the whole sequence. Furthermore, this alteration hasn’t been reported yet in GRCh37.13 reference(8). Also, this alteration is located in an intron and is thus less likely to be a driver mutations. Altogether, while it’s most likely a passenger mutation due to its consistency between samples, the probability that it’s an error cannot be ruled out.</p>
 <p>Currently we are able to identify SNPs occurring in ctDNA when we compare them to cfDNA. Also, we are able to visualize all SNPs occurring in a dataset and are already able to use this knowledge to analyse p53 datasets. However, we have yet to establish enough data, to identify method specific alterations for a broader approach. A future perspective should thus be to gather more cfDNA datasets with Cyclomics, in order to analyse often mutated sequences for data filtering.</p>
 <p>Apart from insert data, backbone was also analysed for SNPs. Backbone data could have an application in identifying run specific alterations, which are errors that occur in the sequence and differ in each run. After identification, these run specific errors could be included in data filtering. Firstly, backbone data was similairly stripped and analysed as insert data and also visualized using heatmap. In figure 13 backbone heatmaps from p53 wild-type and 10% mutated were visualized, which clearly shows the occurrence of run specific errors.</p>
 <div class="figure align-center" id="id12">
 <a class="reference internal image-reference" href="_images/backbone_variance_WT_10.png"><img alt="_images/backbone_variance_WT_10.png" src="_images/backbone_variance_WT_10.png" style="width: 792.4px; height: 627.1999999999999px;" /></a>
-<p class="caption"><span class="caption-text">Figure 13: <strong>SNPs analysis for backbone</strong>. Occurrence of SNP is visualized as a percentage of the amount of time sequence has been reported in backbone. In all the chunks the middle base has been reported to be mutated in some of the vcf files. A) Backbone from p53 wild-type. B) Backbone from p53 10% mutated. Interactive figure can be found here(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\RCAxWT_backbone_5.0_heatmap_sequences.html">Backbone_WT</a> and Backbone_10%_)</span></p>
+<p class="caption"><span class="caption-text">Figure 13: <strong>SNPs analysis for backbone</strong>. Occurrence of SNP is visualized as a percentage of the amount of time sequence has been reported in backbone. In all the chunks the middle base has been reported to be mutated in some of the vcf files. A) Backbone from p53 wild-type. B) Backbone from p53 10% mutated. Interactive figure can be found here(<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\RCAxWT_backbone_5.0_heatmap_sequences.html">Backbone_WT</a> and <a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\build\html\RCAxPool5_xI2_backbone_5.0_heatmap_sequences.html">Backbone_10</a>)</span></p>
 </div>
-<p>Similar to insert data, backbone data has also been investigated for SNP locations (<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\RCAxMUT_insert_5.0_heatmap_sequences.html">excel</a>). Because backbone shouldn’t contain any SNPs, applying reported SNPs to the data filter could provide for run specific background noise canceling. Importantly, SNPs should at least have a 10% occurrence in the backbone to be applied in the data filter, to limit sequence exclusion.</p>
+<p>Similar to insert data, backbone data has also been investigated for SNP locations (<a class="reference external" href="C:\Users\Douwe\Documents\GitHub\NaDA\Documentation\source\_static\Excel.xlsx">excel</a>). Because backbone shouldn’t contain any SNPs, applying reported SNPs to the data filter could provide for run specific background noise canceling. Importantly, SNPs should at least have a 10% occurrence in the backbone to be applied in the data filter, to limit sequence exclusion.</p>
 </div>
 <div class="section" id="script-tests">
 <h2>Script Tests<a class="headerlink" href="#script-tests" title="Permalink to this headline">¶</a></h2>
@@ -336,7 +336,6 @@ is important to be able to understand which regions of bases are difficult to ge
 
 
 <h3>Navigation</h3>
-<p class="caption"><span class="caption-text">Table of Contents</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
 <li class="toctree-l1"><a class="reference internal" href="General workflow.html">General workflow</a></li>
@@ -346,6 +345,7 @@ is important to be able to understand which regions of bases are difficult to ge
 <li class="toctree-l2"><a class="reference internal" href="#script-tests">Script Tests</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Conclusion.html">Conclusion</a></li>
 <li class="toctree-l1"><a class="reference internal" href="References.html">References</a></li>
 <li class="toctree-l1"><a class="reference internal" href="Supplementary.html">Supplementary</a></li>
 </ul>
@@ -355,7 +355,7 @@ is important to be able to understand which regions of bases are difficult to ge
 <ul>
   <li><a href="index.html">Documentation overview</a><ul>
       <li>Previous: <a href="General workflow.html" title="previous chapter">General workflow</a></li>
-      <li>Next: <a href="References.html" title="next chapter">References</a></li>
+      <li>Next: <a href="Conclusion.html" title="next chapter">Conclusion</a></li>
   </ul></li>
 </ul>
 </div>
