@@ -12,8 +12,8 @@ The Kloosterman group (UMC Utrecht) uses a new and innovating method called Cycl
 
    Figure 1: **Workflow for Cyclomics**. A) for library preparation, patient blood is isolated, which contains circulating tumor DNA (ctDNA) fragments. Using a phosphorylated backbone, these fragments can be circularized and subsequently amplified with rolling circle amplification. This leaves very long reads, which are ideal for nanopore sequencing. B) Nanopore sequencing is used to identify nucleotides in a read and after base and variant calling gives fastq and vcf files. After applying a Data filter, true driver mutation can be identified.
 
-.. _1: https://htmlpreview.github.io/?https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/build/html/References.html
-.. _2: https://htmlpreview.github.io/?https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/build/html/References.html
-.. _3: https://htmlpreview.github.io/?https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/build/html/References.html
-.. _4: https://htmlpreview.github.io/?https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/build/html/References.html
-.. _5: https://htmlpreview.github.io/?https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/build/html/References.htmlC:\\Users\\Douwe\\Documents\\GitHub\\NaDA\\Documentation\\build\\html\\References.html
+.. _1: http://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
+.. _2: http://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
+.. _3: http://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
+.. _4: http://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
+.. _5: http://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
