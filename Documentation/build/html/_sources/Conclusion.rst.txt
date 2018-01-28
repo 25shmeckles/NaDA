@@ -10,4 +10,6 @@ In summary, this report was able to investigate ctDNA from Cyclomics to acquire 
 
 Personal reflection
 +++++++++++++++++++
-For my internship I wanted to try something I haven't yet experienced in my bachelor.
+For my internship, I wanted to try something I haven't yet experienced in my bachelor and because I have always been interested in programming, I ought to try python. Learning and understanding a whole new language was both challenging but all the more rewarding. I'm very glad to be able to say, that after this internship, I'm now able to write and understand python. Furthermore, I could have never imagined to have achieved this amount of knowledge of programming and a whole library_ containing only self written functions and scripts. Also, during this internship, I experienced some minor setbacks with data that was not in line with our expectations and while this is unfortunately, it also gave me a more realistic view upon biomedical research. All in all this internship gave me a really positive and realistic view on research and encouraged me to pursue a research master to further investigate my interest in biomedical research. 
+
+.. _library: https://github.com/DouweSpaanderman/NaDA/
