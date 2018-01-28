@@ -12,5 +12,7 @@ General workflow
 |
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png
-   :align: center
+   :align:  center
+   :width: 100px
+   :height: 100px
    :target: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/Results%20and%20Discussion.html

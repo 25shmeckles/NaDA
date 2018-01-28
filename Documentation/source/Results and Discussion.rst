@@ -36,14 +36,18 @@ is important to be able to understand which regions of bases are difficult to ge
 The data returns a dictionary with identification (id), sequence and scores for individual bases in the fastq file. Following this script, the plotting was conducted as shown in figure 1. Here the distribution of the error rate is visualized for every individual base in the sequence, which illustrates the occurrence of high and low score regions. In these high score regions, bases have more chance to be falsely assigned and are thus less reliable for mutation identification. Likewise, mutations found in low score regions are more likely to be rightly assigned and thus true mutations. 
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Fastq_files_qualityscore.png
-   :align:   center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 2: **Distribution of error rate (quality score) for every individual base.** Here every 10th base is visualized on the X-axis to clarify the data. The mean of all the quality scores is 0.21.
 
 While figure 1 gives a good overview on the importance of analyzing quality scores, one fastq file has little quantifiable value for identifying high score regions. To identify high score regions, 1139 fastq files from Nanopore with reads on chromosome 9 were likewise investigated for quality score distribution. Firstly, mean scores of the quality scores were plotted in figure 2. The mean scores of the files are a good first indication of the sequence quality and can be used to filter and select files for variant calling, where a low mean quality score is important. 
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Mean_distribution_of_all_quality_score.png
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 3: **Mean distribution of quality scores**. Mean scores from 1139 fastq files were calculated and visualised in a violin plot.
 
@@ -76,7 +80,9 @@ Sequences were chunked to pieces of four (tetrameer) to six (hexameer) in order 
     		return group_score
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Fastq_gridplots.png
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 4: **Quality score analysis in 6 scenarios.** A - C) Mean score for all combinations in chunk sizes (A = 4, B = 5, C = 6) for 1139 fastq files derived from nanopore sequencing of chromosome 9. D - F) Scores for regions have been categorized into high, medium and low for regions of the same size as A to C. Next, the amount of times a region was called under a certain category was counted and collected for the same data set. In these figures, scores are set in percentage of the total amount of times a region occurs in the data set.(Interactive figure at GridPlot_)
 
@@ -118,7 +124,9 @@ In table 1, highest and lowest five scoring sequences are highlighted. In conclu
 In figure 5 three clusters are formed in which the yellow one represents sequences with often reported high score and few times reported low scores. In this cluster, alterations are more likely to be falsely assigned. Furthermore, in blue cluster, alterations are more likely to be rightfully assigned. Clustering of data can provide for a more clearer view on which sequences to include and exclude for mutation calling.
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/clusterplot.png
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 5: **Clustering of data from 1139 fastq files.** Sequences of 5 bases (pentameer) are measured for quality score and reported in high or low score. Here the percentage of amount a sequence is reported in high and low score is visualized. Following, clustering was conducted using K-means, separating three clusters. 
 
@@ -131,7 +139,9 @@ Importantly, the quality scores of sequences can differ on the method being used
 On the HPC multiple ctDNA datasets derived from cyclomics are available for analysis, here the focus goes towards the rolling circle amplification p53 mutated and wild-type(WT) datasets. Firstly, a fastq_script_ was written to achieve similar data analysis and visualization as described above. Minor visualization updates were conducted to improve data visibility. Both datasets are separated in equally sized chunks, around 4000 files each, and analysed as individual chunks to increase script parallelization, thus increasing speed. For all files mean scores were calculated and visualized in figure 6.
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/RCAxMUT_WT_boxplot.png
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 6: **Boxplot of mean score from p53 mutated and WT dataset.** For both datasets chunk 0 to 9 have been visualized. Chunk 10 to 24 were excluded, but contained similar results.
 
@@ -142,7 +152,9 @@ This boxplot clearly visualizes the lack of consistency between quality scores i
 While mean scores give an indication on quality score analysis, both quality score plotting and clustering is yet to determine if high and low score region exist and persist in multiple chunks and datasets. For every chunk derived from a dataset, sequences have been analysed and visualized as tetrameer, pentameer and hexameer. Here, tetrameers of wild-type chunk 0 to 3 have been plotted as shown in figure 7.
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Fastq_gridplot_WT.png
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 7: **tetrameer sequence analysis for chunks zero to three of the p53 wild-type database.** Figures illustrates the mean qualityscore for each tetrameer possible in one chunk. A) chunk 0. B) chunk 1. C) chunk 2. D) chunk 3. Interactive figure can be found here and also visualizes data analysis when divided into high, medium and low group.(WT_chunk0_, WT_chunk1_, WT_chunk2_ and WT_chunk3_)
 
@@ -157,7 +169,9 @@ Similarly to the boxplot, there seems to be a lack of consistency between chunks
 .. _supplementary_2: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/Supplementary.html
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Fastq_gridplot_WT_cluster.png
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 8: **Clustering of hexameer sequence for chunks zero to three of the p53 wild-type database.** Data points are visualised as percentage reported in high (y-axis) and low score(x-axis). A) chunk 0. B) chunk 1. C) chunk 2. D) chunk 3. Interactive cluster plot can be found here. (WT_chunk0_cluster_, WT_chunk1_cluster_, WT_chunk2_cluster_ and WT_chunk3_cluster_)
 
@@ -177,7 +191,9 @@ Variant Call Format files
 In order to investigate the amount of SNPs in the files, VCF files were similarly stripped as Fastq files and separated by either sequence or backbone. Next, for the alterations a parameter was set at a minimum of 25 percent of the reads that should be coupled to the mutant variant and visualized in figure 9:
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Combined_vcf_snp_analysis.png
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 9: **Distriution of SNPs in the sequence of the p53 gen for 1187 VCF files.** Parameter for variant identification was set at 25% of the reads to the variant. Variants are displayed as C > T, meaning that T substitutes C. A) Bar plot with single nucleotide polymorphisms occurrence as percentage of whole. B) Heatmap from same variances with amount of occurrences in the files
 
@@ -186,7 +202,9 @@ Both figures illustrate the common occurrence of G > A mutation and to lesser ex
 **Region SNP analysis**. Next, trimeers and pentameers were selected in which the middle base was reported to contain a SNPs in some of the files for heatmap analysis. Creating chunks for SNP analysis instead of single base analysis was conducted to visualize sequences that were more likely to contain SNPs. Pandas library was used to create a dataframe for the amount of times mutation occured to either A, T, C or G. This dataframe was then mapped to a heatmap with reference sequence. Just as in previous figures, lenght of the surrounding bases can be changed to give a wider variety of information. This gave more information about base combinations with high alteration affinity, such as ACGCA to ACACA. 
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Variance_occurence_in_sequence_vcf_3.PNG
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 10: **Occurence of variance per reference sequence to different bases.** In all the sequences the middle base is reported to be mutated in some of the vcf files. This mutation again has a parameter that is set at 25% of the reads atleast mutated. 
 
@@ -199,7 +217,9 @@ Furthermore, just as with the fastq files, variances can be separated between al
 This script was run over multiple datasets available from Cyclomics, which were p53 wild-type(WT), mutated(MUT), 1% mutated and 10% mutated. Firstly, SNPs were investigated for their individual positions. As visualized in figure 11, using this single position heatmap, a clear mutation, position 7578265 A > T, can be found in the p53 mutated dataset. 
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/single_base_insert_MUT.PNG
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 11: **Single position SNPs analysis for p53 mutated database**. Occurrence of SNP is visualized as a percentage of times it has been reported with a SNP to the total amount of times it has been reported in the dataset. Interactive figure can be found here(single_base_insert_MUT_)
 
@@ -219,7 +239,9 @@ In order to construct a data filter usable for multiple genes, regions rather th
 Extraordinarily, apart from the expected mutation, in all four datasets other pentameers seem to be mutated as well. Especially, CAACC is reported to be highly mutated (around 30%) for all the datasets. This could indicate either the occurrence of other mutations in the dataset or the identification of pentameers which cause error's throughout our workflow.
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Variance_occurence_in_MUT.PNG
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 12: **SNPs analysis for pentameer chunks**. Occurrence of SNP is visualized as a percentage of the amount of time sequence has been reported in the dataset. In all the chunks the middle base has been reported to be mutated in some of the vcf files. The dataset used here is p53 mutated. Interactive figure can be found here(MUT_heatmap_)
 
@@ -235,7 +257,9 @@ Currently we are able to identify SNPs occurring in ctDNA when we compare them t
 Apart from insert data, backbone was also analysed for SNPs. Backbone data could have an application in identifying run specific alterations, which are errors that occur in the sequence and differ in each run. After identification, these run specific errors could be included in data filtering. Firstly, backbone data was similairly stripped and analysed as insert data and also visualized using heatmap. In figure 13 backbone heatmaps from p53 wild-type and 10% mutated were visualized, which clearly shows the occurrence of run specific errors.
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/backbone_variance_WT_10.png
-   :align:  center
+   :width: 700px
+   :height: 450px
+   :align: center
 
    Figure 13: **SNPs analysis for backbone**. Occurrence of SNP is visualized as a percentage of the amount of time sequence has been reported in backbone. In all the chunks the middle base has been reported to be mutated in some of the vcf files. A) Backbone from p53 wild-type. B) Backbone from p53 10% mutated. Interactive figure can be found here(Backbone_WT_ and Backbone_10_)
 

@@ -18,5 +18,7 @@ For my internship, I wanted to try something I haven't yet experienced in my bac
 |
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png
-   :align: center
+   :align:  center
+   :width: 100px
+   :height: 100px
    :target: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
