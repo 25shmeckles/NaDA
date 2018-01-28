@@ -30,6 +30,8 @@ Table of Contents
    References
    Supplementary
 
+|
+
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png
    :target: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/General%20workflow.html
    :align:  center
