@@ -7,8 +7,8 @@ Just recently, circulating tumor DNA (ctDNA) has been suggested as a new innovat
 The Kloosterman group (UMC Utrecht) uses a new and innovating method called Cyclomics to identify alterations in ctDNA (Figure 1). Current research upon this method is conducted for p53 mutation in patients with head and neck carcinoma's, but upon achieving a sensitive and specific test, Cyclomics could provide for identifying multiple driver mutations in ctDNA. Cyclomics uses rolling circle amplification to increase low allelic fractions of mutated ctDNA fragments(4_). This library preparation for Nanopore sequencing increases its sensitivity. However, as with all sequencing methods, sequencing isn't flawless and covers real biological mutations, but also asymmetric DNA errors, PCR and sequencing errors (5_). Therefore, including multiple filtering steps upon the data achieved from the Nanopore sequencer is essential for identifying real biological mutations and thus improving specificity and sensitivity of the clinical tests. In this report, data analyzing will be covered with Python, identifying regions with high and low mutational value as well as identifying single nucleotide polymorphisms (SNPs) in a p53 dataset.
  
 .. figure::  https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Figure_workflow.jpg
-   :width: 200px
-   :height: 100px
+   :width: 600px
+   :height: 400px
    :align: center
 
    Figure 1: **Workflow for Cyclomics**. A) for library preparation, patient blood is isolated, which contains circulating tumor DNA (ctDNA) fragments. Using a phosphorylated backbone, these fragments can be circularized and subsequently amplified with rolling circle amplification. This leaves very long reads, which are ideal for nanopore sequencing. B) Nanopore sequencing is used to identify nucleotides in a read and after base and variant calling gives fastq and vcf files. After applying a Data filter, true driver mutation can be identified.
@@ -24,4 +24,6 @@ The Kloosterman group (UMC Utrecht) uses a new and innovating method called Cycl
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png
    :align: center
+   :width: 200px
+   :height: 100px
    :target: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/General%20workflow.html
