@@ -16,3 +16,10 @@ The Kloosterman group (UMC Utrecht) uses a new and innovating method called Cycl
 .. _3: http://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
 .. _4: http://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
 .. _5: http://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
+
+|
+|
+
+.. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png
+   :align: center
+   :target: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/General%20workflow.html

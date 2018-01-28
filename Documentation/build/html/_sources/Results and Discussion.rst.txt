@@ -279,3 +279,10 @@ Before functions and scripts are run over multiple files and directories, they s
 The class function is used to define which function is going to be checked for quality. Firstly the function is setup with a test file, this file is designed to identify flaws in the function. In other words, it consists off alot of errors which the function should not pickup. Next, multiple assertions are made, such as the assertion that letters in sequence can only consist of A, C, T, G and N. Also score should consist of characters and not involve any letters. While this is an example of a test script, every function and script is checked for there quality. Testing scripts can be found here_. 
 
 .. _here: https://github.com/DouweSpaanderman/NaDA/tree/master/Testing%20scripts
+
+|
+|
+
+.. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png
+   :align: center
+   :target: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/Conclusion.html
