@@ -24,7 +24,7 @@ Table of Contents
    :maxdepth: 2
 
    Introduction
-   General workflow
+   General concept
    Results and Discussion
    Conclusion
    References
