@@ -22,7 +22,7 @@ Supplementary
 .. _MUT_chunk2: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/source/_static/RCAxMUT_chunk2_4.0_3.0_score_plotting.html
 .. _MUT_chunk4: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/source/_static/RCAxMUT_chunk4_4.0_3.0_score_plotting.html
 
-.. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/single_base_insert_MUT.png
+.. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/single_base_insert_MUT.PNG
    :width: 700px
    :height: 450px
    :align: center
@@ -33,12 +33,12 @@ Supplementary
 .. _single_base_insert_1%: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/source/_static/RCAxPool5_xI1_single_base_insert_1_heatmap_sequences.html
 .. _single_base_insert_10%: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/source/_static/RCAxPool5_xI2_single_base_insert_1_heatmap_sequences.html
 
-.. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Variance_occurence_in_WT.png
+.. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Variance_occurence_in_WT.PNG
    :width: 700px
    :height: 450px
    :align: center
 
-   Supplementary Figure 4: A) Occurence of alterations as a percentages of the amount of times sequence has been reported in the dataset. In all the sequences the middle base has been reported to be mutated in some of the vcf files. B) plot of the distribution of SNPs. Dataset used here is p53 wild-type, without a mutation on position 7578265 in chromosome 17. Interactive figure can be found here(WT_heatmap_ and WT_snp_plot_)
+   Supplementary Figure 4: A) **Occurence of alterations as a percentages of the amount of times sequence has been reported in the dataset**. In all the sequences the middle base has been reported to be mutated in some of the vcf files. B) plot of the distribution of SNPs. Dataset used here is p53 wild-type, without a mutation on position 7578265 in chromosome 17. Interactive figure can be found here(WT_heatmap_ and WT_snp_plot_)
 
 .. _WT_heatmap: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/source/_static/RCAxWT_insert_5.0_heatmap_sequences
 
@@ -49,7 +49,7 @@ Supplementary
    :height: 450px
    :align: center
 
-   Supplementary Figure 5: A) Occurence of alterations as a percentages of the amount of times sequence has been reported in the dataset. In all the sequences the middle base has been reported to be mutated in some of the vcf files. Dataset used here is 1% p53 mutant. B) Dataset used here is 10% p53 mutant. Interactive figure can be found here(1_heatmap_ and 10_heatmap_)
+   Supplementary Figure 5: A) **Occurence of alterations as a percentages of the amount of times sequence has been reported in the dataset**. In all the sequences the middle base has been reported to be mutated in some of the vcf files. Dataset used here is 1% p53 mutant. B) Dataset used here is 10% p53 mutant. Interactive figure can be found here(1_heatmap_ and 10_heatmap_)
 
 .. _1_heatmap: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/source/_static/RCAxPool5_xI1_insert_5.0_heatmap_sequences.html
 
