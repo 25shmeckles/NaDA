@@ -1,6 +1,5 @@
 References 
 ----------
-(Ask how to link ref in text)
 1: Siravegna, G., Marsoni, S., Siena, S., & Bardelli, A. (2017). Integrating liquid biopsies into the management of cancer. Nature Reviews Clinical Oncology, 14(9), 531-548.
 
 2: Diaz, L. A., & Bardelli, A. (2014). Liquid biopsies: Genotyping circulating tumor DNA. Journal of Clinical Oncology, 32(6), 579-586.
