@@ -15,4 +15,4 @@ General concept
    :align:  center
    :width: 100px
    :height: 100px
-   :target: https://rawgit.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/Results%20and%20Discussion.html
+   :target: https://rawgit.com/DouweSpaanderman/NaDA/master/Documentation/build/html/Results%20and%20Discussion.html
