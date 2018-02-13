@@ -25,4 +25,4 @@ I would like to thank Alessio Marcozzi for his guidance and support during this 
    :align:  center
    :width: 100px
    :height: 100px
-   :target: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html
+   :target: https://rawgit.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/References.html

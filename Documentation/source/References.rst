@@ -27,4 +27,4 @@ References
    :align:  center
    :width: 100px
    :height: 100px
-   :target: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/Supplementary.html
+   :target: https://rawgit.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/Supplementary.html
