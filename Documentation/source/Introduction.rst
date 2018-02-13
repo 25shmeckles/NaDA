@@ -19,3 +19,12 @@ In order to tackle these hurdles, The Kloosterman group (UMC Utrecht) uses a new
 .. _5: https://rawgit.com/DouweSpaanderman/NaDA/master/Documentation/build/html/References.html
 .. _6: https://rawgit.com/DouweSpaanderman/NaDA/master/Documentation/build/html/References.html
 .. _7: https://rawgit.com/DouweSpaanderman/NaDA/master/Documentation/build/html/References.html
+
+|
+|
+
+.. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png
+   :align: center
+   :width: 100px
+   :height: 100px
+   :target: https://rawgit.com/DouweSpaanderman/NaDA/master/Documentation/build/html/General%20concept.html
