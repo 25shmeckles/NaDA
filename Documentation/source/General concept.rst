@@ -7,12 +7,3 @@ General concept
 **High-Performance Computing (HPC)**. Running scripts on larger datasets require a lot of memory and an overall great computer performance. Therefore, the HPC facility was used for data analysis. The HPC facility consists of 1544 cores and 600TB storage for fast and parallel data analysis. Currently, project NaDA_ is easily accessible on the HPC for further analysis and visualization of Nanopore datasets.
 
 .. _NaDA: https://github.com/DouweSpaanderman/NaDA/
-
-|
-|
-
-.. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png
-   :align:  center
-   :width: 100px
-   :height: 100px
-   :target: https://rawgit.com/DouweSpaanderman/NaDA/master/Documentation/build/html/Results%20and%20Discussion.html
