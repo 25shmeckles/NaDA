@@ -34,7 +34,7 @@ Supplementary
 .. _single_base_insert_10%: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/source/_static/RCAxPool5_xI2_single_base_insert_1_heatmap_sequences.html
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Variance_occurence_in_WT.PNG
-   :width: 840x
+   :width: 840px
    :height: 730px
    :align: center
 
