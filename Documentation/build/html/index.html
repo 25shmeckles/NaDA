@@ -32,61 +32,21 @@
 
   </head>
   <body>
-  
-
-    <div class="document">
-      <div class="documentwrapper">
-        <div class="bodywrapper">
-          <div class="body" role="main">
-            
-  <div class="section" id="data-analyzing-of-ctdna-from-nanopore-sequencing-with-python">
-<h1>Data analyzing of ctDNA from Nanopore Sequencing with Python<a class="headerlink" href="#data-analyzing-of-ctdna-from-nanopore-sequencing-with-python" title="Permalink to this headline">¶</a></h1>
-<p><strong>Cyclomics data analysis: identifying and analyzing alterations in ctDNA for data filtering</strong></p>
-<p><em>Student:                       Douwe Spaanderman (5483352)</em></p>
-<p><em>Supervisor:                    Alessio Marcozzi</em></p>
-<p><em>Group Kloosterman              Medical Genetics - UMC Utrecht</em></p>
-<p>This is the interactive version of the bachelor internship report from Douwe Spaanderman, which consist of an introduction, general workflow, results and discussion and a conclusion. Additional references and supplementary can also be found here. Programming used for analysis can be found in my <a class="reference external" href="https://github.com/DouweSpaanderman/NaDA/">GitHub</a>. Also, Sphinx-doc is used to construct this report.</p>
-<div class="section" id="table-of-contents">
-<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
-<div class="toctree-wrapper compound">
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
-<li class="toctree-l1"><a class="reference internal" href="General concept.html">General concept</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Results and Discussion.html">Results and discussion</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Results and Discussion.html#fastq-files">Fastq files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Results and Discussion.html#variant-call-format-files">Variant Call Format files</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Results and Discussion.html#script-tests">Script Tests</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="Conclusion.html">Conclusion</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="Conclusion.html#personal-reflection">Personal reflection</a></li>
-<li class="toctree-l2"><a class="reference internal" href="Conclusion.html#acknowledgements">Acknowledgements</a></li>
-</ul>
-</li>
-<li class="toctree-l1"><a class="reference internal" href="References.html">References</a></li>
-<li class="toctree-l1"><a class="reference internal" href="Supplementary.html">Supplementary</a></li>
-</ul>
-</div>
-<div class="line-block">
-<div class="line"><br /></div>
-<div class="line"><br /></div>
-</div>
-<div class="figure align-center">
-<a class="reference external image-reference" href="https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/Introduction.html"><img alt="https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png" src="https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png" style="width: 100px; height: 100px;" /></a>
-</div>
-</div>
-</div>
-
-
-          </div>
-        </div>
-      </div>
+  <div class="document">
+    
       <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
         <div class="sphinxsidebarwrapper">
 <h1 class="logo"><a href="#">Internship report</a></h1>
 
 
 
+
+
+
+<p>
+<iframe src="https://ghbtns.com/github-btn.html?user=DouweSpaanderman&repo=NaDA&type=watch&count=true&size=large&v=2"
+  allowtransparency="true" frameborder="0" scrolling="0" width="200px" height="35px"></iframe>
+</p>
 
 
 
@@ -122,8 +82,54 @@
 <script type="text/javascript">$('#searchbox').show(0);</script>
         </div>
       </div>
-      <div class="clearer"></div>
-    </div>
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="data-analyzing-of-ctdna-from-nanopore-sequencing-with-python">
+<h1>Data analyzing of ctDNA from Nanopore Sequencing with Python<a class="headerlink" href="#data-analyzing-of-ctdna-from-nanopore-sequencing-with-python" title="Permalink to this headline">¶</a></h1>
+<p><strong>Cyclomics data analysis: identifying and analyzing alterations in ctDNA for data filtering</strong></p>
+<p><em>Student:                       Douwe Spaanderman (5483352)</em></p>
+<p><em>Supervisor:                    Alessio Marcozzi</em></p>
+<p><em>Group Kloosterman              Medical Genetics - UMC Utrecht</em></p>
+<p>This is the interactive version of the bachelor internship report from Douwe Spaanderman, which consist of an introduction, general concept, results and discussion and a conclusion. Additional references and supplementary can also be found here. Programming used for analysis can be found in my <a class="reference external" href="https://github.com/DouweSpaanderman/NaDA/">GitHub</a>. Also, Sphinx-doc was used to construct this report.</p>
+<div class="section" id="table-of-contents">
+<h2>Table of Contents<a class="headerlink" href="#table-of-contents" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="Introduction.html">Introduction</a></li>
+<li class="toctree-l1"><a class="reference internal" href="General concept.html">General concept</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Results and Discussion.html">Results and discussion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Results and Discussion.html#fastq-files">Fastq files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Results and Discussion.html#variant-call-format-files">Variant Call Format files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Results and Discussion.html#script-tests">Script Tests</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Conclusion.html">Conclusion</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="Conclusion.html#personal-reflection">Personal reflection</a></li>
+<li class="toctree-l2"><a class="reference internal" href="Conclusion.html#acknowledgements">Acknowledgements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="References.html">References</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Supplementary.html">Supplementary</a></li>
+</ul>
+</div>
+<div class="line-block">
+<div class="line"><br /></div>
+<div class="line"><br /></div>
+</div>
+<div class="figure align-center">
+<a class="reference external image-reference" href="https://rawgit.com/DouweSpaanderman/NaDA/master/Documentation/build/html/Introduction.html"><img alt="https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png" src="https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png" style="width: 100px; height: 100px;" /></a>
+</div>
+</div>
+</div>
+
+
+          </div>
+        </div>
+      </div>
+    <div class="clearer"></div>
+  </div>
     <div class="footer">
       &copy;2017, Douwe Spaanderman.
       

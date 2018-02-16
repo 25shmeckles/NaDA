@@ -13,7 +13,7 @@ Data analyzing of ctDNA from Nanopore Sequencing with Python
 
 *Group Kloosterman		Medical Genetics - UMC Utrecht*
 
-This is the interactive version of the bachelor internship report from Douwe Spaanderman, which consist of an introduction, general workflow, results and discussion and a conclusion. Additional references and supplementary can also be found here. Programming used for analysis can be found in my GitHub_. Also, Sphinx-doc is used to construct this report.
+This is the interactive version of the bachelor internship report from Douwe Spaanderman, which consist of an introduction, general concept, results and discussion and a conclusion. Additional references and supplementary can also be found here. Programming used for analysis can be found in my GitHub_. Also, Sphinx-doc was used to construct this report.
 
 .. _GitHub: https://github.com/DouweSpaanderman/NaDA/
 
@@ -34,7 +34,7 @@ Table of Contents
 |
 
 .. figure:: https://raw.githubusercontent.com/DouweSpaanderman/NaDA/master/Documentation/source/_static/Next.png
-   :align:  center
+   :align: center
    :width: 100px
    :height: 100px
-   :target: https://htmlpreview.github.io/?https://github.com/DouweSpaanderman/NaDA/blob/master/Documentation/build/html/Introduction.html
+   :target: https://rawgit.com/DouweSpaanderman/NaDA/master/Documentation/build/html/Introduction.html
