@@ -14,7 +14,7 @@ For my internship, I wanted to try something I have not yet experienced in my ba
 
 Acknowledgements
 ++++++++++++++++
-I would like to thank Alessio Marcozzi for his guidance and support during this project. In addition, I would like to thank Dr. Wigard Kloosterman for giving me this wonderful opportunity and for his supervision during my internship at the Department of Genetics.
+I would like to thank Dr. Alessio Marcozzi for his guidance and support during this project. In addition, I would like to thank Dr. Wigard Kloosterman for giving me this wonderful opportunity and for his supervision during my internship at the Department of Genetics.
 
 .. _library: https://github.com/DouweSpaanderman/NaDA/
 
