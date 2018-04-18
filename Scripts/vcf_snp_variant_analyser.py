@@ -143,7 +143,12 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size, file_name):
             if n2/(n1+n2+n3) > 0.25:
                 for i, items in enumerate(data):
                     mutated = ':'+','.join(item[0:3])+':'+score3[points]+'\t'+file_name
-                    if mutated in items:                  
+                    if mutated in items:
+                        
+                        r_ = items.split(breakpoint, 5)
+                        r = r_[4][0]
+                        removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
+                        
                         data_ = data[i-lenght_before:i]+[removed]+data[i+1:i+lenght_after]
                         if data_ in extended:
                             continue
@@ -152,9 +157,6 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size, file_name):
                         else:
                             extended.append(data_)
                         
-                        r_ = items.split(breakpoint, 5)
-                        r = r_[4][0]
-                        removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         
                         if removed in highmutated:
                             continue
@@ -169,6 +171,11 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size, file_name):
                 for i, items in enumerate(data_all):
                     mutated = ':'+','.join(item[0:3])+':'+score3[points]
                     if mutated in items:
+                        
+                        r_ = items.split(breakpoint, 5)
+                        r = r_[4][2]
+                        removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
+                        
                         data_ = data[i-lenght_before:i]+[removed]+data[i+1:i+lenght_after]
                         if data_ in extended:
                             continue
@@ -177,9 +184,6 @@ def mutated_reads_vcf_only(variance_or_backbone, data_all, size, file_name):
                         else:
                             extended.append(data_)
                         
-                        r_ = items.split(breakpoint, 5)
-                        r = r_[4][2]
-                        removed = r_[0]+'\t'+r_[1]+'\t'+r_[2]+'\t'+r_[3]+'\t'+r+'\t'+r_[5]
                         
                         if removed in highmutated:
                             continue
